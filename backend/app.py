@@ -110,10 +110,8 @@ def init_db() -> None:
             if col not in df.columns:
                 df[col] = None
 
-        # Keep only the columns the API expects, in the right order.
         df = df[expected_columns]
 
-        # Optional cleanup for messy CSV values.
         for text_col in [
             "address",
             "city",
@@ -125,11 +123,9 @@ def init_db() -> None:
         ]:
             df[text_col] = df[text_col].astype("string").fillna("").str.strip()
 
-        # Replace the current listings with whatever is in the CSV.
         cur.execute("DELETE FROM listings")
 
         rows = df.to_dict(orient="records")
-
         cur.executemany(
             """
             INSERT OR REPLACE INTO listings (
