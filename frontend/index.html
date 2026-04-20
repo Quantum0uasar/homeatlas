@@ -33,27 +33,43 @@
     }
 
     .sidebar {
-    width: 470px;
-    min-width: 380px;
-    max-width: 900px;
-    flex: 0 0 auto;
-    height: 100vh;
-    overflow-y: auto;
-    background: #ffffff;
-    border-left: 1px solid #e2e8f0;
-    padding: 18px;
-}
+      width: 470px;
+      min-width: 380px;
+      max-width: 900px;
+      flex: 0 0 auto;
+      height: 100vh;
+      overflow-y: auto;
+      background: #ffffff;
+      border-left: 1px solid #e2e8f0;
+      padding: 18px;
+    }
 
-#dragbar {
-  width: 10px;
-  cursor: col-resize;
-  background: linear-gradient(to right, transparent 0, #cbd5e1 50%, transparent 100%);
-  flex: 0 0 10px;
-}
+    #dragbar {
+      width: 16px;
+      cursor: col-resize;
+      background: #e2e8f0;
+      border-left: 1px solid #cbd5e1;
+      border-right: 1px solid #cbd5e1;
+      flex: 0 0 16px;
+      position: relative;
+      z-index: 1200;
+    }
 
-#dragbar:hover {
-  background: linear-gradient(to right, transparent 0, #94a3b8 50%, transparent 100%);
-}
+    #dragbar::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 4px;
+      height: 40px;
+      transform: translate(-50%, -50%);
+      border-radius: 999px;
+      background: #94a3b8;
+    }
+
+    #dragbar:hover {
+      background: #dbe4ee;
+    }
 
     .hero-card {
       background: linear-gradient(135deg, #0f172a, #1e293b);
@@ -476,8 +492,14 @@
         height: 50vh;
       }
 
+      #dragbar {
+        display: none;
+      }
+
       .sidebar {
         width: 100%;
+        min-width: 100%;
+        max-width: 100%;
         height: 50vh;
         border-left: none;
         border-top: 1px solid #e2e8f0;
@@ -498,10 +520,10 @@
   </div>
 
   <div class="app">
-  <div id="map"></div>
-  <div id="dragbar"></div>
+    <div id="map"></div>
+    <div id="dragbar"></div>
 
-  <aside class="sidebar" id="sidebar">
+    <aside class="sidebar" id="sidebar">
       <div class="hero-card">
         <h1 class="title">HomeAtlas Investment View</h1>
         <p class="subtitle">Interactive home search + mortgage + comparison demo</p>
@@ -1278,28 +1300,43 @@
         console.error(error);
       }
     }
+
     const sidebar = document.getElementById("sidebar");
-const dragbar = document.getElementById("dragbar");
+    const dragbar = document.getElementById("dragbar");
 
-let isResizing = false;
+    let isResizing = false;
+    let resizeFrame = null;
 
-dragbar.addEventListener("mousedown", () => {
-  isResizing = true;
-  document.body.style.userSelect = "none";
-});
+    dragbar.addEventListener("mousedown", (e) => {
+      isResizing = true;
+      e.preventDefault();
+      document.body.style.userSelect = "none";
+      document.body.style.cursor = "col-resize";
+    });
 
-window.addEventListener("mousemove", (e) => {
-  if (!isResizing) return;
+    window.addEventListener("mousemove", (e) => {
+      if (!isResizing) return;
 
-  const newSidebarWidth = window.innerWidth - e.clientX;
-  const clampedWidth = Math.max(380, Math.min(900, newSidebarWidth));
-  sidebar.style.width = `${clampedWidth}px`;
-});
+      const newSidebarWidth = window.innerWidth - e.clientX;
+      const clampedWidth = Math.max(380, Math.min(900, newSidebarWidth));
+      sidebar.style.width = `${clampedWidth}px`;
 
-window.addEventListener("mouseup", () => {
-  isResizing = false;
-  document.body.style.userSelect = "";
-});
+      if (resizeFrame) cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(() => {
+        map.invalidateSize();
+      });
+    });
+
+    window.addEventListener("mouseup", () => {
+      if (!isResizing) return;
+      isResizing = false;
+      document.body.style.userSelect = "";
+      document.body.style.cursor = "";
+
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 0);
+    });
 
     document.getElementById("applyFilters").addEventListener("click", applyFilters);
     document.getElementById("resetFilters").addEventListener("click", resetFilters);
