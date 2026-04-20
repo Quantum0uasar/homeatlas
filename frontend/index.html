@@ -4,12 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HomeAtlas</title>
-
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
-
+  <!-- MARKER: JAIDEEDP TEST 1 -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     * { box-sizing: border-box; }
 
@@ -18,7 +14,7 @@
       height: 100%;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: #f4f6f8;
-      color: #1e293b;
+      color: #0f172a;
     }
 
     .app {
@@ -33,15 +29,16 @@
     }
 
     .sidebar {
-      width: 470px;
-      min-width: 380px;
-      max-width: 900px;
+      width: 560px;
+      min-width: 390px;
+      max-width: 1200px;
       flex: 0 0 auto;
       height: 100vh;
       overflow-y: auto;
       background: #ffffff;
       border-left: 1px solid #e2e8f0;
       padding: 18px;
+      container-type: inline-size;
     }
 
     #dragbar {
@@ -53,6 +50,7 @@
       flex: 0 0 16px;
       position: relative;
       z-index: 1200;
+      touch-action: none;
     }
 
     #dragbar::before {
@@ -67,17 +65,27 @@
       background: #94a3b8;
     }
 
-    #dragbar:hover {
-      background: #dbe4ee;
-    }
-
     .hero-card {
-      background: linear-gradient(135deg, #0f172a, #1e293b);
-      color: white;
+      background: linear-gradient(135deg, #020617, #0f172a, #1d4ed8);
+      color: #ffffff;
       border-radius: 18px;
       padding: 16px;
       margin-bottom: 14px;
-      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
+      box-shadow: 0 14px 32px rgba(15, 23, 42, 0.35);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      right: -40px;
+      bottom: -40px;
+      width: 160px;
+      height: 160px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, rgba(248, 250, 252, 0.9), rgba(59, 130, 246, 0.2), transparent);
+      opacity: 0.7;
     }
 
     .title {
@@ -90,6 +98,7 @@
       margin: 0 0 6px 0;
       font-size: 14px;
       color: #cbd5e1;
+      max-width: 420px;
     }
 
     .creator {
@@ -121,7 +130,8 @@
     }
 
     .input,
-    .select {
+    .select,
+    .textarea {
       width: 100%;
       padding: 10px 12px;
       border: 1px solid #cbd5e1;
@@ -129,6 +139,11 @@
       font-size: 14px;
       background: white;
       margin-bottom: 10px;
+    }
+
+    .textarea {
+      min-height: 92px;
+      resize: vertical;
     }
 
     .btn {
@@ -154,30 +169,34 @@
       font-size: 12px;
     }
 
+    .small {
+      color: #64748b;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .empty {
+      color: #64748b;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
     .stats-box {
-      position: absolute;
-      bottom: 14px;
-      left: 14px;
-      top: auto;
-      z-index: 1000;
+      position: relative;
       background: white;
       border: 1px solid #e2e8f0;
       border-radius: 14px;
       padding: 12px 14px;
       box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
       min-width: 250px;
+      max-width: min(320px, calc(100vw - 32px));
       font-size: 14px;
+      pointer-events: auto;
     }
 
     .stats-title {
       font-weight: 800;
       margin-bottom: 6px;
-    }
-
-    .small {
-      color: #64748b;
-      font-size: 13px;
-      line-height: 1.5;
     }
 
     .big-price {
@@ -188,14 +207,21 @@
 
     .property-meta,
     .summary-grid,
-    .compare-metrics {
+    .compare-metrics,
+    .journey-grid,
+    .exception-grid,
+    .education-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
       margin: 12px 0;
     }
 
-    .meta-pill {
+    .meta-pill,
+    .metric-box,
+    .journey-card,
+    .exception-card,
+    .edu-card {
       background: white;
       border: 1px solid #e2e8f0;
       border-radius: 10px;
@@ -203,55 +229,11 @@
       font-size: 13px;
     }
 
-    .section-title {
-      margin: 0 0 10px 0;
-      font-size: 15px;
-      font-weight: 800;
-    }
-
-    .listing-image,
-    .compare-thumb {
-      width: 100%;
-      object-fit: cover;
-      border-radius: 12px;
-      border: 1px solid #e2e8f0;
-      background: #e5e7eb;
-    }
-
-    .listing-image {
-      height: 220px;
-      margin: 10px 0 14px 0;
-    }
-
-    .compare-thumb {
-      height: 150px;
-      margin: 8px 0 12px 0;
-    }
-
-    .calc-result {
-      margin-top: 10px;
-      padding: 12px;
-      background: white;
-      border: 1px solid #e2e8f0;
-      border-radius: 10px;
-    }
-
-    .calc-main {
-      font-size: 24px;
-      font-weight: 800;
-      margin-bottom: 4px;
-    }
-
-    .empty {
-      color: #64748b;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
     .filter-row,
     .triple-row,
     .button-row,
-    .compare-pill-row {
+    .compare-pill-row,
+    .tab-row {
       display: grid;
       gap: 10px;
     }
@@ -273,53 +255,34 @@
       margin-top: 10px;
     }
 
-    .process {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .process li {
-      position: relative;
-      padding-left: 36px;
+    .tab-row {
+      grid-template-columns: 1fr 1fr 1fr;
       margin-bottom: 14px;
-      line-height: 1.4;
-      font-size: 14px;
-      color: #334155;
     }
 
-    .process li::before {
-      content: attr(data-step);
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 24px;
-      height: 24px;
-      border-radius: 999px;
+    .tab-btn {
+      border: none;
+      background: #e2e8f0;
+      color: #0f172a;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
       background: #0f172a;
       color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: 800;
     }
 
-    .checklist {
-      margin: 0;
-      padding-left: 18px;
-    }
-
-    .checklist li {
-      margin-bottom: 8px;
-      font-size: 14px;
-      color: #334155;
-      line-height: 1.4;
+    .hidden {
+      display: none;
     }
 
     .status-badge,
     .winner-badge,
-    .mini-badge {
+    .mini-badge,
+    .path-pill {
       display: inline-block;
       padding: 6px 10px;
       border-radius: 999px;
@@ -362,6 +325,52 @@
       margin-bottom: 10px;
     }
 
+    .path-pill {
+      background: #ecfeff;
+      color: #155e75;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      margin: 0 0 10px 0;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .listing-image,
+    .compare-thumb {
+      width: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      background: #e5e7eb;
+      display: block;
+    }
+
+    .listing-image {
+      height: 220px;
+      margin: 10px 0 14px 0;
+    }
+
+    .compare-thumb {
+      height: 150px;
+      margin: 8px 0 12px 0;
+    }
+
+    .calc-result {
+      margin-top: 10px;
+      padding: 12px;
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+    }
+
+    .calc-main {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
     .progress-wrap {
       margin-top: 10px;
     }
@@ -389,9 +398,10 @@
 
     .compare-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(2, minmax(280px, 1fr));
       gap: 12px;
       margin-top: 10px;
+      align-items: stretch;
     }
 
     .compare-panel {
@@ -399,6 +409,9 @@
       border: 1px solid #e2e8f0;
       border-radius: 14px;
       padding: 12px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
     }
 
     .compare-title {
@@ -414,6 +427,7 @@
       font-size: 16px;
       font-weight: 800;
       line-height: 1.3;
+      min-height: 42px;
     }
 
     .compare-price {
@@ -426,14 +440,7 @@
       font-size: 12px;
       color: #64748b;
       line-height: 1.4;
-    }
-
-    .metric-box {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 10px;
-      padding: 10px;
-      font-size: 12px;
+      min-height: 18px;
     }
 
     .metric-label {
@@ -478,6 +485,553 @@
       text-align: center;
     }
 
+    .journey-step {
+      cursor: pointer;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+
+    .journey-step:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+    }
+
+    .journey-step.active {
+      border: 2px solid #0f172a;
+      background: #f8fafc;
+    }
+
+    .journey-visual {
+      width: 100%;
+      min-height: 210px;
+      border-radius: 14px;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #dbeafe, #eef2ff, #f8fafc);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #dbeafe;
+    }
+
+    .journey-visual::before,
+    .journey-visual::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      opacity: .7;
+      animation: floaty 5s ease-in-out infinite;
+    }
+
+    .journey-visual::before {
+      width: 120px;
+      height: 120px;
+      background: rgba(59,130,246,.16);
+      top: 20px;
+      left: 20px;
+    }
+
+    .journey-visual::after {
+      width: 180px;
+      height: 180px;
+      background: rgba(99,102,241,.12);
+      bottom: -30px;
+      right: -20px;
+      animation-delay: 1s;
+    }
+
+    .journey-visual-inner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 2;
+      animation: fadeIn .4s ease;
+    }
+
+    .car-scene {
+      width: 100%;
+    }
+
+    .car-road {
+      position: relative;
+      width: 100%;
+      height: 52px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #020617, #0f172a, #020617);
+      overflow: hidden;
+      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.6);
+      margin-bottom: 18px;
+    }
+
+    .car-road-stripe {
+      position: absolute;
+      top: 50%;
+      left: -40%;
+      width: 180%;
+      height: 6px;
+      background-image: linear-gradient(90deg, #facc15 40%, transparent 40%);
+      background-size: 20px 6px;
+      transform: translateY(-50%);
+      opacity: .85;
+      animation: roadScroll 1.4s linear infinite;
+    }
+
+    .car-icon {
+      position: absolute;
+      top: 50%;
+      left: 0%;
+      transform: translate(-50%, -50%);
+      width: 68px;
+      height: 34px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #0f172a, #1f2937);
+      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: left .45s cubic-bezier(.26,.53,.74,1.48);
+    }
+
+    .car-icon::before,
+    .car-icon::after {
+      content: "";
+      position: absolute;
+      bottom: -8px;
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: #020617;
+      box-shadow: 0 1px 0 rgba(148, 163, 184, .7);
+    }
+
+    .car-icon::before {
+      left: 14px;
+    }
+
+    .car-icon::after {
+      right: 14px;
+    }
+
+    .car-window {
+      width: 80%;
+      height: 60%;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #e5e7eb, #f9fafb);
+      box-shadow: inset 0 0 0 2px rgba(15, 23, 42, 0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .car-driver {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 20%, #fee2e2, #fecaca, #f97316);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .car-driver-face {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      background: #fefce8;
+      position: relative;
+    }
+
+    .car-driver-eye {
+      position: absolute;
+      top: 6px;
+      width: 4px;
+      height: 4px;
+      border-radius: 999px;
+      background: #0f172a;
+    }
+
+    .car-driver-eye:first-child { left: 5px; }
+    .car-driver-eye:last-child { right: 5px; }
+
+    .car-driver-smile {
+      position: absolute;
+      bottom: 5px;
+      left: 50%;
+      width: 12px;
+      height: 7px;
+      border-radius: 0 0 999px 999px;
+      border-bottom: 2px solid #0f172a;
+      transform: translateX(-50%);
+    }
+
+    .car-dashboard {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+      font-size: 11px;
+    }
+
+    .car-dash-pill {
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.82);
+      color: #e5e7eb;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    .car-dash-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    .car-summary {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #0f172a;
+      line-height: 1.5;
+    }
+
+    .timeline-track {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+
+    .timeline-dot {
+      min-width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      background: #dbeafe;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      border: 2px solid transparent;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .timeline-dot.active {
+      border-color: #0f172a;
+      background: #0f172a;
+      color: white;
+    }
+
+    .chip-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .chip {
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      font-size: 12px;
+      font-weight: 700;
+      color: #0f172a;
+      border: none;
+      cursor: pointer;
+    }
+
+    .chip.active {
+      background: #0f172a;
+      color: white;
+    }
+
+    .ai-result {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 10px;
+    }
+
+    .policy-rail {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .policy-card {
+      background: white;
+      border: 1px solid #dbeafe;
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 10px 24px rgba(37, 99, 235, 0.08);
+    }
+
+    .policy-card strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      color: #0f172a;
+    }
+
+    .route-impact-banner {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid #bfdbfe;
+      background: #eff6ff;
+      color: #1e3a8a;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .journey-route-board {
+      position: relative;
+      width: 100%;
+      min-height: 270px;
+      border-radius: 18px;
+      border: 1px solid #c7d2fe;
+      background: linear-gradient(180deg, rgba(239,246,255,0.95), rgba(224,231,255,0.94));
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 14px 30px rgba(30, 64, 175, 0.08);
+    }
+
+    .journey-route-board::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.9), transparent 28%),
+                  radial-gradient(circle at 78% 24%, rgba(191,219,254,0.9), transparent 24%),
+                  radial-gradient(circle at 82% 78%, rgba(224,231,255,0.95), transparent 22%);
+      pointer-events: none;
+    }
+
+    .route-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .route-svg path {
+      fill: none;
+      stroke: #94a3b8;
+      stroke-width: 5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 10 10;
+      opacity: 0.95;
+    }
+
+    .journey-route-board.extended-review .route-svg path {
+      stroke: #0ea5e9;
+    }
+
+    .journey-route-board.manual-review .route-svg path {
+      stroke: #f97316;
+    }
+
+    .journey-route-board.extra-docs .route-svg path {
+      stroke: #22c55e;
+    }
+
+    .route-stops-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+    }
+
+    .route-stop {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      min-width: 118px;
+      max-width: 138px;
+      padding: 10px 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.95);
+      border: 1px solid #dbeafe;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+      cursor: pointer;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      text-align: center;
+    }
+
+    .route-stop:hover {
+      transform: translate(-50%, calc(-50% - 2px));
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+    }
+
+    .route-stop.active {
+      border: 2px solid #0f172a;
+      background: white;
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.16);
+    }
+
+    .route-stop.impacted {
+      border-color: #0ea5e9;
+      background: #eff6ff;
+    }
+
+    .route-stop.manual-review {
+      border-color: #fb923c;
+      background: #fff7ed;
+    }
+
+    .route-stop-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background: #1d4ed8;
+      margin: 0 auto 6px;
+      box-shadow: 0 0 0 4px rgba(191,219,254,0.8);
+    }
+
+    .route-stop-stage {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #475569;
+      margin-bottom: 4px;
+    }
+
+    .route-stop-title {
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.25;
+      color: #0f172a;
+    }
+
+    .route-stop-lane {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #4338ca;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .route-car {
+      position: absolute;
+      left: 8%;
+      top: 78%;
+      transform: translate(-50%, -50%);
+      width: 82px;
+      height: 38px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #0f172a, #1f2937);
+      box-shadow: 0 16px 26px rgba(15, 23, 42, 0.28);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: left .65s cubic-bezier(.26,.53,.74,1.2), top .65s cubic-bezier(.26,.53,.74,1.2), transform .25s ease;
+      z-index: 4;
+    }
+
+    .route-car::before,
+    .route-car::after {
+      content: "";
+      position: absolute;
+      bottom: -8px;
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: #020617;
+      box-shadow: 0 1px 0 rgba(148, 163, 184, .7);
+    }
+
+    .route-car::before { left: 15px; }
+    .route-car::after { right: 15px; }
+
+    .journey-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .journey-kpi {
+      background: rgba(255,255,255,0.92);
+      border: 1px solid #dbeafe;
+      border-radius: 12px;
+      padding: 10px;
+      font-size: 12px;
+      color: #334155;
+    }
+
+    .journey-kpi strong {
+      display: block;
+      font-size: 12px;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+
+    .journey-checklist {
+      margin: 12px 0;
+      padding: 12px 14px;
+      background: white;
+      border: 1px solid #dbeafe;
+      border-radius: 14px;
+    }
+
+    .journey-checklist ul {
+      margin: 8px 0 0;
+      padding-left: 18px;
+    }
+
+    .journey-checklist li {
+      margin-bottom: 6px;
+      color: #334155;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    @keyframes floaty {
+      0% { transform: translateY(0px) translateX(0px); }
+      50% { transform: translateY(-10px) translateX(6px); }
+      100% { transform: translateY(0px) translateX(0px); }
+    }
+
+    @keyframes roadScroll {
+      0% { transform: translate(-10%, -50%); }
+      100% { transform: translate(-40%, -50%); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .leaflet-top .leaflet-control { margin-top: 14px; }
+    .leaflet-right .leaflet-control { margin-right: 14px; }
+    .leaflet-bottom .leaflet-control { margin-bottom: 14px; }
+    .leaflet-left .leaflet-control { margin-left: 14px; }
+
+    @container (max-width: 760px) {
+      .compare-grid,
+      .journey-grid,
+      .exception-grid,
+      .education-grid,
+      .property-meta,
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .compare-pill-row,
+      .tab-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
     @media (max-width: 1200px) {
       .compare-grid {
         grid-template-columns: 1fr;
@@ -507,176 +1061,207 @@
       }
 
       .stats-box {
-        left: 10px;
-        right: 10px;
-        bottom: 10px;
-        top: auto;
         min-width: auto;
+        max-width: calc(100vw - 24px);
+      }
+
+      .triple-row {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 <body>
-  <div class="stats-box" id="stats">
-    <div class="stats-title">HomeAtlas stats</div>
-    <div class="small">Loading…</div>
-  </div>
-
   <div class="app">
     <div id="map"></div>
-    <div id="dragbar"></div>
+    <div id="dragbar" title="Drag to resize sidebar. Double click to reset."></div>
 
     <aside class="sidebar" id="sidebar">
       <div class="hero-card">
         <h1 class="title">HomeAtlas Investment View</h1>
-        <p class="subtitle">Interactive home search + mortgage + comparison demo</p>
+        <p class="subtitle">
+        Explore a TD-inspired mortgage journey map from first conversation to funded closing, including purchase, refinance, builder, rental and exception routing
+        </p>
         <p class="creator">Created by Jaideep Singh</p>
       </div>
 
-      <div class="card">
-        <h3>Filters</h3>
-
-        <label class="label" for="cityFilter">City</label>
-        <select id="cityFilter" class="select">
-          <option value="all">All cities</option>
-        </select>
-
-        <div class="filter-row">
-          <div>
-            <label class="label" for="maxPrice">Max price</label>
-            <input id="maxPrice" class="input" type="number" placeholder="e.g. 7000000" />
-          </div>
-
-          <div>
-            <label class="label" for="minBeds">Min beds</label>
-            <input id="minBeds" class="input" type="number" placeholder="e.g. 4" />
-          </div>
-        </div>
-
-        <div class="button-row">
-          <button class="btn" id="applyFilters">Apply filters</button>
-          <button class="btn secondary" id="resetFilters">Reset</button>
-        </div>
+      <div class="tab-row">
+        <button class="tab-btn active" data-tab="searchTab">Search & Compare</button>
+        <button class="tab-btn" data-tab="journeyTab">Mortgage Journey Map</button>
+        <button class="tab-btn" data-tab="scenarioTab">Scenario AI</button>
       </div>
 
-      <div class="card">
-        <h3>Buyer Profile</h3>
-
-        <label class="label" for="annualIncome">Annual income ($)</label>
-        <input id="annualIncome" class="input" type="number" value="350000" />
-
-        <label class="label" for="monthlyDebts">Monthly debts ($)</label>
-        <input id="monthlyDebts" class="input" type="number" value="2500" />
-
-        <label class="label" for="downPayment">Down payment ($)</label>
-        <input id="downPayment" class="input" type="number" value="1200000" />
-
-        <div class="filter-row">
-          <div>
-            <label class="label" for="interestRate">Interest rate (%)</label>
-            <input id="interestRate" class="input" type="number" step="0.01" value="5.00" />
+      <!-- SEARCH TAB -->
+      <div id="searchTab">
+        <div class="card">
+          <h3>Filters</h3>
+          <label class="label" for="cityFilter">City</label>
+          <select id="cityFilter" class="select"><option value="all">All cities</option></select>
+          <div class="filter-row">
+            <div><label class="label" for="maxPrice">Max price</label><input id="maxPrice" class="input" type="number" placeholder="e.g. 7000000" /></div>
+            <div><label class="label" for="minBeds">Min beds</label><input id="minBeds" class="input" type="number" placeholder="e.g. 4" /></div>
           </div>
-
-          <div>
-            <label class="label" for="amortYears">Amortization (years)</label>
-            <input id="amortYears" class="input" type="number" value="25" />
+          <div class="button-row">
+            <button class="btn" id="applyFilters">Apply filters</button>
+            <button class="btn secondary" id="resetFilters">Reset</button>
           </div>
         </div>
 
-        <div class="triple-row">
-          <div>
-            <label class="label" for="propertyTax">Tax / mo</label>
-            <input id="propertyTax" class="input" type="number" value="1800" />
+        <div class="card">
+          <h3>Buyer Profile</h3>
+          <label class="label" for="annualIncome">Annual income ($)</label>
+          <input id="annualIncome" class="input" type="number" value="350000" />
+          <label class="label" for="monthlyDebts">Monthly debts ($)</label>
+          <input id="monthlyDebts" class="input" type="number" value="2500" />
+          <label class="label" for="downPayment">Down payment ($)</label>
+          <input id="downPayment" class="input" type="number" value="1200000" />
+          <div class="filter-row">
+            <div><label class="label" for="interestRate">Interest rate (%)</label><input id="interestRate" class="input" type="number" step="0.01" value="5.00" /></div>
+            <div><label class="label" for="amortYears">Amortization (years)</label><input id="amortYears" class="input" type="number" value="25" /></div>
           </div>
-
-          <div>
-            <label class="label" for="heatingCost">Heating / mo</label>
-            <input id="heatingCost" class="input" type="number" value="350" />
+          <div class="triple-row">
+            <div><label class="label" for="propertyTax">Tax / mo</label><input id="propertyTax" class="input" type="number" value="1800" /></div>
+            <div><label class="label" for="heatingCost">Heating / mo</label><input id="heatingCost" class="input" type="number" value="350" /></div>
+            <div><label class="label" for="condoFee">Condo / mo</label><input id="condoFee" class="input" type="number" value="0" /></div>
           </div>
+          <p class="small">Click a marker to set the primary property, then compare it against another one.</p>
+        </div>
 
-          <div>
-            <label class="label" for="condoFee">Condo / mo</label>
-            <input id="condoFee" class="input" type="number" value="0" />
+        <div class="card" id="compareControl">
+          <h3>Compare Center</h3>
+          <div class="small" id="primaryPropertyLabel">Primary property: none selected yet.</div>
+          <label class="label" for="comparePropertySelect" style="margin-top:10px;">Compare against</label>
+          <select id="comparePropertySelect" class="select" disabled><option value="">Select a second property</option></select>
+          <div class="button-row">
+            <button class="btn small-btn" id="useFirstAvailableCompare">Auto compare</button>
+            <button class="btn secondary small-btn" id="clearCompare">Clear compare</button>
           </div>
         </div>
 
-        <p class="small">Click a marker to set the primary property, then compare it against another one.</p>
+        <div class="card" id="qualificationSummary"><h3>Mortgage Overview</h3><p class="empty">Choose a property to generate the buyer summary.</p></div>
+        <div class="card" id="selected"><h3>Selected Property</h3><p class="empty">Click a marker on the map to see the full property breakdown.</p></div>
+        <div class="card" id="investmentSnapshot"><h3>Investment Snapshot</h3><p class="empty">Choose a property to see the investment view.</p></div>
+        <div class="card" id="cashToClose"><h3>Cash to Close</h3><p class="empty">Choose a property to estimate the upfront cash needed.</p></div>
+        <div class="card" id="equityProjection"><h3>5 Year Equity Projection</h3><p class="empty">Choose a property to estimate long term equity.</p></div>
+        <div class="card" id="propertyComparison"><h3>Property Comparison</h3><p class="empty">Select a primary property, then choose another property to compare.</p></div>
+        <div class="card" id="recommendationBox"><h3>HomeAtlas Recommendation</h3><p class="empty">A recommendation summary will appear after you compare properties.</p></div>
       </div>
 
-      <div class="card" id="compareControl">
-        <h3>Compare Center</h3>
-        <div class="small" id="primaryPropertyLabel">Primary property: none selected yet.</div>
+      <!-- JOURNEY TAB -->
+      <div id="journeyTab" class="hidden">
+        <div class="card">
+          <h3>Choose Your Journey</h3>
+          <p class="small">Switch between purchase, refinance, renewal, builder, rental/investment, and power-of-sale style lanes. The car moves between stops while the route and review lane change when exceptions hit.</p>
+          <label class="label" for="journeyType">Journey type</label>
+          <select id="journeyType" class="select">
+            <option value="purchase">Purchase (owner occupied)</option>
+            <option value="preapproval">Pre-approval only</option>
+            <option value="refinance">Refinance / equity takeout</option>
+            <option value="renewal">Renewal</option>
+            <option value="builder">Builder / new construction closing</option>
+            <option value="rental">Rental / investment purchase</option>
+            <option value="powersale">Power of sale / manual review</option>
+          </select>
+        </div>
 
-        <label class="label" for="comparePropertySelect" style="margin-top:10px;">Compare against</label>
-        <select id="comparePropertySelect" class="select" disabled>
-          <option value="">Select a second property</option>
-        </select>
+        <div class="card">
+          <h3>Journey Map</h3>
+          <span class="path-pill" id="journeyBadge">Purchase path</span>
+          <div id="journeySteps" class="journey-grid"></div>
+          <div id="timelineTrack" class="timeline-track"></div>
+          <div id="routeImpactBanner" class="route-impact-banner">Standard route loaded. Choose an exception to see the lane change.</div>
+          <div id="journeyPolicyRail" class="policy-rail"></div>
+        </div>
 
-        <div class="button-row">
-          <button class="btn small-btn" id="useFirstAvailableCompare">Auto compare</button>
-          <button class="btn secondary small-btn" id="clearCompare">Clear compare</button>
+        <div class="card">
+          <h3>Step Detail — Driver + Underwriter View</h3>
+          <div class="journey-visual">
+            <div class="journey-visual-inner">
+              <div class="car-scene">
+                <div class="journey-route-board" id="journeyRouteBoard">
+                  <svg class="route-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                    <path d="M 8 78 C 18 78, 22 66, 32 66 S 44 28, 54 28 S 68 74, 82 74 S 92 54, 94 36"></path>
+                  </svg>
+                  <div id="routeStopsLayer" class="route-stops-layer"></div>
+                  <div class="route-car" id="carIcon">
+                    <div class="car-window">
+                      <div class="car-driver">
+                        <div class="car-driver-face">
+                          <div class="car-driver-eye"></div>
+                          <div class="car-driver-eye"></div>
+                          <div class="car-driver-smile"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="car-dashboard">
+                  <div class="car-dash-pill">
+                    <span class="car-dash-dot"></span>
+                    <span id="dashLocation">Thinking about a home</span>
+                  </div>
+                  <div class="car-dash-pill">
+                    <span class="car-dash-dot" style="background:#f97316;"></span>
+                    <span id="dashCheck">Normal lane</span>
+                  </div>
+                  <div class="car-dash-pill">
+                    <span class="car-dash-dot" style="background:#38bdf8;"></span>
+                    <span id="dashTime">0% through journey</span>
+                  </div>
+                </div>
+
+                <div class="journey-kpi-grid" id="journeyKpiGrid"></div>
+
+                <div class="car-summary" id="journeyDriverNarrative">
+                  Select a stop above. The route will move the buyer car to that stage and show what the lender, mortgage specialist, property reviewer, and lawyer are looking at.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="journeyChecklist" class="journey-checklist"></div>
+          <div id="journeyDetail" class="small">
+            Choose a step above to move the buyer along the path and see what is being checked at that point.
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Common Exceptions</h3>
+          <p class="small">Click an exception to highlight the impacted stops and show whether the file shifts into an extra-docs lane, extended review lane, or manual review lane.</p>
+          <div id="exceptionCards" class="exception-grid"></div>
+        </div>
+
+        <div class="card">
+          <h3>Education Tiles</h3>
+          <div class="education-grid" id="educationCards"></div>
         </div>
       </div>
 
-      <div class="card" id="qualificationSummary">
-        <h3>Mortgage Overview</h3>
-        <p class="empty">Choose a property to generate the buyer summary.</p>
-      </div>
-
-      <div class="card" id="selected">
-        <h3>Selected Property</h3>
-        <p class="empty">Click a marker on the map to see the full property breakdown.</p>
-      </div>
-
-      <div class="card" id="investmentSnapshot">
-        <h3>Investment Snapshot</h3>
-        <p class="empty">Choose a property to see the investment view.</p>
-      </div>
-
-      <div class="card" id="cashToClose">
-        <h3>Cash to Close</h3>
-        <p class="empty">Choose a property to estimate the upfront cash needed.</p>
-      </div>
-
-      <div class="card" id="equityProjection">
-        <h3>5-Year Equity Projection</h3>
-        <p class="empty">Choose a property to estimate long-term equity.</p>
-      </div>
-
-      <div class="card" id="propertyComparison">
-        <h3>Property Comparison</h3>
-        <p class="empty">Select a primary property, then choose another property to compare.</p>
-      </div>
-
-      <div class="card" id="recommendationBox">
-        <h3>HomeAtlas Recommendation</h3>
-        <p class="empty">A recommendation summary will appear after you compare properties.</p>
-      </div>
-
-      <div class="card">
-        <h3>Mortgage Process</h3>
-        <ul class="process">
-          <li data-step="1"><strong>Pre-approval:</strong> Build the buyer profile and understand budget before committing to a home.</li>
-          <li data-step="2"><strong>Property selection:</strong> Compare homes, pricing, and monthly carrying cost.</li>
-          <li data-step="3"><strong>Offer stage:</strong> Work with the realtor to submit an offer and negotiate terms.</li>
-          <li data-step="4"><strong>Financing review:</strong> Confirm mortgage details, supporting documents, and final affordability.</li>
-          <li data-step="5"><strong>Closing:</strong> Prepare cash to close, sign documents, and complete the purchase.</li>
-        </ul>
+      <!-- SCENARIO TAB -->
+      <div id="scenarioTab" class="hidden">
+        <div class="card">
+          <h3>Scenario AI Style Decision Box</h3>
+          <p class="small">Pick the twists (exceptions), then describe the situation. The rules here mimic what an AI advisor could say later.</p>
+          <div class="chip-row" id="exceptionChipRow"></div>
+          <label class="label" for="customScenario">Custom scenario notes</label>
+          <textarea id="customScenario" class="textarea" placeholder="Example: Self-employed, BMW lease in place, gifted down payment, appraisal came in low, wants to refinance and take equity out."></textarea>
+          <button class="btn" id="analyzeScenario">Analyze scenario</button>
+          <div id="aiScenarioResult" class="ai-result small">Choose exceptions and enter a custom situation, then analyze it.</div>
+        </div>
       </div>
 
       <div class="card">
         <h3>Typical Documents Needed</h3>
-        <ul class="checklist">
-          <li>Government photo ID</li>
-          <li>Proof of income</li>
-          <li>Employment confirmation</li>
-          <li>Proof of down payment</li>
-          <li>Recent bank statements</li>
-          <li>Accepted purchase agreement</li>
-        </ul>
+        <div class="education-grid">
+          <div class="edu-card"><strong>ID</strong><br><br>Government photo identification.</div>
+          <div class="edu-card"><strong>Income proof</strong><br><br>Pay stubs, T4s, NOAs, tax returns, or business statements.</div>
+          <div class="edu-card"><strong>Employment</strong><br><br>Job letter or confirmation of employment.</div>
+          <div class="edu-card"><strong>Down payment</strong><br><br>Recent bank statements and gift letters if needed.</div>
+        </div>
       </div>
 
-      <div class="footer-note">Demo concept only • Created by Jaideep Singh</div>
+      <div class="footer-note">Demo concept only • TD-inspired public journey flow • Created by Jaideep Singh</div>
     </aside>
   </div>
 
@@ -690,8 +1275,163 @@
     let selectedListing = null;
     let compareListing = null;
     let areaAvgPrice = 0;
+    let selectedScenarioChips = new Set();
+    let selectedJourneyException = null;
 
-    const map = L.map("map").setView([43.01, -81.27], 12);
+    const journeyData = {
+      purchase: [
+        { key: "budget", stage: "Start", title: "Budget & discovery", lane: "Discovery", location: "Budget planning", details: "Buyer sets a realistic comfort range before serious shopping.", docs: "Income snapshot, debts list, cash available, monthly comfort target.", delays: "Starting with home price instead of monthly affordability.", tips: "Lead with monthly payment comfort and expected closing costs.", next: "Move into pre-approval.", check: "Budget fit, comfort range, general readiness.", checklist: ["Estimate payment comfort","List recurring debts","Confirm available down payment"] },
+        { key: "preapproval", stage: "Docs", title: "Pre-approval", lane: "Specialist lane", location: "TD Mortgage Specialist / online pre-approval", details: "Buyer applies online or with a mortgage specialist to set a working price range.", docs: "Photo ID, pay stub, T4 or NOA, down payment source, assets and liabilities.", delays: "Missing income docs, probationary employment, unclear gifted funds.", tips: "Upload everything in one shot to shorten callbacks.", next: "Home search with a real number.", check: "Income, liabilities, down payment source, qualification rules.", checklist: ["Photo ID ready","Income proof ready","Assets and liabilities listed"] },
+        { key: "search", stage: "Search", title: "Search & offer prep", lane: "Property lane", location: "Listings, showings, neighborhood review", details: "Buyer shops with a real budget and compares total ownership, not only list price.", docs: "Shortlist, payment scenarios, deposit plan.", delays: "Ignoring taxes, condo fees, heating, or short closing windows.", tips: "Compare total housing cost and cash to close before writing.", next: "Offer and deposit.", check: "Budget fit, property fit, timing, and monthly ownership.", checklist: ["Compare taxes and condo fees","Check parking/commute fit","Estimate deposit timing"] },
+        { key: "offer", stage: "Offer", title: "Offer accepted", lane: "Conditional lane", location: "Accepted purchase agreement", details: "The accepted offer triggers the formal approval clock.", docs: "Purchase and sale agreement, MLS listing if available, deposit proof.", delays: "Very short financing conditions or late deposit evidence.", tips: "Avoid new debt or large purchases after the offer is accepted.", next: "Full underwriting review.", check: "Offer terms, deposit, timeline, property basics.", checklist: ["Send purchase agreement quickly","Share deposit proof","Protect financing timeline"] },
+        { key: "underwriting", stage: "Review", title: "Full underwriting", lane: "Credit + document review", location: "Underwriter desk", details: "The file is tested more deeply than the pre-approval stage.", docs: "Updated pay stubs, bank statements, gift letter if applicable, extra business docs if self-employed.", delays: "New debts, credit changes, incomplete statements, self-employed complexity.", tips: "Keep finances stable and respond fast to document asks.", next: "Property value and legal coordination.", check: "Ratios, credit profile, source of funds, and product fit.", checklist: ["No new debt","Respond to conditions quickly","Keep statements complete"] },
+        { key: "appraisal", stage: "Value", title: "Appraisal / property review", lane: "Property risk lane", location: "Property review", details: "Property value, condo details, or legal concerns may trigger extra review.", docs: "Appraisal report if needed, condo docs, property notes.", delays: "Low value, condo red flags, unusual property characteristics.", tips: "Have a backup cash plan if value lands below price.", next: "Lawyer and closing prep.", check: "Property value, marketability, condo or title concerns.", checklist: ["Prepare for value gap risk","Review condo or property notes","Confirm final cash to close"] },
+        { key: "closing", stage: "Close", title: "Lawyer & funding", lane: "Legal lane", location: "Lawyer / notary and lender funding", details: "Lawyer coordinates title, registration, and funding instructions.", docs: "Final ID, closing funds, lawyer instructions, insurance details.", delays: "Late funds, title issues, last-minute adjustments.", tips: "Know exact cash to close before lawyer day.", next: "Keys released and ownership starts.", check: "Title, insurance, funds, registration and closing numbers.", checklist: ["Send closing funds early","Confirm insurance","Review statement of adjustments"] },
+        { key: "movein", stage: "Done", title: "Keys & move-in", lane: "Ownership lane", location: "New property", details: "The file is funded and the buyer becomes the homeowner.", docs: "Final lender and lawyer package.", delays: "Move logistics or unexpected first-week repairs.", tips: "Keep a cash buffer for immediate ownership costs.", next: "Post-close servicing and long-term planning.", check: "Funding completed and registration confirmed.", checklist: ["Store final documents","Set up payments","Plan emergency reserve"] }
+      ],
+      preapproval: [
+        { key: "intake", stage: "Start", title: "Intake", lane: "Specialist lane", location: "Online application or branch", details: "Buyer starts the application and enters high-level information.", docs: "Basic identity and employment information.", delays: "Incomplete initial profile.", tips: "Enter income and debts conservatively.", next: "Income review.", check: "Basic data completeness.", checklist: ["Identity details ready","Income estimate entered"] },
+        { key: "income", stage: "Docs", title: "Income review", lane: "Income lane", location: "Income review desk", details: "Lender checks consistency and type of income.", docs: "Pay stub, job letter, T4, NOA; 2 years T1 and NOAs if self-employed.", delays: "Recent job change or variable earnings.", tips: "Use the strongest recent income documentation.", next: "Debt review.", check: "Stability, history, and income type.", checklist: ["Pay stub ready","Job letter ready","Self-employed docs ready if needed"] },
+        { key: "debt", stage: "Review", title: "Debt review", lane: "Credit lane", location: "Credit and liabilities review", details: "Existing loans, cards, leases and lines of credit are included in qualification.", docs: "Statements for loans, leases, credit cards and lines.", delays: "High balances or newly added debt.", tips: "Reduce balances before the file is finalized.", next: "Down payment review.", check: "Debt ratios and payment pressure.", checklist: ["List all recurring debts","Avoid new applications"] },
+        { key: "funds", stage: "Funds", title: "Down payment & assets", lane: "Funds lane", location: "Assets review", details: "The lender reviews where the money is coming from.", docs: "Bank or investment statements, gift evidence if used.", delays: "Unclear transfers or unseasoned funds.", tips: "Keep a clean paper trail for deposits.", next: "Range issued.", check: "Source, amount, and consistency of funds.", checklist: ["Statements downloaded","Gift details ready if applicable"] },
+        { key: "issued", stage: "Issued", title: "Pre-approval issued", lane: "Ready-to-shop", location: "Buyer ready to house hunt", details: "Buyer leaves with a working range and a stronger search plan.", docs: "Pre-approval letter.", delays: "Shopping too long and docs going stale.", tips: "Treat the maximum as a ceiling, not a target.", next: "Property shopping.", check: "Overall fit against public qualification rules.", checklist: ["Save the pre-approval","Track expiry timing"] }
+      ],
+      refinance: [
+        { key: "goal", stage: "Goal", title: "Refinance goal", lane: "Strategy lane", location: "Planning stage", details: "Buyer defines whether the goal is cash flow relief, debt consolidation, or equity takeout.", docs: "Current mortgage statement, debt list, rough value estimate.", delays: "Unclear goal or unrealistic cash-out target.", tips: "Compare monthly relief versus long-term cost.", next: "Equity calculation.", check: "Purpose and refinance fit.", checklist: ["State refinance goal clearly","Gather current mortgage balance"] },
+        { key: "equity", stage: "Equity", title: "Equity review", lane: "Value lane", location: "Property equity review", details: "Current home value and mortgage balance are used to size the refinance.", docs: "Mortgage balance, property estimate, tax assessment if available.", delays: "Value lower than expected.", tips: "Leave buffer below the theoretical maximum.", next: "Credit and debt review.", check: "Loan-to-value and usable equity.", checklist: ["Confirm current balance","Estimate property value"] },
+        { key: "review", stage: "Review", title: "Qualification & structure", lane: "Credit lane", location: "Underwriting desk", details: "Income, debts and the new requested structure are reviewed.", docs: "Updated income docs, debt statements, requested payout list.", delays: "Weak ratios or too many debts being rolled in.", tips: "Show how the refinance improves the monthly picture.", next: "Valuation and legal.", check: "Ratios, purpose, and payment fit.", checklist: ["Update income proof","List all debts to be paid out"] },
+        { key: "value", stage: "Value", title: "Valuation / costs", lane: "Property lane", location: "Property review", details: "Property valuation and refinance costs are confirmed.", docs: "Valuation details, penalty estimate, registration details.", delays: "High penalties or weak value.", tips: "Run break-even math before committing.", next: "Legal closing.", check: "Property value, penalty cost, registration cost.", checklist: ["Estimate penalty cost","Expect valuation/registration fees"] },
+        { key: "funding", stage: "Close", title: "Legal & funding", lane: "Legal lane", location: "Lawyer / funding", details: "Old balance is paid out and the new structure is registered.", docs: "Final instructions, payout statements, ID.", delays: "Late payout statements or legal paperwork.", tips: "Confirm exactly which debts are being closed.", next: "New payment schedule begins.", check: "Final balance, payouts, legal registration.", checklist: ["Review all payouts","Store new payment details"] }
+      ],
+      renewal: [
+        { key: "review", stage: "Review", title: "Current term review", lane: "Servicing lane", location: "Existing mortgage file", details: "Borrower checks maturity date, balance and payment before renewal.", docs: "Mortgage statement and maturity notice.", delays: "Starting too late.", tips: "Start months before maturity, not days.", next: "Compare terms.", check: "Balance, amortization left, maturity timing.", checklist: ["Know maturity date","Know current payment"] },
+        { key: "terms", stage: "Terms", title: "Compare term options", lane: "Rate lane", location: "Renewal options", details: "Borrower compares fixed, variable, and term length options.", docs: "Renewal offer and alternative scenarios.", delays: "Looking only at rate and ignoring flexibility.", tips: "Match the term to the life plan.", next: "Restructure if needed.", check: "Payment fit, term fit, future plans.", checklist: ["Model multiple term lengths","Consider payment shock"] },
+        { key: "rework", stage: "Plan", title: "Payment strategy", lane: "Planning lane", location: "Budget planning", details: "Borrower may consider changing payment frequency or amortization where available.", docs: "Scenario comparisons.", delays: "Choosing a lower payment with poor long-term fit.", tips: "Weigh total interest, not only payment size.", next: "Digital or branch renewal.", check: "Risk tolerance and payment sustainability.", checklist: ["Compare total cost","Pick sustainable payment"] },
+        { key: "complete", stage: "Done", title: "Renewal complete", lane: "Servicing lane", location: "New term activated", details: "The new term is selected and the file rolls into the next period.", docs: "Signed renewal confirmation.", delays: "Last-minute indecision.", tips: "Use renewal as a strategy moment, not admin only.", next: "Continue into new term.", check: "Term accepted and active.", checklist: ["Save renewal confirmation","Track next maturity"] }
+      ],
+      builder: [
+        { key: "reserve", stage: "Reserve", title: "Reservation & deposits", lane: "Builder lane", location: "Builder sales centre", details: "Buyer reserves the unit and starts the staged deposit timeline.", docs: "Builder agreement, deposit receipts, ID.", delays: "Missing deposit dates or misunderstanding builder schedule.", tips: "Track every deposit date in one place.", next: "Construction period.", check: "Deposit plan and commitment timeline.", checklist: ["Track deposit schedule","Store builder agreement"] },
+        { key: "wait", stage: "Build", title: "Construction period", lane: "Holding lane", location: "Build phase", details: "The home is still being built while rates, income and cash reserves can change.", docs: "Savings plan, rate scenarios, updated cash plan.", delays: "Rates move up or construction takes longer.", tips: "Stress-test the final payment before occupancy.", next: "Re-qualification before final closing.", check: "Future affordability and timing risk.", checklist: ["Maintain savings buffer","Watch rate changes"] },
+        { key: "requali", stage: "Review", title: "Re-qualification", lane: "Underwriting lane", location: "Lender re-check", details: "The original file may need updated qualification near final closing.", docs: "Fresh pay stubs, NOAs, debt balances, updated down payment proof.", delays: "Higher rates, lower income, new debts.", tips: "Do not assume the original numbers still pass.", next: "Occupancy/final closing prep.", check: "Current ratios, debt picture, and funds.", checklist: ["Refresh all income docs","Avoid new debt before closing"] },
+        { key: "bridge", stage: "Timing", title: "Bridge / timing gap", lane: "Timing lane", location: "Sale-to-purchase timing review", details: "If another property sale closes later than the new purchase, temporary bridge financing may be needed.", docs: "Sale agreement, purchase agreement, closing dates.", delays: "Misaligned closing dates or sale delays.", tips: "Line up closing dates early and confirm the gap.", next: "Legal funding.", check: "Timing gap and temporary liquidity need.", checklist: ["Compare both closing dates","Estimate bridge amount if needed"] },
+        { key: "close", stage: "Close", title: "Final builder closing", lane: "Legal lane", location: "Lawyer / builder / lender", details: "Adjustments, legal fees and final funds are coordinated for closing.", docs: "Lawyer package, builder adjustments, closing funds, insurance.", delays: "Unexpected adjustments and bigger-than-expected cash to close.", tips: "Builder deals often need extra buffer beyond resale closings.", next: "Keys and occupancy.", check: "Final funds, title, registration, adjustments.", checklist: ["Review builder adjustments","Confirm final cash to close"] }
+      ],
+      rental: [
+        { key: "strategy", stage: "Plan", title: "Investment strategy", lane: "Investor lane", location: "Rental planning", details: "Buyer defines whether the property is a condo, small income property, or multi-unit investment.", docs: "Target rent assumptions, down payment plan, debt picture.", delays: "Weak cash-flow assumptions.", tips: "Model vacancy, repairs and taxes, not just rent.", next: "Qualification and property choice.", check: "Purpose, affordability, and investor readiness.", checklist: ["Estimate rent conservatively","Model repair/vacancy buffer"] },
+        { key: "qualify", stage: "Qualify", title: "Qualification", lane: "Credit lane", location: "Mortgage specialist / underwriting", details: "Buyer is qualified for the investment purchase structure.", docs: "Income proof, down payment evidence, liabilities, property plan.", delays: "High debt load or tight cash position.", tips: "Keep strong liquid reserves for an investment file.", next: "Property review.", check: "Income, debts, cash position, and property fit.", checklist: ["Income docs ready","Reserve funds visible"] },
+        { key: "property", stage: "Property", title: "Property & rental review", lane: "Property lane", location: "Property screening", details: "Property characteristics and use case matter more in an investment file.", docs: "Listing details, expected rent, property expenses.", delays: "Weak rent assumptions or unusual building risk.", tips: "Focus on durable cash flow, not only appreciation hopes.", next: "Value and legal.", check: "Property type, expense load, and investment fit.", checklist: ["Estimate taxes/fees","Review realistic rent"] },
+        { key: "value", stage: "Value", title: "Value / appraisal", lane: "Risk lane", location: "Property value review", details: "Value and property marketability are confirmed before closing.", docs: "Appraisal if required, property notes.", delays: "Value gap or property-specific concerns.", tips: "Leave extra liquidity for value gaps and repairs.", next: "Close.", check: "Value, marketability, reserves.", checklist: ["Keep repair buffer","Prepare for appraisal gap"] },
+        { key: "close", stage: "Close", title: "Close & onboard", lane: "Legal lane", location: "Lawyer and funding", details: "The investment mortgage closes and the buyer moves into landlord/investor mode.", docs: "Closing funds, final legal package, insurance.", delays: "Cash-to-close surprises or insurance timing.", tips: "Plan post-closing cash reserves before possession.", next: "Lease-up / hold stage.", check: "Funding, legal close, initial reserve health.", checklist: ["Confirm insurance","Keep reserve fund intact"] }
+      ],
+      powersale: [
+        { key: "identify", stage: "Source", title: "Opportunity identified", lane: "Manual review lane", location: "Distressed / power-of-sale listing review", details: "Buyer identifies a distressed sale opportunity and starts extra diligence.", docs: "Listing package, clause review, lawyer notes.", delays: "Limited seller disclosures or tight timelines.", tips: "Treat this as a higher-friction file from day one.", next: "Lawyer and condition strategy.", check: "Listing terms, conditions, risk tolerance.", checklist: ["Lawyer involved early","Review as-is clauses"] },
+        { key: "legal", stage: "Legal", title: "Legal risk review", lane: "Manual review lane", location: "Lawyer review", details: "Lawyer focuses on title, conditions, as-is terms and closing mechanics.", docs: "Lawyer commentary, condition notes, search results.", delays: "Title or occupancy issues, missing disclosures.", tips: "Do not rush legal review on a distressed file.", next: "Qualification and value review.", check: "Legal and title complexity.", checklist: ["Review title concerns","Understand as-is condition"] },
+        { key: "qualify", stage: "Review", title: "Qualification", lane: "Credit lane", location: "Mortgage specialist / underwriting", details: "The borrower still needs a standard qualification review while the property gets extra attention.", docs: "Income proof, down payment proof, liabilities.", delays: "Property complexity plus borrower complexity.", tips: "Keep borrower side clean if the property side is already difficult.", next: "Appraisal / property review.", check: "Ratios, funds, and product fit.", checklist: ["Keep docs clean","Avoid new debt"] },
+        { key: "value", stage: "Value", title: "Property value / condition", lane: "Property risk lane", location: "Appraisal and condition review", details: "Distressed properties can require stronger value and condition comfort.", docs: "Appraisal, condition notes, contractor estimates if relevant.", delays: "Value shortfall or condition concerns.", tips: "Budget for repairs and valuation uncertainty.", next: "Funding decision.", check: "Value, condition, marketability.", checklist: ["Estimate repair budget","Prepare value-gap cash if needed"] },
+        { key: "close", stage: "Close", title: "Funding & close", lane: "Legal lane", location: "Lawyer / funding", details: "File closes only after legal and funding conditions are fully cleared.", docs: "Final legal package, closing funds, insurance.", delays: "Any unresolved title, condition or funding issue.", tips: "Expect more manual hand-holding than a standard purchase.", next: "Possession and repair planning.", check: "Final legal clearance and funding readiness.", checklist: ["Confirm legal clearance","Keep repair reserve ready"] }
+      ]
+    };
+
+    const exceptionData = {
+      purchase: [
+        { name: "Self-employed income", impact: "Adds more document depth and usually a longer underwriting pass.", action: "Collect 2 years of T1 Generals, NOAs, and extra business proof.", reroute: "Shifts the file into extended review lane before approval.", mode: "extended-review", affects: ["preapproval", "underwriting"] },
+        { name: "Gifted down payment", impact: "Down payment source needs clean proof.", action: "Use gift letter plus bank trail showing funds movement.", reroute: "Adds an extra-docs stop before underwriting can clear funds.", mode: "extra-docs", affects: ["preapproval", "underwriting"] },
+        { name: "Low appraisal", impact: "The approved structure may no longer fit the purchase price.", action: "Rework down payment, renegotiate price, or change the deal structure.", reroute: "Pushes the route back into property risk review.", mode: "manual-review", affects: ["appraisal", "closing"] },
+        { name: "Closing date mismatch", impact: "The file may need temporary liquidity planning.", action: "Review bridge financing options and final funds timing.", reroute: "Adds a timing lane before close.", mode: "extra-docs", affects: ["closing"] },
+        { name: "Condo fee shock", impact: "Monthly ownership rises and the comfort zone tightens.", action: "Re-run payment fit including fees and taxes.", reroute: "Returns the buyer to budget review before the deal goes firm.", mode: "extended-review", affects: ["search", "offer"] }
+      ],
+      preapproval: [
+        { name: "Variable income", impact: "Qualification range becomes less straightforward.", action: "Show longer income history and explain changes clearly.", reroute: "Keeps the file in the income lane longer.", mode: "extended-review", affects: ["income"] },
+        { name: "High existing debt", impact: "Debt ratios tighten fast.", action: "Pay down balances or scale the purchase target.", reroute: "Returns the file to debt review and affordability.", mode: "extended-review", affects: ["debt", "issued"] },
+        { name: "Unclear funds source", impact: "Down payment proof may be incomplete.", action: "Provide a cleaner paper trail for deposits.", reroute: "Adds an extra-docs checkpoint before issuance.", mode: "extra-docs", affects: ["funds"] }
+      ],
+      refinance: [
+        { name: "High prepayment cost", impact: "Savings case can weaken even if the rate looks better.", action: "Run break-even math before proceeding.", reroute: "Adds a strategy review before valuation/funding.", mode: "manual-review", affects: ["goal", "value"] },
+        { name: "Aggressive cash-out", impact: "Leverage rises and comfort can tighten.", action: "Reduce cash-out or strengthen reserves.", reroute: "Keeps the file in extended risk review.", mode: "extended-review", affects: ["equity", "review"] },
+        { name: "Debt consolidation heavy", impact: "The refinance must clearly improve the overall situation.", action: "Show before/after payments and long-term cost tradeoffs.", reroute: "Returns the file to structure review.", mode: "extended-review", affects: ["review"] }
+      ],
+      renewal: [
+        { name: "Payment shock", impact: "New rate meaningfully changes monthly cost.", action: "Model multiple terms and payment strategies.", reroute: "Adds a planning lane before renewal completion.", mode: "extended-review", affects: ["terms", "rework"] },
+        { name: "Future move plans", impact: "The wrong term can become expensive or inflexible.", action: "Match term length to the life plan.", reroute: "Keeps the file in term-selection longer.", mode: "manual-review", affects: ["terms"] }
+      ],
+      builder: [
+        { name: "Construction delay", impact: "Qualification windows and move timing shift.", action: "Refresh documents and re-check affordability later in the build.", reroute: "Extends the holding lane and may reopen re-qualification.", mode: "extended-review", affects: ["wait", "requali"] },
+        { name: "Rate increase before closing", impact: "Final payment comfort may shrink.", action: "Re-run the final payment before occupancy/final close.", reroute: "Returns the file to re-qualification.", mode: "extended-review", affects: ["requali"] },
+        { name: "Sale closes after purchase", impact: "Cash timing gets tighter.", action: "Estimate bridge financing for the timing gap.", reroute: "Turns on the timing lane before legal close.", mode: "extra-docs", affects: ["bridge", "close"] },
+        { name: "Builder adjustment surprise", impact: "Final cash to close jumps higher.", action: "Add closing buffer and review adjustment sheet early.", reroute: "Keeps the file in manual close review.", mode: "manual-review", affects: ["close"] }
+      ],
+      rental: [
+        { name: "Weak rent assumptions", impact: "The investment story becomes less convincing.", action: "Use conservative rent and keep reserve buffers visible.", reroute: "Sends the file back to strategy and property review.", mode: "extended-review", affects: ["strategy", "property"] },
+        { name: "Reserve funds too thin", impact: "The borrower looks less resilient after closing.", action: "Increase liquid reserves before final approval.", reroute: "Adds extended review in qualification.", mode: "extended-review", affects: ["qualify", "close"] },
+        { name: "Property condition concern", impact: "Repairs may affect value or timing.", action: "Budget repairs and confirm post-close liquidity.", reroute: "Returns the route to property risk review.", mode: "manual-review", affects: ["property", "value"] }
+      ],
+      powersale: [
+        { name: "Title concern", impact: "Legal clearance becomes the key blocker.", action: "Let the lawyer clear the issue before final funding.", reroute: "Deepens the manual review lane.", mode: "manual-review", affects: ["legal", "close"] },
+        { name: "As-is condition risk", impact: "Repair costs and lender comfort can change quickly.", action: "Price repair risk and keep liquidity ready.", reroute: "Returns to property value/condition review.", mode: "manual-review", affects: ["value"] },
+        { name: "Tight condition timeline", impact: "There is less room for back-and-forth.", action: "Get documents and legal review moving immediately.", reroute: "Speeds the file but raises execution pressure.", mode: "extra-docs", affects: ["identify", "legal", "qualify"] }
+      ]
+    };
+
+    const journeyPolicyFacts = {
+      purchase: [
+        { label: "Pre-approval", text: "TD publicly says online pre-approval can give an immediate response and can hold a rate for up to 120 days, subject to conditions." },
+        { label: "Application docs", text: "Public TD guidance highlights ID, income confirmation, down payment proof, assets/liabilities, and the purchase agreement once a property is found." },
+        { label: "Qualification rules", text: "Public TD mortgage pages note that mortgage qualification rules and the stress test can affect what a buyer can borrow." }
+      ],
+      preapproval: [
+        { label: "Online route", text: "Built to mirror TD's public online pre-approval flow: immediate response, online route, and rate hold messaging." },
+        { label: "Docs focus", text: "The early lane leans on TD's public application prep checklist: ID, income, down payment, and liabilities." },
+        { label: "Range mindset", text: "The UI treats the approved number as a shopping range, not an invitation to max out." }
+      ],
+      refinance: [
+        { label: "Borrowing cap", text: "TD's public refinance page says a refinance can borrow up to 80% of the current market value of the home." },
+        { label: "Refinance costs", text: "The public TD refinance guide warns that prepayment charges, mortgage registration, and property valuation fees may apply." },
+        { label: "Use cases", text: "The refinance lane is designed for equity access, payment relief, or debt restructuring rather than a simple renewal." }
+      ],
+      renewal: [
+        { label: "Renewal flow", text: "TD's public renewal pages describe a digital renewal process and say renewal can be fast and easy." },
+        { label: "No re-apply", text: "Public TD renewal guidance says renewing a TD mortgage does not require a new application and does not have legal or property valuation fees." },
+        { label: "Strategy view", text: "The UI turns renewal into a decision lane about term, payment, and life plans, not just admin." }
+      ],
+      builder: [
+        { label: "Builder timing", text: "This lane emphasizes re-qualification risk because long builder timelines can change rates, income and debt before final close." },
+        { label: "Bridge gap", text: "TD's public bridge financing page explains that bridge loans can cover the time gap when a new purchase closes before the old home sale." },
+        { label: "Close buffer", text: "The route treats builder deals as higher-friction closings with more timing and cash-to-close sensitivity." }
+      ],
+      rental: [
+        { label: "Income property", text: "TD publicly separates second home / income property journeys from standard owner-occupied purchases." },
+        { label: "Multi-unit", text: "TD's public multi-unit mortgage pages speak to investment properties with five or more rental units." },
+        { label: "Reserve mindset", text: "The interface adds stronger reserve and cash-flow language because investment files are more sensitive to vacancy and upkeep." }
+      ],
+      powersale: [
+        { label: "Manual-review branch", text: "This is a HomeAtlas design choice rather than a published TD power-of-sale process page." },
+        { label: "Lawyer first", text: "The UI intentionally pushes legal, title, and condition review to the front of the route." },
+        { label: "Higher friction", text: "The route assumes more manual review and repair/condition uncertainty than a standard purchase." }
+      ]
+    };
+
+    const educationCards = [
+      { title: "120-day rate hold", text: "Pre-approval lane is built around TD's public rate-hold messaging so the buyer sees timing pressure clearly." },
+      { title: "Application prep", text: "The document prompts follow TD's public prep list: ID, income, down payment, liabilities and property documents." },
+      { title: "Refinance cap", text: "Refinance lane uses the public TD rule of up to 80% of current market value for the home." },
+      { title: "Renewal shortcut", text: "Renewal lane reflects TD's public note that renewal doesn't require a new application or legal/property valuation fees." },
+      { title: "Bridge timing", text: "Builder and move-up routes include a bridge/timing lane when the sale and purchase dates do not line up." },
+      { title: "Investment branch", text: "Rental/investment lane adds reserve and cash-flow thinking instead of treating the file like a pure owner-occupied purchase." }
+    ];
+
+    const map = L.map("map", { zoomControl: false }).setView([43.01, -81.27], 12);
+    L.control.zoom({ position: "topright" }).addTo(map);
+
+    const statsControl = L.control({ position: "bottomleft" });
+    statsControl.onAdd = function () {
+      const div = L.DomUtil.create("div", "stats-box");
+      div.id = "stats";
+      div.innerHTML = `<div class="stats-title">HomeAtlas stats</div><div class="small">Loading…</div>`;
+      L.DomEvent.disableClickPropagation(div);
+      L.DomEvent.disableScrollPropagation(div);
+      return div;
+    };
+    statsControl.addTo(map);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
@@ -705,25 +1445,18 @@
     function estimateMonthlyPayment(principal, annualRate, years) {
       const n = years * 12;
       const r = annualRate / 12;
-
       if (principal <= 0 || years <= 0) return 0;
       if (r === 0) return principal / n;
-
       return principal * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
     }
 
     function estimateRemainingBalance(principal, annualRate, years, monthsPaid) {
       const n = years * 12;
       const r = annualRate / 12;
-
       if (principal <= 0) return 0;
       if (monthsPaid >= n) return 0;
       if (r === 0) return principal * (1 - monthsPaid / n);
-
-      return principal * (
-        (Math.pow(1 + r, n) - Math.pow(1 + r, monthsPaid)) /
-        (Math.pow(1 + r, n) - 1)
-      );
+      return principal * ((Math.pow(1 + r, n) - Math.pow(1 + r, monthsPaid)) / (Math.pow(1 + r, n) - 1));
     }
 
     function getBuyerValues() {
@@ -741,16 +1474,11 @@
     }
 
     function getStatus(totalHousingCost, monthlyDebts, monthlyIncome) {
-      if (monthlyIncome <= 0) {
-        return { label: "Needs numbers", className: "status-stretch" };
-      }
-
+      if (monthlyIncome <= 0) return { label: "Needs numbers", className: "status-stretch" };
       const burden = (totalHousingCost + monthlyDebts) / monthlyIncome;
-
       if (burden <= 0.35) return { label: "Strong fit", className: "status-strong" };
       if (burden <= 0.45) return { label: "Possible with review", className: "status-review" };
       if (burden <= 0.55) return { label: "Stretch purchase", className: "status-stretch" };
-
       return { label: "Not ideal", className: "status-tight" };
     }
 
@@ -769,17 +1497,8 @@
       const remainingBalance = estimateRemainingBalance(principal, buyer.annualRate, buyer.years, 60);
       const projectedEquity = futureHomeValue - remainingBalance;
       const pricePerSqft = Number(listing.sqft) ? Number(listing.price) / Number(listing.sqft) : 0;
-
-      const diff = areaAvgPrice
-        ? ((Number(listing.price) - areaAvgPrice) / areaAvgPrice) * 100
-        : 0;
-
-      const relativeValue = areaAvgPrice
-        ? diff >= 0
-          ? `${Math.round(diff)}% above area average`
-          : `${Math.abs(Math.round(diff))}% below area average`
-        : "Area average unavailable";
-
+      const diff = areaAvgPrice ? ((Number(listing.price) - areaAvgPrice) / areaAvgPrice) * 100 : 0;
+      const relativeValue = areaAvgPrice ? (diff >= 0 ? `${Math.round(diff)}% above area average` : `${Math.abs(Math.round(diff))}% below area average`) : "Area average unavailable";
       return {
         ...buyer,
         principal,
@@ -802,22 +1521,20 @@
 
     function renderStats(stats) {
       const el = document.getElementById("stats");
+      if (!el) return;
       el.innerHTML = `
         <div class="stats-title">HomeAtlas stats</div>
         <div><strong>Listings:</strong> ${stats.count}</div>
         <div><strong>Avg price:</strong> ${money(stats.average_price)}</div>
-        <div><strong>Range:</strong> ${money(stats.min_price)} - ${money(stats.max_price)}</div>
+        <div><strong>Range:</strong> ${money(stats.min_price)} to ${money(stats.max_price)}</div>
       `;
     }
 
     function renderQualificationSummary(listing) {
       const a = calculateAnalysis(listing);
-      const container = document.getElementById("qualificationSummary");
-
-      container.innerHTML = `
+      document.getElementById("qualificationSummary").innerHTML = `
         <h3>Mortgage Overview</h3>
         <span class="status-badge ${a.status.className}">${a.status.label}</span>
-
         <div class="summary-grid">
           <div class="meta-pill"><strong>Home price</strong><br>${money(listing.price)}</div>
           <div class="meta-pill"><strong>Loan amount</strong><br>${money(a.principal)}</div>
@@ -826,46 +1543,35 @@
           <div class="meta-pill"><strong>Income / mo</strong><br>${money(a.monthlyIncome)}</div>
           <div class="meta-pill"><strong>Other debts / mo</strong><br>${money(a.monthlyDebts)}</div>
         </div>
-
         <div class="calc-result">
           <div class="calc-main">${money(a.remainingAfterCosts)}</div>
           <div class="small">Estimated monthly cash left after housing costs and debts.</div>
         </div>
-
         <div class="progress-wrap">
           <div class="progress-label">Down payment percentage: ${Math.round(a.downPaymentPercent)}%</div>
-          <div class="progress-bar">
-            <div class="progress-fill" style="width:${Math.min(Math.max(a.downPaymentPercent, 0), 100)}%;"></div>
-          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(Math.max(a.downPaymentPercent, 0), 100)}%;"></div></div>
         </div>
-
         <div class="progress-wrap">
           <div class="progress-label">Monthly obligation ratio: ${Math.round(a.totalObligationRatio)}%</div>
-          <div class="progress-bar">
-            <div class="progress-fill" style="width:${Math.min(Math.max(a.totalObligationRatio, 0), 100)}%;"></div>
-          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(Math.max(a.totalObligationRatio, 0), 100)}%;"></div></div>
         </div>
       `;
     }
 
     function renderSelected(listing) {
       const a = calculateAnalysis(listing);
-      const container = document.getElementById("selected");
-
-      container.innerHTML = `
+      document.getElementById("selected").innerHTML = `
         <h3>Selected Property</h3>
         <img class="listing-image" src="${listing.image_url}" alt="${listing.address}">
         <div class="section-title">${listing.address}</div>
         <div class="big-price">${money(listing.price)}</div>
         <div class="small">${listing.city}</div>
-
         <div class="property-meta">
           <div class="meta-pill"><strong>Beds</strong><br>${listing.beds}</div>
           <div class="meta-pill"><strong>Baths</strong><br>${listing.baths}</div>
           <div class="meta-pill"><strong>Sqft</strong><br>${listing.sqft}</div>
           <div class="meta-pill"><strong>$/sqft</strong><br>${money(a.pricePerSqft)}</div>
         </div>
-
         <div class="section-title">Payment Breakdown</div>
         <div class="summary-grid">
           <div class="meta-pill"><strong>Mortgage</strong><br>${money(a.mortgagePayment)}</div>
@@ -873,31 +1579,24 @@
           <div class="meta-pill"><strong>Heating</strong><br>${money(a.heatingCost)}</div>
           <div class="meta-pill"><strong>Condo fee</strong><br>${money(a.condoFee)}</div>
         </div>
-
         <div class="calc-result">
           <div class="calc-main">${money(a.totalHousingCost)}/month</div>
           <div class="small">Total estimated monthly ownership cost for this property.</div>
         </div>
-
         <div style="height:12px;"></div>
-
         <div class="section-title">Property + Advisor Notes</div>
         <p class="small">
           ${a.relativeValue}<br>
           Realtor: <strong>${listing.realtor_name}</strong> (${listing.realtor_phone})<br>
           Mortgage contact: <strong>${listing.mortgage_contact}</strong><br>
-          5-year projected equity: <strong>${money(a.projectedEquity)}</strong>
+          5 year projected equity: <strong>${money(a.projectedEquity)}</strong>
         </p>
-
-        <div class="demo-note">
-          Demo property data and demo images only. This is a concept experience created by Jaideep Singh.
-        </div>
+        <div class="demo-note">Demo property data and demo images only. This is a concept experience created by Jaideep Singh.</div>
       `;
     }
 
     function renderInvestmentCards(listing) {
       const a = calculateAnalysis(listing);
-
       document.getElementById("investmentSnapshot").innerHTML = `
         <h3>Investment Snapshot</h3>
         <div class="summary-grid">
@@ -910,7 +1609,6 @@
         </div>
         <p class="small">Quick investment view of entry cost, monthly cost, and relative pricing.</p>
       `;
-
       document.getElementById("cashToClose").innerHTML = `
         <h3>Cash to Close</h3>
         <div class="summary-grid">
@@ -921,16 +1619,14 @@
         </div>
         <p class="small">Closing costs are estimated at 1.5% of purchase price for demo purposes.</p>
       `;
-
       document.getElementById("equityProjection").innerHTML = `
-        <h3>5-Year Equity Projection</h3>
+        <h3>5 Year Equity Projection</h3>
         <div class="summary-grid">
           <div class="meta-pill"><strong>Future home value</strong><br>${money(a.futureHomeValue)}</div>
           <div class="meta-pill"><strong>Mortgage balance</strong><br>${money(a.remainingBalance)}</div>
           <div class="meta-pill"><strong>Projected equity</strong><br>${money(a.projectedEquity)}</div>
           <div class="meta-pill"><strong>Assumption</strong><br>3% annual growth</div>
         </div>
-
         <div class="calc-result">
           <div class="calc-main">${money(a.projectedEquity)}</div>
           <div class="small">Estimated equity after 5 years using a simple demo appreciation assumption.</div>
@@ -941,7 +1637,6 @@
     function updateCompareOptions() {
       const label = document.getElementById("primaryPropertyLabel");
       const select = document.getElementById("comparePropertySelect");
-
       if (!selectedListing) {
         label.textContent = "Primary property: none selected yet.";
         select.innerHTML = `<option value="">Select a second property</option>`;
@@ -949,20 +1644,16 @@
         compareListing = null;
         return;
       }
-
       label.textContent = `Primary property: ${selectedListing.address}`;
       const options = currentVisibleListings.filter(l => Number(l.id) !== Number(selectedListing.id));
-
       select.disabled = options.length === 0;
       select.innerHTML = `<option value="">Select a second property</option>`;
-
       options.forEach(listing => {
         const option = document.createElement("option");
         option.value = listing.id;
         option.textContent = `${listing.address} — ${money(listing.price)}`;
         select.appendChild(option);
       });
-
       if (compareListing && options.some(l => Number(l.id) === Number(compareListing.id))) {
         select.value = compareListing.id;
       } else {
@@ -982,33 +1673,21 @@
 
     function renderComparison() {
       const container = document.getElementById("propertyComparison");
-
       if (!selectedListing) {
-        container.innerHTML = `
-          <h3>Property Comparison</h3>
-          <p class="empty">Select a primary property first.</p>
-        `;
+        container.innerHTML = `<h3>Property Comparison</h3><p class="empty">Select a primary property first.</p>`;
         return;
       }
-
       if (!compareListing) {
-        container.innerHTML = `
-          <h3>Property Comparison</h3>
-          <p class="empty">Choose a second property in Compare Center to unlock the side-by-side view.</p>
-        `;
+        container.innerHTML = `<h3>Property Comparison</h3><p class="empty">Choose a second property in Compare Center to unlock the side by side view.</p>`;
         return;
       }
-
       const a = calculateAnalysis(selectedListing);
       const b = calculateAnalysis(compareListing);
-
       const lowerMonthlyWinner = a.totalHousingCost <= b.totalHousingCost ? selectedListing.address : compareListing.address;
       const lowerCashWinner = a.cashToClose <= b.cashToClose ? selectedListing.address : compareListing.address;
       const higherEquityWinner = a.projectedEquity >= b.projectedEquity ? selectedListing.address : compareListing.address;
-
       container.innerHTML = `
         <h3>Property Comparison</h3>
-
         <div class="compare-grid">
           <div class="compare-panel">
             <div class="compare-title">Primary Property</div>
@@ -1016,116 +1695,346 @@
             <div class="compare-price">${money(selectedListing.price)}</div>
             <div class="compare-note">${selectedListing.city}</div>
             <img class="compare-thumb" src="${selectedListing.image_url}" alt="${selectedListing.address}">
-
             <div class="compare-metrics">
-              <div class="metric-box">
-                <div class="metric-label">Monthly cost</div>
-                <div class="metric-value">${money(a.totalHousingCost)}</div>
-              </div>
-              <div class="metric-box">
-                <div class="metric-label">Cash to close</div>
-                <div class="metric-value">${money(a.cashToClose)}</div>
-              </div>
-              <div class="metric-box">
-                <div class="metric-label">5-year equity</div>
-                <div class="metric-value">${money(a.projectedEquity)}</div>
-              </div>
-              <div class="metric-box">
-                <div class="metric-label">Price / sqft</div>
-                <div class="metric-value">${money(a.pricePerSqft)}</div>
-              </div>
+              <div class="metric-box"><div class="metric-label">Monthly cost</div><div class="metric-value">${money(a.totalHousingCost)}</div></div>
+              <div class="metric-box"><div class="metric-label">Cash to close</div><div class="metric-value">${money(a.cashToClose)}</div></div>
+              <div class="metric-box"><div class="metric-label">5 year equity</div><div class="metric-value">${money(a.projectedEquity)}</div></div>
+              <div class="metric-box"><div class="metric-label">Price / sqft</div><div class="metric-value">${money(a.pricePerSqft)}</div></div>
             </div>
           </div>
-
           <div class="compare-panel">
             <div class="compare-title">Comparison Property</div>
             <div class="compare-address">${compareListing.address}</div>
             <div class="compare-price">${money(compareListing.price)}</div>
             <div class="compare-note">${compareListing.city}</div>
             <img class="compare-thumb" src="${compareListing.image_url}" alt="${compareListing.address}">
-
             <div class="compare-metrics">
-              <div class="metric-box">
-                <div class="metric-label">Monthly cost</div>
-                <div class="metric-value">${money(b.totalHousingCost)}</div>
-              </div>
-              <div class="metric-box">
-                <div class="metric-label">Cash to close</div>
-                <div class="metric-value">${money(b.cashToClose)}</div>
-              </div>
-              <div class="metric-box">
-                <div class="metric-label">5-year equity</div>
-                <div class="metric-value">${money(b.projectedEquity)}</div>
-              </div>
-              <div class="metric-box">
-                <div class="metric-label">Price / sqft</div>
-                <div class="metric-value">${money(b.pricePerSqft)}</div>
-              </div>
+              <div class="metric-box"><div class="metric-label">Monthly cost</div><div class="metric-value">${money(b.totalHousingCost)}</div></div>
+              <div class="metric-box"><div class="metric-label">Cash to close</div><div class="metric-value">${money(b.cashToClose)}</div></div>
+              <div class="metric-box"><div class="metric-label">5 year equity</div><div class="metric-value">${money(b.projectedEquity)}</div></div>
+              <div class="metric-box"><div class="metric-label">Price / sqft</div><div class="metric-value">${money(b.pricePerSqft)}</div></div>
             </div>
           </div>
         </div>
-
         <div class="compare-pill-row">
           <span class="winner-badge">Lower monthly cost: ${lowerMonthlyWinner}</span>
           <span class="winner-badge">Lower upfront cash: ${lowerCashWinner}</span>
-          <span class="winner-badge">Higher 5-year equity: ${higherEquityWinner}</span>
+          <span class="winner-badge">Higher 5 year equity: ${higherEquityWinner}</span>
         </div>
       `;
     }
 
     function renderRecommendation() {
       const container = document.getElementById("recommendationBox");
-
       if (!selectedListing) {
-        container.innerHTML = `
-          <h3>HomeAtlas Recommendation</h3>
-          <p class="empty">Pick a property first to get a recommendation.</p>
-        `;
+        container.innerHTML = `<h3>HomeAtlas Recommendation</h3><p class="empty">Pick a property first to get a recommendation.</p>`;
         return;
       }
-
       const a = calculateAnalysis(selectedListing);
-
       if (!compareListing) {
         container.innerHTML = `
           <h3>HomeAtlas Recommendation</h3>
-          <span class="mini-badge">Single-property view</span>
+          <span class="mini-badge">Single property view</span>
           <ul class="recommendation-list">
             <li><strong>${selectedListing.address}</strong> currently looks like a <strong>${a.status.label.toLowerCase()}</strong> based on the buyer profile.</li>
             <li>The estimated total monthly ownership cost is <strong>${money(a.totalHousingCost)}</strong>, with about <strong>${money(a.remainingAfterCosts)}</strong> left after debts and housing.</li>
-            <li>The biggest near-term check is the upfront cash requirement of <strong>${money(a.cashToClose)}</strong>.</li>
+            <li>The biggest near term check is the upfront cash requirement of <strong>${money(a.cashToClose)}</strong>.</li>
           </ul>
         `;
         return;
       }
-
       const b = calculateAnalysis(compareListing);
-
-      let scoreA = 0;
-      let scoreB = 0;
-
+      let scoreA = 0, scoreB = 0;
       if (a.totalHousingCost <= b.totalHousingCost) scoreA++; else scoreB++;
       if (a.cashToClose <= b.cashToClose) scoreA++; else scoreB++;
       if (a.projectedEquity >= b.projectedEquity) scoreA++; else scoreB++;
       if (a.pricePerSqft <= b.pricePerSqft) scoreA++; else scoreB++;
-
-      const overallWinner =
-        scoreA === scoreB
-          ? null
-          : scoreA > scoreB
-            ? selectedListing.address
-            : compareListing.address;
-
+      const overallWinner = scoreA === scoreB ? null : scoreA > scoreB ? selectedListing.address : compareListing.address;
       container.innerHTML = `
         <h3>HomeAtlas Recommendation</h3>
-        <span class="mini-badge">Advisor-style summary</span>
+        <span class="mini-badge">Advisor style summary</span>
         <ul class="recommendation-list">
           <li><strong>Lower carrying cost:</strong> ${a.totalHousingCost <= b.totalHousingCost ? selectedListing.address : compareListing.address} looks easier on monthly cash flow.</li>
           <li><strong>Lower upfront requirement:</strong> ${a.cashToClose <= b.cashToClose ? selectedListing.address : compareListing.address} needs less cash to close.</li>
-          <li><strong>Longer-term upside:</strong> ${a.projectedEquity >= b.projectedEquity ? selectedListing.address : compareListing.address} shows the stronger 5-year equity projection in this demo.</li>
+          <li><strong>Longer term upside:</strong> ${a.projectedEquity >= b.projectedEquity ? selectedListing.address : compareListing.address} shows the stronger 5 year equity projection in this demo.</li>
           <li><strong>Primary property fit:</strong> ${selectedListing.address} is currently rated <strong>${a.status.label}</strong> for this buyer profile.</li>
           <li><strong>Most balanced option right now:</strong> ${overallWinner ? `<strong>${overallWinner}</strong>` : `<strong>Too close to call</strong>`}.</li>
         </ul>
+      `;
+    }
+
+    const routeLayouts = {
+      4: [
+        { x: 12, y: 78 },
+        { x: 34, y: 56 },
+        { x: 60, y: 40 },
+        { x: 86, y: 30 }
+      ],
+      5: [
+        { x: 10, y: 78 },
+        { x: 28, y: 64 },
+        { x: 46, y: 34 },
+        { x: 68, y: 58 },
+        { x: 88, y: 36 }
+      ],
+      6: [
+        { x: 10, y: 78 },
+        { x: 24, y: 66 },
+        { x: 40, y: 34 },
+        { x: 58, y: 30 },
+        { x: 76, y: 60 },
+        { x: 90, y: 40 }
+      ],
+      7: [
+        { x: 8, y: 78 },
+        { x: 20, y: 66 },
+        { x: 32, y: 48 },
+        { x: 48, y: 28 },
+        { x: 66, y: 44 },
+        { x: 80, y: 72 },
+        { x: 92, y: 40 }
+      ],
+      8: [
+        { x: 8, y: 78 },
+        { x: 18, y: 68 },
+        { x: 30, y: 52 },
+        { x: 44, y: 28 },
+        { x: 60, y: 30 },
+        { x: 74, y: 54 },
+        { x: 86, y: 72 },
+        { x: 94, y: 38 }
+      ]
+    };
+
+    function getRouteLayout(stepCount) {
+      if (routeLayouts[stepCount]) return routeLayouts[stepCount];
+      return Array.from({ length: stepCount }, (_, i) => ({
+        x: 8 + (84 / Math.max(stepCount - 1, 1)) * i,
+        y: i % 2 === 0 ? 72 : 36
+      }));
+    }
+
+    function renderJourneyPolicy(type) {
+      const facts = journeyPolicyFacts[type] || [];
+      document.getElementById('journeyPolicyRail').innerHTML = facts.map(item => `
+        <div class="policy-card">
+          <strong>${item.label}</strong>
+          <div class="small">${item.text}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderRouteStops(steps) {
+      const layout = getRouteLayout(steps.length);
+      document.getElementById('routeStopsLayer').innerHTML = steps.map((step, i) => `
+        <div class="route-stop" data-route-step-index="${i}" style="left:${layout[i].x}%; top:${layout[i].y}%;">
+          <div class="route-stop-dot"></div>
+          <div class="route-stop-stage">${step.stage}</div>
+          <div class="route-stop-title">${step.title}</div>
+          <div class="route-stop-lane">${step.lane}</div>
+        </div>
+      `).join('');
+      document.querySelectorAll('[data-route-step-index]').forEach(node => node.addEventListener('click', () => activateJourneyStep(Number(node.dataset.routeStepIndex))));
+    }
+
+    function applyJourneyExceptionVisuals(type) {
+      const board = document.getElementById('journeyRouteBoard');
+      const banner = document.getElementById('routeImpactBanner');
+      const steps = journeyData[type];
+      document.querySelectorAll('.route-stop').forEach(stop => stop.classList.remove('impacted', 'manual-review'));
+      board.classList.remove('extended-review', 'manual-review', 'extra-docs');
+
+      if (!selectedJourneyException && selectedJourneyException !== 0) {
+        banner.textContent = 'Standard route loaded. Choose an exception to see the lane change.';
+        return;
+      }
+
+      const item = exceptionData[type][selectedJourneyException];
+      if (!item) return;
+      board.classList.add(item.mode || 'extended-review');
+      banner.textContent = `${item.name}: ${item.reroute}`;
+      steps.forEach((step, idx) => {
+        if (item.affects.includes(step.key)) {
+          const node = document.querySelector(`.route-stop[data-route-step-index="${idx}"]`);
+          if (node) {
+            node.classList.add('impacted');
+            if (item.mode === 'manual-review') node.classList.add('manual-review');
+          }
+        }
+      });
+    }
+
+    function renderJourney() {
+      const type = document.getElementById('journeyType').value;
+      const steps = journeyData[type];
+      const exceptions = exceptionData[type] || [];
+      selectedJourneyException = null;
+      document.getElementById('journeyBadge').textContent = `${document.getElementById('journeyType').selectedOptions[0].text}`;
+      document.getElementById('journeySteps').innerHTML = steps.map((step, i) => `
+        <div class="journey-card journey-step ${i===0 ? 'active' : ''}" data-step-index="${i}">
+          <strong>${i + 1}. ${step.title}</strong><br><br>
+          <span class="mini-badge">${step.lane}</span><br>
+          <span class="small">${step.details}</span>
+        </div>
+      `).join('');
+      document.getElementById('timelineTrack').innerHTML = steps.map((step, i) => `
+        <div class="timeline-dot ${i===0 ? 'active' : ''}" data-step-index="${i}" title="${step.title}">${i + 1}</div>
+      `).join('');
+      document.getElementById('exceptionCards').innerHTML = exceptions.map((item, i) => `
+        <div class="exception-card journey-step" data-exception-index="${i}">
+          <strong>${item.name}</strong><br><br>
+          ${item.impact}<br><br>
+          <span class="small"><strong>Route change:</strong> ${item.reroute}</span><br>
+          <span class="small"><strong>Next move:</strong> ${item.action}</span>
+        </div>
+      `).join('');
+      document.getElementById('educationCards').innerHTML = educationCards.map(card => `
+        <div class="edu-card"><strong>${card.title}</strong><br><br>${card.text}</div>
+      `).join('');
+      renderJourneyPolicy(type);
+      renderRouteStops(steps);
+      showJourneyStep(0);
+      document.querySelectorAll('.journey-step[data-step-index]').forEach(card => card.addEventListener('click', () => activateJourneyStep(Number(card.dataset.stepIndex))));
+      document.querySelectorAll('.timeline-dot').forEach(dot => dot.addEventListener('click', () => activateJourneyStep(Number(dot.dataset.stepIndex))));
+      document.querySelectorAll('[data-exception-index]').forEach(card => card.addEventListener('click', () => showExceptionDetail(Number(card.dataset.exceptionIndex))));
+      renderScenarioChips();
+      applyJourneyExceptionVisuals(type);
+    }
+
+    function activateJourneyStep(index) {
+      document.querySelectorAll('.journey-step[data-step-index]').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.timeline-dot').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.route-stop').forEach(c => c.classList.remove('active'));
+      document.querySelector(`.journey-step[data-step-index="${index}"]`)?.classList.add('active');
+      document.querySelector(`.timeline-dot[data-step-index="${index}"]`)?.classList.add('active');
+      document.querySelector(`.route-stop[data-route-step-index="${index}"]`)?.classList.add('active');
+      showJourneyStep(index);
+    }
+
+    function showJourneyStep(index) {
+      const type = document.getElementById('journeyType').value;
+      const steps = journeyData[type];
+      const step = steps[index];
+      const layout = getRouteLayout(steps.length);
+      const pos = layout[index];
+      const percentage = steps.length > 1 ? (index / (steps.length - 1)) * 100 : 0;
+      const car = document.getElementById('carIcon');
+      if (car) {
+        car.style.left = `${pos.x}%`;
+        car.style.top = `${pos.y}%`;
+      }
+
+      const activeException = (selectedJourneyException || selectedJourneyException === 0) ? exceptionData[type][selectedJourneyException] : null;
+      const exceptionHitsStep = activeException ? activeException.affects.includes(step.key) : false;
+
+      document.getElementById('dashLocation').textContent = step.location;
+      document.getElementById('dashCheck').textContent = exceptionHitsStep && activeException ? activeException.name : step.lane;
+      document.getElementById('dashTime').textContent = `${step.stage} • ${Math.round(percentage)}% through journey`;
+      document.getElementById('journeyDriverNarrative').textContent = exceptionHitsStep && activeException
+        ? `At “${step.title}”, the route is no longer standard. Because of “${activeException.name}”, the file shifts into ${activeException.reroute.toLowerCase()}`
+        : `At “${step.title}”, the buyer has driven to ${step.location.toLowerCase()}. The main focus here is ${step.check.toLowerCase()}`;
+
+      document.getElementById('journeyKpiGrid').innerHTML = `
+        <div class="journey-kpi"><strong>Lane</strong>${step.lane}</div>
+        <div class="journey-kpi"><strong>Stage</strong>${step.stage}</div>
+        <div class="journey-kpi"><strong>Main check</strong>${step.check}</div>
+        <div class="journey-kpi"><strong>Next</strong>${step.next}</div>
+      `;
+
+      document.getElementById('journeyChecklist').innerHTML = `
+        <strong>${step.title} checklist</strong>
+        <ul>${step.checklist.map(item => `<li>${item}</li>`).join('')}</ul>
+      `;
+
+      document.getElementById('journeyDetail').innerHTML = `
+        <div class="section-title">${step.title}</div>
+        <p><strong>Where the file is:</strong> ${step.location}</p>
+        <p><strong>What happens here:</strong> ${step.details}</p>
+        <p><strong>What is being checked:</strong> ${step.check}</p>
+        <p><strong>Documents usually needed:</strong> ${step.docs}</p>
+        <p><strong>Common delays:</strong> ${step.delays}</p>
+        <p><strong>Advisor style tip:</strong> ${step.tips}</p>
+        ${activeException ? `<p><strong>Selected exception path change:</strong> ${activeException.reroute}</p>` : ''}
+        <p><strong>Where the buyer drives next:</strong> ${step.next}</p>
+      `;
+
+      applyJourneyExceptionVisuals(type);
+    }
+
+    function showExceptionDetail(index) {
+      const type = document.getElementById('journeyType').value;
+      const item = exceptionData[type][index];
+      selectedJourneyException = selectedJourneyException === index ? null : index;
+      const resolved = selectedJourneyException === null ? null : exceptionData[type][selectedJourneyException];
+      applyJourneyExceptionVisuals(type);
+
+      if (!resolved) {
+        document.getElementById('journeyDriverNarrative').textContent = 'Exception cleared. The route is back on the standard lane for the current journey type.';
+        const currentIndex = Number(document.querySelector('.timeline-dot.active')?.dataset.stepIndex || 0);
+        showJourneyStep(currentIndex);
+        return;
+      }
+
+      document.getElementById('journeyDetail').innerHTML = `
+        <div class="section-title">${resolved.name}</div>
+        <p><strong>Impact on the route:</strong> ${resolved.impact}</p>
+        <p><strong>How the path changes:</strong> ${resolved.reroute}</p>
+        <p><strong>Typical next action:</strong> ${resolved.action}</p>
+        <p><strong>Stops affected:</strong> ${journeyData[type].filter(step => resolved.affects.includes(step.key)).map(step => step.title).join(', ')}</p>
+      `;
+      document.getElementById('dashCheck').textContent = resolved.name;
+      document.getElementById('journeyDriverNarrative').textContent = `Exception selected: “${resolved.name}”. The journey now shifts because ${resolved.impact.toLowerCase()}`;
+    }
+
+    function renderScenarioChips() {
+      const all = Object.values(exceptionData).flat().map(x => x.name);
+      const unique = [...new Set(all)].slice(0, 16);
+      document.getElementById('exceptionChipRow').innerHTML = unique.map(name => `
+        <button class="chip ${selectedScenarioChips.has(name) ? 'active' : ''}" data-chip="${name}">${name}</button>
+      `).join('');
+      document.querySelectorAll('[data-chip]').forEach(btn => btn.addEventListener('click', () => {
+        const name = btn.dataset.chip;
+        if (selectedScenarioChips.has(name)) selectedScenarioChips.delete(name); else selectedScenarioChips.add(name);
+        renderScenarioChips();
+      }));
+    }
+
+    function analyzeScenarioText(raw) {
+      const text = raw.toLowerCase();
+      const findings = [];
+      const actions = [];
+
+      if (text.includes('self-employed') || text.includes('self employed')) { findings.push('Self-employed income usually pushes the file into a deeper document review lane.'); actions.push('Gather 2 years of T1s, NOAs, and extra business support documents early.'); }
+      if (text.includes('gift')) { findings.push('Gifted funds create a source-of-funds checkpoint.'); actions.push('Prepare the gift letter and statement trail before underwriting asks.'); }
+      if (text.includes('appraisal') || text.includes('value gap') || text.includes('low value')) { findings.push('Property value risk can reopen the structure late in the process.'); actions.push('Model how much extra cash would be needed if the value lands low.'); }
+      if (text.includes('refinance') || text.includes('equity')) { findings.push('Refinance cases need a clear goal and cost-benefit story.'); actions.push('Compare new payment, total cost, prepayment charge, and expected equity left.'); }
+      if (text.includes('renewal')) { findings.push('Renewal should be treated as a strategy decision, not only an admin task.'); actions.push('Test multiple term lengths and payment levels before choosing.'); }
+      if (text.includes('builder') || text.includes('construction')) { findings.push('Builder files are timing-sensitive and can require re-qualification.'); actions.push('Refresh documents near closing and budget for builder adjustments.'); }
+      if (text.includes('bridge') || text.includes('closing date') || text.includes('sale closes')) { findings.push('A timing gap suggests a bridge financing review lane.'); actions.push('Put both closing dates side by side and estimate the temporary funding gap.'); }
+      if (text.includes('rental') || text.includes('tenant') || text.includes('investment')) { findings.push('Investment files live or die on cash flow and reserves.'); actions.push('Use conservative rent assumptions and show a stronger reserve buffer.'); }
+      if (text.includes('power of sale') || text.includes('distressed') || text.includes('as-is') || text.includes('title')) { findings.push('This looks like a manual-review property file with more legal friction.'); actions.push('Bring the lawyer into the process early and budget for repair/title uncertainty.'); }
+      if (text.includes('debt') || text.includes('lease') || text.includes('car') || text.includes('bmw')) { findings.push('Existing debt pressure will tighten the comfort zone.'); actions.push('Reduce balances where possible and rerun payment comfort before committing.'); }
+
+      if (!findings.length) {
+        findings.push('This file needs to be split into borrower, property, timing, and documentation lanes before making a decision.');
+        actions.push('Start with: who is borrowing, what property is involved, what timing pressure exists, and what documents are already ready.');
+      }
+      return { findings, actions };
+    }
+
+    function runScenarioAnalysis() {
+      const custom = document.getElementById('customScenario').value || '';
+      const chosen = [...selectedScenarioChips];
+      const combined = `${chosen.join(', ')} ${custom}`;
+      const result = analyzeScenarioText(combined);
+      const priority = chosen.length >= 3 || result.findings.length >= 4 ? 'Higher complexity file' : 'Moderate complexity file';
+      document.getElementById('aiScenarioResult').innerHTML = `
+        <strong>${priority}</strong><br><br>
+        <strong>Scenario signals:</strong>
+        <ul>${result.findings.map(x => `<li>${x}</li>`).join('')}</ul>
+        <strong>Recommended next moves:</strong>
+        <ul>${result.actions.map(x => `<li>${x}</li>`).join('')}</ul>
+        <strong>Future production hook:</strong> this block can send buyer profile, selected journey type, selected exceptions, and free-text notes into a policy-aware workflow engine or AI copilot.
       `;
     }
 
@@ -1137,12 +2046,9 @@
     function addMarkers(listings) {
       currentVisibleListings = listings;
       clearMarkers();
-
       const bounds = [];
-
       listings.forEach(listing => {
         const marker = L.marker([listing.lat, listing.lng]).addTo(map);
-
         marker.bindPopup(`
           <div style="width:220px;">
             <img src="${listing.image_url}" alt="${listing.address}" style="width:100%;height:120px;object-fit:cover;border-radius:8px;margin-bottom:8px;">
@@ -1151,16 +2057,13 @@
             ${listing.beds} bed / ${listing.baths} bath
           </div>
         `);
-
         marker.on("click", () => {
           selectedListing = listing;
           updateAllAnalysis();
         });
-
         markers.push(marker);
         bounds.push([listing.lat, listing.lng]);
       });
-
       if (bounds.length > 0) {
         map.fitBounds(bounds, { padding: [40, 40] });
       }
@@ -1169,7 +2072,6 @@
     function populateCityFilter(listings) {
       const cityFilter = document.getElementById("cityFilter");
       const cities = [...new Set(listings.map(l => l.city))].sort();
-
       cityFilter.innerHTML = `<option value="all">All cities</option>`;
       cities.forEach(city => {
         const option = document.createElement("option");
@@ -1183,41 +2085,13 @@
       document.getElementById("primaryPropertyLabel").textContent = "Primary property: none selected yet.";
       document.getElementById("comparePropertySelect").innerHTML = `<option value="">Select a second property</option>`;
       document.getElementById("comparePropertySelect").disabled = true;
-
-      document.getElementById("qualificationSummary").innerHTML = `
-        <h3>Mortgage Overview</h3>
-        <p class="empty">Choose a property to generate the buyer summary.</p>
-      `;
-
-      document.getElementById("selected").innerHTML = `
-        <h3>Selected Property</h3>
-        <p class="empty">Click a marker on the map to see the full property breakdown.</p>
-      `;
-
-      document.getElementById("investmentSnapshot").innerHTML = `
-        <h3>Investment Snapshot</h3>
-        <p class="empty">Choose a property to see the investment view.</p>
-      `;
-
-      document.getElementById("cashToClose").innerHTML = `
-        <h3>Cash to Close</h3>
-        <p class="empty">Choose a property to estimate the upfront cash needed.</p>
-      `;
-
-      document.getElementById("equityProjection").innerHTML = `
-        <h3>5-Year Equity Projection</h3>
-        <p class="empty">Choose a property to estimate long-term equity.</p>
-      `;
-
-      document.getElementById("propertyComparison").innerHTML = `
-        <h3>Property Comparison</h3>
-        <p class="empty">Select a primary property, then choose another property to compare.</p>
-      `;
-
-      document.getElementById("recommendationBox").innerHTML = `
-        <h3>HomeAtlas Recommendation</h3>
-        <p class="empty">A recommendation summary will appear after you compare properties.</p>
-      `;
+      document.getElementById("qualificationSummary").innerHTML = `<h3>Mortgage Overview</h3><p class="empty">Choose a property to generate the buyer summary.</p>`;
+      document.getElementById("selected").innerHTML = `<h3>Selected Property</h3><p class="empty">Click a marker on the map to see the full property breakdown.</p>`;
+      document.getElementById("investmentSnapshot").innerHTML = `<h3>Investment Snapshot</h3><p class="empty">Choose a property to see the investment view.</p>`;
+      document.getElementById("cashToClose").innerHTML = `<h3>Cash to Close</h3><p class="empty">Choose a property to estimate the upfront cash needed.</p>`;
+      document.getElementById("equityProjection").innerHTML = `<h3>5 Year Equity Projection</h3><p class="empty">Choose a property to estimate long term equity.</p>`;
+      document.getElementById("propertyComparison").innerHTML = `<h3>Property Comparison</h3><p class="empty">Select a primary property, then choose another property to compare.</p>`;
+      document.getElementById("recommendationBox").innerHTML = `<h3>HomeAtlas Recommendation</h3><p class="empty">A recommendation summary will appear after you compare properties.</p>`;
     }
 
     function updateAllAnalysis() {
@@ -1225,42 +2099,27 @@
         resetAnalysisCards();
         return;
       }
-
       renderQualificationSummary(selectedListing);
       renderSelected(selectedListing);
       renderInvestmentCards(selectedListing);
-      updateCompareOptions();
       renderComparison();
       renderRecommendation();
+      updateCompareOptions();
     }
 
     function applyFilters() {
       const city = document.getElementById("cityFilter").value;
       const maxPrice = Number(document.getElementById("maxPrice").value) || Infinity;
       const minBeds = Number(document.getElementById("minBeds").value) || 0;
-
-      const filtered = allListings.filter(listing => {
-        const cityMatch = city === "all" || listing.city === city;
-        const priceMatch = Number(listing.price) <= maxPrice;
-        const bedsMatch = Number(listing.beds) >= minBeds;
-        return cityMatch && priceMatch && bedsMatch;
-      });
-
+      const filtered = allListings.filter(l =>
+        (city === "all" || l.city === city) &&
+        Number(l.price) <= maxPrice &&
+        Number(l.beds) >= minBeds
+      );
       addMarkers(filtered);
-
-      if (selectedListing) {
-        const stillVisible = filtered.find(l => Number(l.id) === Number(selectedListing.id));
-        if (!stillVisible) {
-          selectedListing = null;
-          compareListing = null;
-          resetAnalysisCards();
-        } else {
-          if (compareListing && !filtered.find(l => Number(l.id) === Number(compareListing.id))) {
-            compareListing = null;
-          }
-          updateAllAnalysis();
-        }
-      }
+      selectedListing = null;
+      compareListing = null;
+      resetAnalysisCards();
     }
 
     function resetFilters() {
@@ -1268,114 +2127,93 @@
       document.getElementById("maxPrice").value = "";
       document.getElementById("minBeds").value = "";
       addMarkers(allListings);
-
-      if (selectedListing) {
-        updateAllAnalysis();
-      }
-    }
-
-    async function loadApp() {
-      try {
-        const [listingsRes, statsRes] = await Promise.all([
-          fetch(`${API_BASE}/listings`),
-          fetch(`${API_BASE}/stats`)
-        ]);
-
-        if (!listingsRes.ok || !statsRes.ok) {
-          throw new Error("Could not load API data");
-        }
-
-        const listings = await listingsRes.json();
-        const stats = await statsRes.json();
-
-        allListings = listings;
-        areaAvgPrice = stats.average_price || 0;
-
-        renderStats(stats);
-        populateCityFilter(listings);
-        addMarkers(listings);
-      } catch (error) {
-        document.getElementById("stats").innerHTML = `
-          <div class="stats-title">HomeAtlas stats</div>
-          <div class="small">Backend not running. Start FastAPI on port 8000.</div>
-        `;
-        resetAnalysisCards();
-        console.error(error);
-      }
-    }
-
-    const sidebar = document.getElementById("sidebar");
-    const dragbar = document.getElementById("dragbar");
-
-    let isResizing = false;
-    let resizeFrame = null;
-
-    dragbar.addEventListener("mousedown", (e) => {
-      isResizing = true;
-      e.preventDefault();
-      document.body.style.userSelect = "none";
-      document.body.style.cursor = "col-resize";
-    });
-
-    window.addEventListener("mousemove", (e) => {
-      if (!isResizing) return;
-
-      const newSidebarWidth = window.innerWidth - e.clientX;
-      const clampedWidth = Math.max(380, Math.min(900, newSidebarWidth));
-      sidebar.style.width = `${clampedWidth}px`;
-
-      if (resizeFrame) cancelAnimationFrame(resizeFrame);
-      resizeFrame = requestAnimationFrame(() => {
-        map.invalidateSize();
-      });
-    });
-
-    window.addEventListener("mouseup", () => {
-      if (!isResizing) return;
-      isResizing = false;
-      document.body.style.userSelect = "";
-      document.body.style.cursor = "";
-
-      setTimeout(() => {
-        map.invalidateSize();
-      }, 0);
-    });
-
-    document.getElementById("applyFilters").addEventListener("click", applyFilters);
-    document.getElementById("resetFilters").addEventListener("click", resetFilters);
-
-    document.getElementById("useFirstAvailableCompare").addEventListener("click", setAutoCompare);
-
-    document.getElementById("clearCompare").addEventListener("click", () => {
+      selectedListing = null;
       compareListing = null;
+      resetAnalysisCards();
+    }
+
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('searchTab').classList.add('hidden');
+      document.getElementById('journeyTab').classList.add('hidden');
+      document.getElementById('scenarioTab').classList.add('hidden');
+      document.getElementById(btn.dataset.tab).classList.remove('hidden');
+    }));
+
+    document.getElementById('journeyType').addEventListener('change', renderJourney);
+    document.getElementById('applyFilters').addEventListener('click', applyFilters);
+    document.getElementById('resetFilters').addEventListener('click', resetFilters);
+    document.getElementById('useFirstAvailableCompare').addEventListener('click', setAutoCompare);
+    document.getElementById('clearCompare').addEventListener('click', () => {
+      compareListing = null;
+      renderComparison();
+      renderRecommendation();
       updateCompareOptions();
+    });
+    document.getElementById('comparePropertySelect').addEventListener('change', e => {
+      const id = Number(e.target.value);
+      compareListing = currentVisibleListings.find(l => Number(l.id) === id) || null;
       renderComparison();
       renderRecommendation();
     });
+    document.getElementById('analyzeScenario').addEventListener('click', runScenarioAnalysis);
 
-    document.getElementById("comparePropertySelect").addEventListener("change", (event) => {
-      const value = event.target.value;
-      compareListing = currentVisibleListings.find(l => String(l.id) === value) || null;
-      renderComparison();
-      renderRecommendation();
-    });
-
-    [
-      "annualIncome",
-      "monthlyDebts",
-      "downPayment",
-      "interestRate",
-      "amortYears",
-      "propertyTax",
-      "heatingCost",
-      "condoFee"
-    ].forEach(id => {
-      document.getElementById(id).addEventListener("input", () => {
-        if (selectedListing) updateAllAnalysis();
+    (function setupDragbar() {
+      const dragbar = document.getElementById('dragbar');
+      const sidebar = document.getElementById('sidebar');
+      let isDragging = false;
+      dragbar.addEventListener('mousedown', e => {
+        isDragging = true;
+        document.body.style.cursor = 'col-resize';
+        e.preventDefault();
       });
-    });
+      document.addEventListener('mousemove', e => {
+        if (!isDragging) return;
+        const newWidth = window.innerWidth - e.clientX;
+        const clamped = Math.max(360, Math.min(newWidth, 920));
+        sidebar.style.width = clamped + 'px';
+      });
+      document.addEventListener('mouseup', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        document.body.style.cursor = 'default';
+      });
+      dragbar.addEventListener('dblclick', () => {
+        sidebar.style.width = '560px';
+      });
+    })();
 
-    loadApp();
+    async function loadListings() {
+      try {
+        const res = await fetch(API_BASE + '/listings');
+        const data = await res.json();
+        allListings = data.listings || data;
+        addMarkers(allListings);
+        populateCityFilter(allListings);
+        if (data.stats) {
+          areaAvgPrice = data.stats.average_price;
+          renderStats(data.stats);
+        } else {
+          const prices = allListings.map(l => Number(l.price) || 0);
+          const avg = prices.reduce((a, b) => a + b, 0) / (prices.length || 1);
+          areaAvgPrice = avg;
+          renderStats({
+            count: prices.length,
+            average_price: avg,
+            min_price: Math.min(...prices),
+            max_price: Math.max(...prices)
+          });
+        }
+      } catch (e) {
+        console.error(e);
+        const el = document.getElementById('stats');
+        if (el) el.innerHTML = `<div class="stats-title">HomeAtlas stats</div><div class="small">Could not load stats. Demo data only.</div>`;
+      }
+    }
+
+    loadListings();
+    renderJourney();
   </script>
 </body>
 </html>
