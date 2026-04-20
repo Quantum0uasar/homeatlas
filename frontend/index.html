@@ -33,13 +33,27 @@
     }
 
     .sidebar {
-      width: 470px;
-      height: 100vh;
-      overflow-y: auto;
-      background: #ffffff;
-      border-left: 1px solid #e2e8f0;
-      padding: 18px;
-    }
+    width: 470px;
+    min-width: 380px;
+    max-width: 900px;
+    flex: 0 0 auto;
+    height: 100vh;
+    overflow-y: auto;
+    background: #ffffff;
+    border-left: 1px solid #e2e8f0;
+    padding: 18px;
+}
+
+#dragbar {
+  width: 10px;
+  cursor: col-resize;
+  background: linear-gradient(to right, transparent 0, #cbd5e1 50%, transparent 100%);
+  flex: 0 0 10px;
+}
+
+#dragbar:hover {
+  background: linear-gradient(to right, transparent 0, #94a3b8 50%, transparent 100%);
+}
 
     .hero-card {
       background: linear-gradient(135deg, #0f172a, #1e293b);
@@ -484,9 +498,10 @@
   </div>
 
   <div class="app">
-    <div id="map"></div>
+  <div id="map"></div>
+  <div id="dragbar"></div>
 
-    <aside class="sidebar">
+  <aside class="sidebar" id="sidebar">
       <div class="hero-card">
         <h1 class="title">HomeAtlas Investment View</h1>
         <p class="subtitle">Interactive home search + mortgage + comparison demo</p>
@@ -1263,6 +1278,28 @@
         console.error(error);
       }
     }
+    const sidebar = document.getElementById("sidebar");
+const dragbar = document.getElementById("dragbar");
+
+let isResizing = false;
+
+dragbar.addEventListener("mousedown", () => {
+  isResizing = true;
+  document.body.style.userSelect = "none";
+});
+
+window.addEventListener("mousemove", (e) => {
+  if (!isResizing) return;
+
+  const newSidebarWidth = window.innerWidth - e.clientX;
+  const clampedWidth = Math.max(380, Math.min(900, newSidebarWidth));
+  sidebar.style.width = `${clampedWidth}px`;
+});
+
+window.addEventListener("mouseup", () => {
+  isResizing = false;
+  document.body.style.userSelect = "";
+});
 
     document.getElementById("applyFilters").addEventListener("click", applyFilters);
     document.getElementById("resetFilters").addEventListener("click", resetFilters);
