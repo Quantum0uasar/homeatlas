@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 import sqlite3
 from contextlib import asynccontextmanager
 from datetime import datetime
@@ -87,10 +86,9 @@ def init_db() -> None:
         """
     )
 
-    count = cur.execute("SELECT COUNT(*) AS c FROM listings").fetchone()["c"]
-
-    if count == 0 and CSV_PATH.exists():
+    if CSV_PATH.exists():
         df = pd.read_csv(CSV_PATH)
+
         expected_columns = [
             "id",
             "address",
@@ -107,14 +105,34 @@ def init_db() -> None:
             "mortgage_contact",
             "image_url",
         ]
+
         for col in expected_columns:
             if col not in df.columns:
                 df[col] = None
 
-        rows = df[expected_columns].to_dict(orient="records")
+        # Keep only the columns the API expects, in the right order.
+        df = df[expected_columns]
+
+        # Optional cleanup for messy CSV values.
+        for text_col in [
+            "address",
+            "city",
+            "url",
+            "realtor_name",
+            "realtor_phone",
+            "mortgage_contact",
+            "image_url",
+        ]:
+            df[text_col] = df[text_col].astype("string").fillna("").str.strip()
+
+        # Replace the current listings with whatever is in the CSV.
+        cur.execute("DELETE FROM listings")
+
+        rows = df.to_dict(orient="records")
+
         cur.executemany(
             """
-            INSERT INTO listings (
+            INSERT OR REPLACE INTO listings (
                 id, address, city, lat, lng, price, beds, baths, sqft,
                 url, realtor_name, realtor_phone, mortgage_contact, image_url
             )
@@ -191,7 +209,10 @@ def get_listings() -> list[dict[str, Any]]:
 @app.get("/listings/{listing_id}")
 def get_listing(listing_id: int) -> dict[str, Any]:
     conn = get_conn()
-    row = conn.execute("SELECT * FROM listings WHERE id = ?", (listing_id,)).fetchone()
+    row = conn.execute(
+        "SELECT * FROM listings WHERE id = ?",
+        (listing_id,),
+    ).fetchone()
     conn.close()
 
     if row is None:
@@ -227,6 +248,7 @@ def get_stats() -> dict[str, float | int]:
 def create_lead(payload: LeadCreate) -> dict[str, Any]:
     conn = get_conn()
     cur = conn.cursor()
+
     cur.execute(
         """
         INSERT INTO leads (
@@ -245,11 +267,16 @@ def create_lead(payload: LeadCreate) -> dict[str, Any]:
             datetime.utcnow().isoformat(),
         ),
     )
+
     conn.commit()
     lead_id = cur.lastrowid
     conn.close()
 
-    return {"ok": True, "lead_id": lead_id, "message": "Lead submitted successfully"}
+    return {
+        "ok": True,
+        "lead_id": lead_id,
+        "message": "Lead submitted successfully",
+    }
 
 
 @app.get("/leads")
@@ -264,6 +291,7 @@ def get_leads() -> list[dict[str, Any]]:
 def save_scenario(payload: ScenarioCreate) -> dict[str, Any]:
     conn = get_conn()
     cur = conn.cursor()
+
     cur.execute(
         """
         INSERT INTO saved_scenarios (
@@ -297,11 +325,16 @@ def save_scenario(payload: ScenarioCreate) -> dict[str, Any]:
             datetime.utcnow().isoformat(),
         ),
     )
+
     conn.commit()
     scenario_id = cur.lastrowid
     conn.close()
 
-    return {"ok": True, "scenario_id": scenario_id, "message": "Scenario saved successfully"}
+    return {
+        "ok": True,
+        "scenario_id": scenario_id,
+        "message": "Scenario saved successfully",
+    }
 
 
 @app.get("/saved-scenarios")
