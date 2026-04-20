@@ -33,12 +33,21 @@
     }
 
     .sidebar {
-      width: 400px;
+      width: 470px;
       height: 100vh;
       overflow-y: auto;
       background: #ffffff;
       border-left: 1px solid #e2e8f0;
       padding: 18px;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: white;
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
     }
 
     .title {
@@ -48,15 +57,22 @@
     }
 
     .subtitle {
-      margin: 0 0 18px 0;
-      color: #64748b;
+      margin: 0 0 6px 0;
       font-size: 14px;
+      color: #cbd5e1;
+    }
+
+    .creator {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 700;
+      color: #e2e8f0;
     }
 
     .card {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
-      border-radius: 14px;
+      border-radius: 16px;
       padding: 14px;
       margin-bottom: 14px;
     }
@@ -103,6 +119,11 @@
       color: #0f172a;
     }
 
+    .btn.small-btn {
+      padding: 8px 10px;
+      font-size: 12px;
+    }
+
     .stats-box {
       position: absolute;
       top: 14px;
@@ -113,7 +134,7 @@
       border-radius: 14px;
       padding: 12px 14px;
       box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
-      min-width: 240px;
+      min-width: 250px;
       font-size: 14px;
     }
 
@@ -129,12 +150,14 @@
     }
 
     .big-price {
-      font-size: 26px;
+      font-size: 28px;
       font-weight: 800;
       margin: 8px 0;
     }
 
-    .property-meta {
+    .property-meta,
+    .summary-grid,
+    .compare-metrics {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
@@ -155,22 +178,23 @@
       font-weight: 800;
     }
 
-    .journey {
-      padding-left: 18px;
-      margin: 0;
+    .listing-image,
+    .compare-thumb {
+      width: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      background: #e5e7eb;
     }
 
-    .journey li {
-      margin-bottom: 8px;
-      color: #334155;
-      font-size: 14px;
-      line-height: 1.4;
+    .listing-image {
+      height: 220px;
+      margin: 10px 0 14px 0;
     }
 
-    .empty {
-      color: #64748b;
-      font-size: 14px;
-      line-height: 1.5;
+    .compare-thumb {
+      height: 150px;
+      margin: 8px 0 12px 0;
     }
 
     .calc-result {
@@ -182,25 +206,227 @@
     }
 
     .calc-main {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 800;
       margin-bottom: 4px;
     }
 
-    .filter-row {
+    .empty {
+      color: #64748b;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .filter-row,
+    .triple-row,
+    .button-row,
+    .compare-pill-row {
       display: grid;
-      grid-template-columns: 1fr 1fr;
       gap: 10px;
     }
 
-    .listing-image {
+    .filter-row {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .triple-row {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .button-row {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .compare-pill-row {
+      grid-template-columns: 1fr 1fr 1fr;
+      margin-top: 10px;
+    }
+
+    .process {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .process li {
+      position: relative;
+      padding-left: 36px;
+      margin-bottom: 14px;
+      line-height: 1.4;
+      font-size: 14px;
+      color: #334155;
+    }
+
+    .process li::before {
+      content: attr(data-step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      background: #0f172a;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .checklist {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .checklist li {
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: #334155;
+      line-height: 1.4;
+    }
+
+    .status-badge,
+    .winner-badge,
+    .mini-badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .status-badge {
+      margin-bottom: 10px;
+    }
+
+    .status-strong {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status-review {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .status-stretch {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-tight {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .winner-badge {
+      background: #e0f2fe;
+      color: #075985;
+    }
+
+    .mini-badge {
+      background: #eef2ff;
+      color: #4338ca;
+      margin-bottom: 10px;
+    }
+
+    .progress-wrap {
+      margin-top: 10px;
+    }
+
+    .progress-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 6px;
+    }
+
+    .progress-bar {
       width: 100%;
-      height: 220px;
-      object-fit: cover;
-      border-radius: 12px;
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: #0f172a;
+    }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .compare-panel {
+      background: white;
       border: 1px solid #e2e8f0;
-      margin: 10px 0 14px 0;
-      background: #e5e7eb;
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .compare-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: #475569;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+
+    .compare-address {
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+
+    .compare-price {
+      font-size: 22px;
+      font-weight: 800;
+      margin: 8px 0 4px 0;
+    }
+
+    .compare-note {
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.4;
+    }
+
+    .metric-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 12px;
+    }
+
+    .metric-label {
+      color: #64748b;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .metric-value {
+      font-size: 15px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .recommendation-list {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .recommendation-list li {
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: #334155;
+      line-height: 1.45;
     }
 
     .demo-note {
@@ -212,6 +438,19 @@
       color: #92400e;
       font-size: 12px;
       line-height: 1.4;
+    }
+
+    .footer-note {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #64748b;
+      text-align: center;
+    }
+
+    @media (max-width: 1200px) {
+      .compare-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 980px) {
@@ -248,8 +487,11 @@
     <div id="map"></div>
 
     <aside class="sidebar">
-      <h1 class="title">HomeAtlas</h1>
-      <p class="subtitle">Interactive home search + mortgage guidance demo</p>
+      <div class="hero-card">
+        <h1 class="title">HomeAtlas Investment View</h1>
+        <p class="subtitle">Interactive home search + mortgage + comparison demo</p>
+        <p class="creator">Created by Jaideep Singh</p>
+      </div>
 
       <div class="card">
         <h3>Filters</h3>
@@ -262,24 +504,32 @@
         <div class="filter-row">
           <div>
             <label class="label" for="maxPrice">Max price</label>
-            <input id="maxPrice" class="input" type="number" placeholder="e.g. 600000" />
+            <input id="maxPrice" class="input" type="number" placeholder="e.g. 7000000" />
           </div>
 
           <div>
             <label class="label" for="minBeds">Min beds</label>
-            <input id="minBeds" class="input" type="number" placeholder="e.g. 3" />
+            <input id="minBeds" class="input" type="number" placeholder="e.g. 4" />
           </div>
         </div>
 
-        <button class="btn" id="applyFilters">Apply filters</button>
-        <button class="btn secondary" id="resetFilters" style="margin-left:8px;">Reset</button>
+        <div class="button-row">
+          <button class="btn" id="applyFilters">Apply filters</button>
+          <button class="btn secondary" id="resetFilters">Reset</button>
+        </div>
       </div>
 
       <div class="card">
-        <h3>Mortgage calculator</h3>
+        <h3>Buyer Profile</h3>
+
+        <label class="label" for="annualIncome">Annual income ($)</label>
+        <input id="annualIncome" class="input" type="number" value="350000" />
+
+        <label class="label" for="monthlyDebts">Monthly debts ($)</label>
+        <input id="monthlyDebts" class="input" type="number" value="2500" />
 
         <label class="label" for="downPayment">Down payment ($)</label>
-        <input id="downPayment" class="input" type="number" value="50000" />
+        <input id="downPayment" class="input" type="number" value="1200000" />
 
         <div class="filter-row">
           <div>
@@ -293,24 +543,100 @@
           </div>
         </div>
 
-        <p class="small">Click a property marker to calculate a rough monthly payment.</p>
+        <div class="triple-row">
+          <div>
+            <label class="label" for="propertyTax">Tax / mo</label>
+            <input id="propertyTax" class="input" type="number" value="1800" />
+          </div>
+
+          <div>
+            <label class="label" for="heatingCost">Heating / mo</label>
+            <input id="heatingCost" class="input" type="number" value="350" />
+          </div>
+
+          <div>
+            <label class="label" for="condoFee">Condo / mo</label>
+            <input id="condoFee" class="input" type="number" value="0" />
+          </div>
+        </div>
+
+        <p class="small">Click a marker to set the primary property, then compare it against another one.</p>
+      </div>
+
+      <div class="card" id="compareControl">
+        <h3>Compare Center</h3>
+        <div class="small" id="primaryPropertyLabel">Primary property: none selected yet.</div>
+
+        <label class="label" for="comparePropertySelect" style="margin-top:10px;">Compare against</label>
+        <select id="comparePropertySelect" class="select" disabled>
+          <option value="">Select a second property</option>
+        </select>
+
+        <div class="button-row">
+          <button class="btn small-btn" id="useFirstAvailableCompare">Auto compare</button>
+          <button class="btn secondary small-btn" id="clearCompare">Clear compare</button>
+        </div>
+      </div>
+
+      <div class="card" id="qualificationSummary">
+        <h3>Mortgage Overview</h3>
+        <p class="empty">Choose a property to generate the buyer summary.</p>
       </div>
 
       <div class="card" id="selected">
-        <h3>Selected property</h3>
+        <h3>Selected Property</h3>
         <p class="empty">Click a marker on the map to see the full property breakdown.</p>
       </div>
 
-      <div class="card">
-        <div class="section-title">Mortgage journey</div>
-        <ol class="journey">
-          <li>Get pre-approved and set your budget.</li>
-          <li>Compare homes in your target area.</li>
-          <li>Make an offer through your realtor.</li>
-          <li>Finalize financing with the mortgage team.</li>
-          <li>Close the purchase and move in.</li>
-        </ol>
+      <div class="card" id="investmentSnapshot">
+        <h3>Investment Snapshot</h3>
+        <p class="empty">Choose a property to see the investment view.</p>
       </div>
+
+      <div class="card" id="cashToClose">
+        <h3>Cash to Close</h3>
+        <p class="empty">Choose a property to estimate the upfront cash needed.</p>
+      </div>
+
+      <div class="card" id="equityProjection">
+        <h3>5-Year Equity Projection</h3>
+        <p class="empty">Choose a property to estimate long-term equity.</p>
+      </div>
+
+      <div class="card" id="propertyComparison">
+        <h3>Property Comparison</h3>
+        <p class="empty">Select a primary property, then choose another property to compare.</p>
+      </div>
+
+      <div class="card" id="recommendationBox">
+        <h3>HomeAtlas Recommendation</h3>
+        <p class="empty">A recommendation summary will appear after you compare properties.</p>
+      </div>
+
+      <div class="card">
+        <h3>Mortgage Process</h3>
+        <ul class="process">
+          <li data-step="1"><strong>Pre-approval:</strong> Build the buyer profile and understand budget before committing to a home.</li>
+          <li data-step="2"><strong>Property selection:</strong> Compare homes, pricing, and monthly carrying cost.</li>
+          <li data-step="3"><strong>Offer stage:</strong> Work with the realtor to submit an offer and negotiate terms.</li>
+          <li data-step="4"><strong>Financing review:</strong> Confirm mortgage details, supporting documents, and final affordability.</li>
+          <li data-step="5"><strong>Closing:</strong> Prepare cash to close, sign documents, and complete the purchase.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Typical Documents Needed</h3>
+        <ul class="checklist">
+          <li>Government photo ID</li>
+          <li>Proof of income</li>
+          <li>Employment confirmation</li>
+          <li>Proof of down payment</li>
+          <li>Recent bank statements</li>
+          <li>Accepted purchase agreement</li>
+        </ul>
+      </div>
+
+      <div class="footer-note">Demo concept only • Created by Jaideep Singh</div>
     </aside>
   </div>
 
@@ -319,8 +645,10 @@
     const API_BASE = "http://127.0.0.1:8000";
 
     let allListings = [];
+    let currentVisibleListings = [];
     let markers = [];
     let selectedListing = null;
+    let compareListing = null;
     let areaAvgPrice = 0;
 
     const map = L.map("map").setView([43.01, -81.27], 12);
@@ -344,16 +672,91 @@
       return principal * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
     }
 
-    function getCalculatorValues() {
-      const downPayment = Number(document.getElementById("downPayment").value) || 0;
-      const annualRatePercent = Number(document.getElementById("interestRate").value) || 5;
-      const years = Number(document.getElementById("amortYears").value) || 25;
+    function estimateRemainingBalance(principal, annualRate, years, monthsPaid) {
+      const n = years * 12;
+      const r = annualRate / 12;
+
+      if (principal <= 0) return 0;
+      if (monthsPaid >= n) return 0;
+      if (r === 0) return principal * (1 - monthsPaid / n);
+
+      return principal * (
+        (Math.pow(1 + r, n) - Math.pow(1 + r, monthsPaid)) /
+        (Math.pow(1 + r, n) - 1)
+      );
+    }
+
+    function getBuyerValues() {
+      return {
+        annualIncome: Number(document.getElementById("annualIncome").value) || 0,
+        monthlyDebts: Number(document.getElementById("monthlyDebts").value) || 0,
+        downPayment: Number(document.getElementById("downPayment").value) || 0,
+        annualRatePercent: Number(document.getElementById("interestRate").value) || 5,
+        annualRate: (Number(document.getElementById("interestRate").value) || 5) / 100,
+        years: Number(document.getElementById("amortYears").value) || 25,
+        propertyTax: Number(document.getElementById("propertyTax").value) || 0,
+        heatingCost: Number(document.getElementById("heatingCost").value) || 0,
+        condoFee: Number(document.getElementById("condoFee").value) || 0
+      };
+    }
+
+    function getStatus(totalHousingCost, monthlyDebts, monthlyIncome) {
+      if (monthlyIncome <= 0) {
+        return { label: "Needs numbers", className: "status-stretch" };
+      }
+
+      const burden = (totalHousingCost + monthlyDebts) / monthlyIncome;
+
+      if (burden <= 0.35) return { label: "Strong fit", className: "status-strong" };
+      if (burden <= 0.45) return { label: "Possible with review", className: "status-review" };
+      if (burden <= 0.55) return { label: "Stretch purchase", className: "status-stretch" };
+
+      return { label: "Not ideal", className: "status-tight" };
+    }
+
+    function calculateAnalysis(listing) {
+      const buyer = getBuyerValues();
+      const principal = Math.max(Number(listing.price) - buyer.downPayment, 0);
+      const mortgagePayment = estimateMonthlyPayment(principal, buyer.annualRate, buyer.years);
+      const totalHousingCost = mortgagePayment + buyer.propertyTax + buyer.heatingCost + buyer.condoFee;
+      const monthlyIncome = buyer.annualIncome / 12;
+      const remainingAfterCosts = monthlyIncome - totalHousingCost - buyer.monthlyDebts;
+      const totalObligationRatio = monthlyIncome > 0 ? ((totalHousingCost + buyer.monthlyDebts) / monthlyIncome) * 100 : 0;
+      const downPaymentPercent = Number(listing.price) > 0 ? (buyer.downPayment / Number(listing.price)) * 100 : 0;
+      const closingCosts = Number(listing.price) * 0.015;
+      const cashToClose = buyer.downPayment + closingCosts;
+      const futureHomeValue = Number(listing.price) * Math.pow(1.03, 5);
+      const remainingBalance = estimateRemainingBalance(principal, buyer.annualRate, buyer.years, 60);
+      const projectedEquity = futureHomeValue - remainingBalance;
+      const pricePerSqft = Number(listing.sqft) ? Number(listing.price) / Number(listing.sqft) : 0;
+
+      const diff = areaAvgPrice
+        ? ((Number(listing.price) - areaAvgPrice) / areaAvgPrice) * 100
+        : 0;
+
+      const relativeValue = areaAvgPrice
+        ? diff >= 0
+          ? `${Math.round(diff)}% above area average`
+          : `${Math.abs(Math.round(diff))}% below area average`
+        : "Area average unavailable";
 
       return {
-        downPayment,
-        annualRate: annualRatePercent / 100,
-        annualRatePercent,
-        years
+        ...buyer,
+        principal,
+        mortgagePayment,
+        totalHousingCost,
+        monthlyIncome,
+        remainingAfterCosts,
+        totalObligationRatio,
+        downPaymentPercent,
+        closingCosts,
+        cashToClose,
+        futureHomeValue,
+        remainingBalance,
+        projectedEquity,
+        pricePerSqft,
+        relativeValue,
+        status: getStatus(totalHousingCost, buyer.monthlyDebts, monthlyIncome)
       };
     }
 
@@ -367,27 +770,52 @@
       `;
     }
 
-    function renderSelected(listing) {
-      const container = document.getElementById("selected");
-      const { downPayment, annualRate, annualRatePercent, years } = getCalculatorValues();
-
-      const principal = Math.max(listing.price - downPayment, 0);
-      const monthly = estimateMonthlyPayment(principal, annualRate, years);
-      const pricePerSqft = listing.sqft ? (listing.price / listing.sqft) : 0;
-
-      const diff = areaAvgPrice
-        ? ((listing.price - areaAvgPrice) / areaAvgPrice) * 100
-        : 0;
-
-      const diffText = areaAvgPrice
-        ? diff >= 0
-          ? `${Math.round(diff)}% above area average`
-          : `${Math.abs(Math.round(diff))}% below area average`
-        : "Area average unavailable";
+    function renderQualificationSummary(listing) {
+      const a = calculateAnalysis(listing);
+      const container = document.getElementById("qualificationSummary");
 
       container.innerHTML = `
-        <h3>${listing.address}</h3>
+        <h3>Mortgage Overview</h3>
+        <span class="status-badge ${a.status.className}">${a.status.label}</span>
+
+        <div class="summary-grid">
+          <div class="meta-pill"><strong>Home price</strong><br>${money(listing.price)}</div>
+          <div class="meta-pill"><strong>Loan amount</strong><br>${money(a.principal)}</div>
+          <div class="meta-pill"><strong>Mortgage / mo</strong><br>${money(a.mortgagePayment)}</div>
+          <div class="meta-pill"><strong>Total housing / mo</strong><br>${money(a.totalHousingCost)}</div>
+          <div class="meta-pill"><strong>Income / mo</strong><br>${money(a.monthlyIncome)}</div>
+          <div class="meta-pill"><strong>Other debts / mo</strong><br>${money(a.monthlyDebts)}</div>
+        </div>
+
+        <div class="calc-result">
+          <div class="calc-main">${money(a.remainingAfterCosts)}</div>
+          <div class="small">Estimated monthly cash left after housing costs and debts.</div>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress-label">Down payment percentage: ${Math.round(a.downPaymentPercent)}%</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:${Math.min(Math.max(a.downPaymentPercent, 0), 100)}%;"></div>
+          </div>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress-label">Monthly obligation ratio: ${Math.round(a.totalObligationRatio)}%</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:${Math.min(Math.max(a.totalObligationRatio, 0), 100)}%;"></div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSelected(listing) {
+      const a = calculateAnalysis(listing);
+      const container = document.getElementById("selected");
+
+      container.innerHTML = `
+        <h3>Selected Property</h3>
         <img class="listing-image" src="${listing.image_url}" alt="${listing.address}">
+        <div class="section-title">${listing.address}</div>
         <div class="big-price">${money(listing.price)}</div>
         <div class="small">${listing.city}</div>
 
@@ -395,34 +823,269 @@
           <div class="meta-pill"><strong>Beds</strong><br>${listing.beds}</div>
           <div class="meta-pill"><strong>Baths</strong><br>${listing.baths}</div>
           <div class="meta-pill"><strong>Sqft</strong><br>${listing.sqft}</div>
-          <div class="meta-pill"><strong>$/sqft</strong><br>${money(pricePerSqft)}</div>
+          <div class="meta-pill"><strong>$/sqft</strong><br>${money(a.pricePerSqft)}</div>
         </div>
 
-        <div class="section-title">Mortgage estimate</div>
+        <div class="section-title">Payment Breakdown</div>
+        <div class="summary-grid">
+          <div class="meta-pill"><strong>Mortgage</strong><br>${money(a.mortgagePayment)}</div>
+          <div class="meta-pill"><strong>Property tax</strong><br>${money(a.propertyTax)}</div>
+          <div class="meta-pill"><strong>Heating</strong><br>${money(a.heatingCost)}</div>
+          <div class="meta-pill"><strong>Condo fee</strong><br>${money(a.condoFee)}</div>
+        </div>
+
         <div class="calc-result">
-          <div class="calc-main">${money(monthly)}/month</div>
-          <div class="small">
-            Loan amount: ${money(principal)}<br>
-            Down payment: ${money(downPayment)}<br>
-            Interest rate: ${annualRatePercent}%<br>
-            Amortization: ${years} years
-          </div>
+          <div class="calc-main">${money(a.totalHousingCost)}/month</div>
+          <div class="small">Total estimated monthly ownership cost for this property.</div>
         </div>
 
         <div style="height:12px;"></div>
 
-        <div class="section-title">Advisor notes</div>
+        <div class="section-title">Property + Advisor Notes</div>
         <p class="small">
-          ${diffText}<br>
+          ${a.relativeValue}<br>
           Realtor: <strong>${listing.realtor_name}</strong> (${listing.realtor_phone})<br>
-          Mortgage contact: <strong>${listing.mortgage_contact}</strong>
+          Mortgage contact: <strong>${listing.mortgage_contact}</strong><br>
+          5-year projected equity: <strong>${money(a.projectedEquity)}</strong>
         </p>
 
-        <a class="btn" href="${listing.url}" target="_blank" rel="noopener noreferrer">Open listing page</a>
-
         <div class="demo-note">
-          Demo property data and demo images only. Not a live MLS feed.
+          Demo property data and demo images only. This is a concept experience created by Jaideep Singh.
         </div>
+      `;
+    }
+
+    function renderInvestmentCards(listing) {
+      const a = calculateAnalysis(listing);
+
+      document.getElementById("investmentSnapshot").innerHTML = `
+        <h3>Investment Snapshot</h3>
+        <div class="summary-grid">
+          <div class="meta-pill"><strong>Purchase price</strong><br>${money(listing.price)}</div>
+          <div class="meta-pill"><strong>Down payment</strong><br>${money(a.downPayment)}</div>
+          <div class="meta-pill"><strong>Loan amount</strong><br>${money(a.principal)}</div>
+          <div class="meta-pill"><strong>Carry cost / mo</strong><br>${money(a.totalHousingCost)}</div>
+          <div class="meta-pill"><strong>Price / sqft</strong><br>${money(a.pricePerSqft)}</div>
+          <div class="meta-pill"><strong>Relative value</strong><br>${a.relativeValue}</div>
+        </div>
+        <p class="small">Quick investment view of entry cost, monthly cost, and relative pricing.</p>
+      `;
+
+      document.getElementById("cashToClose").innerHTML = `
+        <h3>Cash to Close</h3>
+        <div class="summary-grid">
+          <div class="meta-pill"><strong>Down payment</strong><br>${money(a.downPayment)}</div>
+          <div class="meta-pill"><strong>Est. closing costs</strong><br>${money(a.closingCosts)}</div>
+          <div class="meta-pill"><strong>Total cash needed</strong><br>${money(a.cashToClose)}</div>
+          <div class="meta-pill"><strong>Monthly ownership</strong><br>${money(a.totalHousingCost)}</div>
+        </div>
+        <p class="small">Closing costs are estimated at 1.5% of purchase price for demo purposes.</p>
+      `;
+
+      document.getElementById("equityProjection").innerHTML = `
+        <h3>5-Year Equity Projection</h3>
+        <div class="summary-grid">
+          <div class="meta-pill"><strong>Future home value</strong><br>${money(a.futureHomeValue)}</div>
+          <div class="meta-pill"><strong>Mortgage balance</strong><br>${money(a.remainingBalance)}</div>
+          <div class="meta-pill"><strong>Projected equity</strong><br>${money(a.projectedEquity)}</div>
+          <div class="meta-pill"><strong>Assumption</strong><br>3% annual growth</div>
+        </div>
+
+        <div class="calc-result">
+          <div class="calc-main">${money(a.projectedEquity)}</div>
+          <div class="small">Estimated equity after 5 years using a simple demo appreciation assumption.</div>
+        </div>
+      `;
+    }
+
+    function updateCompareOptions() {
+      const label = document.getElementById("primaryPropertyLabel");
+      const select = document.getElementById("comparePropertySelect");
+
+      if (!selectedListing) {
+        label.textContent = "Primary property: none selected yet.";
+        select.innerHTML = `<option value="">Select a second property</option>`;
+        select.disabled = true;
+        compareListing = null;
+        return;
+      }
+
+      label.textContent = `Primary property: ${selectedListing.address}`;
+      const options = currentVisibleListings.filter(l => Number(l.id) !== Number(selectedListing.id));
+
+      select.disabled = options.length === 0;
+      select.innerHTML = `<option value="">Select a second property</option>`;
+
+      options.forEach(listing => {
+        const option = document.createElement("option");
+        option.value = listing.id;
+        option.textContent = `${listing.address} — ${money(listing.price)}`;
+        select.appendChild(option);
+      });
+
+      if (compareListing && options.some(l => Number(l.id) === Number(compareListing.id))) {
+        select.value = compareListing.id;
+      } else {
+        compareListing = null;
+        select.value = "";
+      }
+    }
+
+    function setAutoCompare() {
+      if (!selectedListing) return;
+      const candidate = currentVisibleListings.find(l => Number(l.id) !== Number(selectedListing.id));
+      compareListing = candidate || null;
+      updateCompareOptions();
+      renderComparison();
+      renderRecommendation();
+    }
+
+    function renderComparison() {
+      const container = document.getElementById("propertyComparison");
+
+      if (!selectedListing) {
+        container.innerHTML = `
+          <h3>Property Comparison</h3>
+          <p class="empty">Select a primary property first.</p>
+        `;
+        return;
+      }
+
+      if (!compareListing) {
+        container.innerHTML = `
+          <h3>Property Comparison</h3>
+          <p class="empty">Choose a second property in Compare Center to unlock the side-by-side view.</p>
+        `;
+        return;
+      }
+
+      const a = calculateAnalysis(selectedListing);
+      const b = calculateAnalysis(compareListing);
+
+      const lowerMonthlyWinner = a.totalHousingCost <= b.totalHousingCost ? selectedListing.address : compareListing.address;
+      const lowerCashWinner = a.cashToClose <= b.cashToClose ? selectedListing.address : compareListing.address;
+      const higherEquityWinner = a.projectedEquity >= b.projectedEquity ? selectedListing.address : compareListing.address;
+
+      container.innerHTML = `
+        <h3>Property Comparison</h3>
+
+        <div class="compare-grid">
+          <div class="compare-panel">
+            <div class="compare-title">Primary Property</div>
+            <div class="compare-address">${selectedListing.address}</div>
+            <div class="compare-price">${money(selectedListing.price)}</div>
+            <div class="compare-note">${selectedListing.city}</div>
+            <img class="compare-thumb" src="${selectedListing.image_url}" alt="${selectedListing.address}">
+
+            <div class="compare-metrics">
+              <div class="metric-box">
+                <div class="metric-label">Monthly cost</div>
+                <div class="metric-value">${money(a.totalHousingCost)}</div>
+              </div>
+              <div class="metric-box">
+                <div class="metric-label">Cash to close</div>
+                <div class="metric-value">${money(a.cashToClose)}</div>
+              </div>
+              <div class="metric-box">
+                <div class="metric-label">5-year equity</div>
+                <div class="metric-value">${money(a.projectedEquity)}</div>
+              </div>
+              <div class="metric-box">
+                <div class="metric-label">Price / sqft</div>
+                <div class="metric-value">${money(a.pricePerSqft)}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="compare-panel">
+            <div class="compare-title">Comparison Property</div>
+            <div class="compare-address">${compareListing.address}</div>
+            <div class="compare-price">${money(compareListing.price)}</div>
+            <div class="compare-note">${compareListing.city}</div>
+            <img class="compare-thumb" src="${compareListing.image_url}" alt="${compareListing.address}">
+
+            <div class="compare-metrics">
+              <div class="metric-box">
+                <div class="metric-label">Monthly cost</div>
+                <div class="metric-value">${money(b.totalHousingCost)}</div>
+              </div>
+              <div class="metric-box">
+                <div class="metric-label">Cash to close</div>
+                <div class="metric-value">${money(b.cashToClose)}</div>
+              </div>
+              <div class="metric-box">
+                <div class="metric-label">5-year equity</div>
+                <div class="metric-value">${money(b.projectedEquity)}</div>
+              </div>
+              <div class="metric-box">
+                <div class="metric-label">Price / sqft</div>
+                <div class="metric-value">${money(b.pricePerSqft)}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="compare-pill-row">
+          <span class="winner-badge">Lower monthly cost: ${lowerMonthlyWinner}</span>
+          <span class="winner-badge">Lower upfront cash: ${lowerCashWinner}</span>
+          <span class="winner-badge">Higher 5-year equity: ${higherEquityWinner}</span>
+        </div>
+      `;
+    }
+
+    function renderRecommendation() {
+      const container = document.getElementById("recommendationBox");
+
+      if (!selectedListing) {
+        container.innerHTML = `
+          <h3>HomeAtlas Recommendation</h3>
+          <p class="empty">Pick a property first to get a recommendation.</p>
+        `;
+        return;
+      }
+
+      const a = calculateAnalysis(selectedListing);
+
+      if (!compareListing) {
+        container.innerHTML = `
+          <h3>HomeAtlas Recommendation</h3>
+          <span class="mini-badge">Single-property view</span>
+          <ul class="recommendation-list">
+            <li><strong>${selectedListing.address}</strong> currently looks like a <strong>${a.status.label.toLowerCase()}</strong> based on the buyer profile.</li>
+            <li>The estimated total monthly ownership cost is <strong>${money(a.totalHousingCost)}</strong>, with about <strong>${money(a.remainingAfterCosts)}</strong> left after debts and housing.</li>
+            <li>The biggest near-term check is the upfront cash requirement of <strong>${money(a.cashToClose)}</strong>.</li>
+          </ul>
+        `;
+        return;
+      }
+
+      const b = calculateAnalysis(compareListing);
+
+      let scoreA = 0;
+      let scoreB = 0;
+
+      if (a.totalHousingCost <= b.totalHousingCost) scoreA++; else scoreB++;
+      if (a.cashToClose <= b.cashToClose) scoreA++; else scoreB++;
+      if (a.projectedEquity >= b.projectedEquity) scoreA++; else scoreB++;
+      if (a.pricePerSqft <= b.pricePerSqft) scoreA++; else scoreB++;
+
+      const overallWinner =
+        scoreA === scoreB
+          ? null
+          : scoreA > scoreB
+            ? selectedListing.address
+            : compareListing.address;
+
+      container.innerHTML = `
+        <h3>HomeAtlas Recommendation</h3>
+        <span class="mini-badge">Advisor-style summary</span>
+        <ul class="recommendation-list">
+          <li><strong>Lower carrying cost:</strong> ${a.totalHousingCost <= b.totalHousingCost ? selectedListing.address : compareListing.address} looks easier on monthly cash flow.</li>
+          <li><strong>Lower upfront requirement:</strong> ${a.cashToClose <= b.cashToClose ? selectedListing.address : compareListing.address} needs less cash to close.</li>
+          <li><strong>Longer-term upside:</strong> ${a.projectedEquity >= b.projectedEquity ? selectedListing.address : compareListing.address} shows the stronger 5-year equity projection in this demo.</li>
+          <li><strong>Primary property fit:</strong> ${selectedListing.address} is currently rated <strong>${a.status.label}</strong> for this buyer profile.</li>
+          <li><strong>Most balanced option right now:</strong> ${overallWinner ? `<strong>${overallWinner}</strong>` : `<strong>Too close to call</strong>`}.</li>
+        </ul>
       `;
     }
 
@@ -432,6 +1095,7 @@
     }
 
     function addMarkers(listings) {
+      currentVisibleListings = listings;
       clearMarkers();
 
       const bounds = [];
@@ -450,7 +1114,7 @@
 
         marker.on("click", () => {
           selectedListing = listing;
-          renderSelected(listing);
+          updateAllAnalysis();
         });
 
         markers.push(marker);
@@ -475,6 +1139,61 @@
       });
     }
 
+    function resetAnalysisCards() {
+      document.getElementById("primaryPropertyLabel").textContent = "Primary property: none selected yet.";
+      document.getElementById("comparePropertySelect").innerHTML = `<option value="">Select a second property</option>`;
+      document.getElementById("comparePropertySelect").disabled = true;
+
+      document.getElementById("qualificationSummary").innerHTML = `
+        <h3>Mortgage Overview</h3>
+        <p class="empty">Choose a property to generate the buyer summary.</p>
+      `;
+
+      document.getElementById("selected").innerHTML = `
+        <h3>Selected Property</h3>
+        <p class="empty">Click a marker on the map to see the full property breakdown.</p>
+      `;
+
+      document.getElementById("investmentSnapshot").innerHTML = `
+        <h3>Investment Snapshot</h3>
+        <p class="empty">Choose a property to see the investment view.</p>
+      `;
+
+      document.getElementById("cashToClose").innerHTML = `
+        <h3>Cash to Close</h3>
+        <p class="empty">Choose a property to estimate the upfront cash needed.</p>
+      `;
+
+      document.getElementById("equityProjection").innerHTML = `
+        <h3>5-Year Equity Projection</h3>
+        <p class="empty">Choose a property to estimate long-term equity.</p>
+      `;
+
+      document.getElementById("propertyComparison").innerHTML = `
+        <h3>Property Comparison</h3>
+        <p class="empty">Select a primary property, then choose another property to compare.</p>
+      `;
+
+      document.getElementById("recommendationBox").innerHTML = `
+        <h3>HomeAtlas Recommendation</h3>
+        <p class="empty">A recommendation summary will appear after you compare properties.</p>
+      `;
+    }
+
+    function updateAllAnalysis() {
+      if (!selectedListing) {
+        resetAnalysisCards();
+        return;
+      }
+
+      renderQualificationSummary(selectedListing);
+      renderSelected(selectedListing);
+      renderInvestmentCards(selectedListing);
+      updateCompareOptions();
+      renderComparison();
+      renderRecommendation();
+    }
+
     function applyFilters() {
       const city = document.getElementById("cityFilter").value;
       const maxPrice = Number(document.getElementById("maxPrice").value) || Infinity;
@@ -493,10 +1212,13 @@
         const stillVisible = filtered.find(l => Number(l.id) === Number(selectedListing.id));
         if (!stillVisible) {
           selectedListing = null;
-          document.getElementById("selected").innerHTML = `
-            <h3>Selected property</h3>
-            <p class="empty">Your previous selection was filtered out. Click another marker.</p>
-          `;
+          compareListing = null;
+          resetAnalysisCards();
+        } else {
+          if (compareListing && !filtered.find(l => Number(l.id) === Number(compareListing.id))) {
+            compareListing = null;
+          }
+          updateAllAnalysis();
         }
       }
     }
@@ -506,6 +1228,10 @@
       document.getElementById("maxPrice").value = "";
       document.getElementById("minBeds").value = "";
       addMarkers(allListings);
+
+      if (selectedListing) {
+        updateAllAnalysis();
+      }
     }
 
     async function loadApp() {
@@ -533,12 +1259,7 @@
           <div class="stats-title">HomeAtlas stats</div>
           <div class="small">Backend not running. Start FastAPI on port 8000.</div>
         `;
-
-        document.getElementById("selected").innerHTML = `
-          <h3>Selected property</h3>
-          <p class="empty">Could not connect to the backend.</p>
-        `;
-
+        resetAnalysisCards();
         console.error(error);
       }
     }
@@ -546,9 +1267,34 @@
     document.getElementById("applyFilters").addEventListener("click", applyFilters);
     document.getElementById("resetFilters").addEventListener("click", resetFilters);
 
-    ["downPayment", "interestRate", "amortYears"].forEach(id => {
+    document.getElementById("useFirstAvailableCompare").addEventListener("click", setAutoCompare);
+
+    document.getElementById("clearCompare").addEventListener("click", () => {
+      compareListing = null;
+      updateCompareOptions();
+      renderComparison();
+      renderRecommendation();
+    });
+
+    document.getElementById("comparePropertySelect").addEventListener("change", (event) => {
+      const value = event.target.value;
+      compareListing = currentVisibleListings.find(l => String(l.id) === value) || null;
+      renderComparison();
+      renderRecommendation();
+    });
+
+    [
+      "annualIncome",
+      "monthlyDebts",
+      "downPayment",
+      "interestRate",
+      "amortYears",
+      "propertyTax",
+      "heatingCost",
+      "condoFee"
+    ].forEach(id => {
       document.getElementById(id).addEventListener("input", () => {
-        if (selectedListing) renderSelected(selectedListing);
+        if (selectedListing) updateAllAnalysis();
       });
     });
 
