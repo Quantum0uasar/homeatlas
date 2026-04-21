@@ -328,6 +328,88 @@
       align-items:center;
       gap:8px;
     }
+    .results-bar{
+      margin-top:14px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .filtered-shelf-wrap{
+      margin-top:16px;
+      padding:16px;
+      border:1px solid var(--line);
+      border-radius:20px;
+      background:#fbfdff;
+      box-shadow:var(--shadow);
+    }
+    .shelf-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+    .filtered-shelf{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:12px;
+    }
+    .result-card{
+      border:1px solid #e1e8f4;
+      border-radius:18px;
+      background:white;
+      padding:14px;
+      display:grid;
+      gap:10px;
+    }
+    .result-rank{
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+      color:#64748b;
+    }
+    .result-title{
+      font-size:17px;
+      font-weight:900;
+      line-height:1.15;
+      letter-spacing:-.02em;
+    }
+    .result-meta{
+      color:#64748b;
+      font-size:13px;
+      line-height:1.55;
+    }
+    .result-stats{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:10px;
+    }
+    .result-stat{
+      padding:10px;
+      border-radius:14px;
+      background:#f6f9ff;
+      border:1px solid #e1e8f4;
+    }
+    .result-stat .k{
+      font-size:11px;
+      font-weight:800;
+      color:#64748b;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      margin-bottom:6px;
+    }
+    .result-stat .v{
+      font-size:15px;
+      font-weight:900;
+      line-height:1.15;
+    }
+    .result-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
 
 
     .decision-shell{
@@ -1282,14 +1364,18 @@
           <h2>Explore Toronto homes on the map</h2>
           <p class="subtle">Use the filters, then click a marker to select up to two homes. The map preserves your zoom and pan while you compare.</p>
 
-          <div class="filters">
+          <div class="filters" style="grid-template-columns:repeat(5, minmax(0,1fr));">
             <div>
               <label class="label" for="cityFilter">City</label>
               <select class="select" id="cityFilter"></select>
             </div>
             <div>
+              <label class="label" for="minPrice">Min price</label>
+              <input class="input" id="minPrice" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 900,000" />
+            </div>
+            <div>
               <label class="label" for="maxPrice">Max price</label>
-              <input class="input" id="maxPrice" type="number" placeholder="e.g. 1500000" />
+              <input class="input" id="maxPrice" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 1,500,000" />
             </div>
             <div>
               <label class="label" for="minBeds">Min beds</label>
@@ -1311,7 +1397,23 @@
             <button class="btn secondary" id="resetFilters">Reset filters</button>
           </div>
 
+          <div class="results-bar">
+            <span class="status-chip" id="resultsCountChip">0 homes shown</span>
+            <span class="status-chip" id="resultsSortChip">Default order</span>
+            <span class="status-chip" id="resultsRangeChip">Visible price range: —</span>
+          </div>
+
           <div id="homesMap"></div>
+
+          <div class="filtered-shelf-wrap">
+            <div class="shelf-head">
+              <div>
+                <h3 style="margin:0 0 6px;">Sorted results</h3>
+                <p class="subtle" style="margin:0;">The sort view already sorts the listings, but because the markers stay in their real map positions it can feel invisible. This shelf follows the chosen sort order so the change is obvious.</p>
+              </div>
+            </div>
+            <div class="filtered-shelf" id="filteredShelf"></div>
+          </div>
         </div>
 
         <div class="selection-column">
@@ -1326,19 +1428,19 @@
             <div class="filters buyer-filters" style="margin-top:0;">
               <div>
                 <label class="label" for="buyerIncome">Annual income</label>
-                <input class="input" id="buyerIncome" type="number" autocomplete="off" value="165000" />
+                <input class="input" id="buyerIncome" type="text" inputmode="numeric" autocomplete="off" value="165000" />
               </div>
               <div>
                 <label class="label" for="buyerDown">Down payment</label>
-                <input class="input" id="buyerDown" type="number" autocomplete="off" value="220000" />
+                <input class="input" id="buyerDown" type="text" inputmode="numeric" autocomplete="off" value="220000" />
               </div>
               <div>
                 <label class="label" for="buyerReserve">Extra cash reserve</label>
-                <input class="input" id="buyerReserve" type="number" autocomplete="off" value="45000" />
+                <input class="input" id="buyerReserve" type="text" inputmode="numeric" autocomplete="off" value="45000" />
               </div>
               <div>
                 <label class="label" for="buyerOtherDebt">Other monthly debts</label>
-                <input class="input" id="buyerOtherDebt" type="number" autocomplete="off" value="0" />
+                <input class="input" id="buyerOtherDebt" type="text" inputmode="numeric" autocomplete="off" value="0" />
               </div>
               <div>
                 <label class="label" for="buyerRate">Interest rate %</label>
@@ -1737,8 +1839,57 @@
       buyerStress:'stress'
     };
 
+    const formattedNumberIds = ['minPrice','maxPrice','buyerIncome','buyerDown','buyerReserve','buyerOtherDebt'];
+
+    function parseLooseNumber(value){
+      if (value == null) return 0;
+      const cleaned = String(value).replace(/,/g, '').replace(/\s+/g, '').trim();
+      if (!cleaned) return 0;
+      const numeric = Number(cleaned);
+      return Number.isFinite(numeric) ? numeric : 0;
+    }
+
+    function formatIntegerLike(value){
+      const numeric = parseLooseNumber(value);
+      return numeric ? Math.round(numeric).toLocaleString() : '';
+    }
+
+    function refreshFormattedNumberFields(){
+      formattedNumberIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const numeric = parseLooseNumber(el.value);
+        el.value = numeric ? Math.round(numeric).toLocaleString() : '';
+      });
+    }
+
+    function bindFormattedNumberFields(){
+      formattedNumberIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el || el.dataset.formatBound === '1') return;
+        el.dataset.formatBound = '1';
+        el.addEventListener('focus', () => {
+          const numeric = parseLooseNumber(el.value);
+          el.value = numeric ? String(Math.round(numeric)) : '';
+        });
+        el.addEventListener('blur', () => {
+          const numeric = parseLooseNumber(el.value);
+          el.value = numeric ? Math.round(numeric).toLocaleString() : '';
+          if (buyerInputFieldMap[id]) saveBuyerInputs();
+        });
+      });
+    }
+
+    function currentSortLabel(){
+      const sortBy = document.getElementById('sortBy').value;
+      if (sortBy === 'priceAsc') return 'Sorted: price low to high';
+      if (sortBy === 'priceDesc') return 'Sorted: price high to low';
+      if (sortBy === 'bedsDesc') return 'Sorted: most bedrooms first';
+      return 'Default order';
+    }
+
     function normalizeBuyerValue(key, value){
-      const numeric = Number(value);
+      const numeric = parseLooseNumber(value);
       if (!Number.isFinite(numeric)) return buyerInputDefaults[key];
       if (key === 'income') return numeric >= 10000 ? numeric : buyerInputDefaults[key];
       if (key === 'rate' || key === 'amort') return numeric > 0 ? numeric : buyerInputDefaults[key];
@@ -1772,11 +1923,13 @@
         const currentLooksInvalid = !currentRaw || !Number.isFinite(currentNumeric) || (key === 'income' && currentNumeric < 10000) || ((key === 'rate' || key === 'amort') && currentNumeric <= 0) || ((key !== 'income' && key !== 'rate' && key !== 'amort') && currentNumeric < 0);
         const sourceValue = key in saved ? saved[key] : buyerInputDefaults[key];
         if (force || currentLooksInvalid){
-          el.value = String(normalizeBuyerValue(key, sourceValue));
+          const normalized = normalizeBuyerValue(key, sourceValue);
+          el.value = formattedNumberIds.includes(id) ? formatIntegerLike(normalized) : String(normalized);
         }
       });
 
       saveBuyerInputs();
+      refreshFormattedNumberFields();
     }
 
     function mortgagePayment(principal, annualRatePct, years){
@@ -1790,10 +1943,10 @@
 
     function buyerSnapshot(){
       return {
-        income:Number(document.getElementById('buyerIncome').value || 0),
-        down:Number(document.getElementById('buyerDown').value || 0),
-        reserve:Number((document.getElementById('buyerReserve') && document.getElementById('buyerReserve').value) || 0),
-        otherDebt:Number((document.getElementById('buyerOtherDebt') && document.getElementById('buyerOtherDebt').value) || 0),
+        income:parseLooseNumber(document.getElementById('buyerIncome').value || 0),
+        down:parseLooseNumber(document.getElementById('buyerDown').value || 0),
+        reserve:parseLooseNumber((document.getElementById('buyerReserve') && document.getElementById('buyerReserve').value) || 0),
+        otherDebt:parseLooseNumber((document.getElementById('buyerOtherDebt') && document.getElementById('buyerOtherDebt').value) || 0),
         rate:Number(document.getElementById('buyerRate').value || 0),
         amort:Number(document.getElementById('buyerAmort').value || 25),
         stress:Number((document.getElementById('buyerStress') && document.getElementById('buyerStress').value) || 1)
@@ -2232,11 +2385,13 @@ Right now the most useful next step is: ${model.nextMove}`;
 
     function filteredListings(){
       const city = document.getElementById('cityFilter').value;
-      const maxPrice = Number(document.getElementById('maxPrice').value || 0);
+      const minPrice = parseLooseNumber(document.getElementById('minPrice').value || 0);
+      const maxPrice = parseLooseNumber(document.getElementById('maxPrice').value || 0);
       const minBeds = Number(document.getElementById('minBeds').value || 0);
       const sortBy = document.getElementById('sortBy').value;
       let result = listings.filter(item => {
         if(city !== 'all' && item.city !== city) return false;
+        if(minPrice && item.price < minPrice) return false;
         if(maxPrice && item.price > maxPrice) return false;
         if(minBeds && item.beds < minBeds) return false;
         return true;
@@ -2311,6 +2466,7 @@ Right now the most useful next step is: ${model.nextMove}`;
       markers.forEach(marker => map.removeLayer(marker));
       markers = [];
       const result = filteredListings();
+      renderFilteredShelf(result);
       result.forEach(item => {
         const analysis = propertyAnalysis(item);
         const selected = state.selectedListingIds.includes(item.id);
@@ -2332,6 +2488,58 @@ Right now the most useful next step is: ${model.nextMove}`;
       if(group.getLayers().length && !applySavedView()){
         map.fitBounds(group.getBounds().pad(.16));
       }
+    }
+
+    function renderFilteredShelf(result){
+      const countChip = document.getElementById('resultsCountChip');
+      const sortChip = document.getElementById('resultsSortChip');
+      const rangeChip = document.getElementById('resultsRangeChip');
+      const shelf = document.getElementById('filteredShelf');
+      if (!countChip || !sortChip || !rangeChip || !shelf) return;
+
+      countChip.textContent = `${result.length} home${result.length === 1 ? '' : 's'} shown`;
+      sortChip.textContent = currentSortLabel();
+      if (result.length){
+        const prices = result.map(item => item.price);
+        rangeChip.textContent = `Visible price range: ${money(Math.min(...prices))} – ${money(Math.max(...prices))}`;
+      } else {
+        rangeChip.textContent = 'Visible price range: —';
+      }
+
+      if (!result.length){
+        shelf.innerHTML = `<div class="selection-empty" style="grid-column:1 / -1;">No homes match the current city, price, and bedroom filters.</div>`;
+        return;
+      }
+
+      shelf.innerHTML = result.slice(0, 6).map((item, idx) => {
+        const analysis = propertyAnalysis(item);
+        const selected = state.selectedListingIds.includes(item.id);
+        return `
+          <article class="result-card">
+            <div class="result-rank">${idx + 1}. ${escapeHtml(currentSortLabel())}</div>
+            <div class="result-title">${escapeHtml(item.address)}</div>
+            <div class="result-meta">${escapeHtml(item.city)} • ${item.beds} bed • ${item.baths} bath • ${item.sqft.toLocaleString()} sqft</div>
+            <div class="result-stats">
+              <div class="result-stat"><div class="k">Price</div><div class="v">${money(item.price)}</div></div>
+              <div class="result-stat"><div class="k">Est. monthly</div><div class="v">${money(analysis.monthly)}</div></div>
+            </div>
+            <div class="result-actions">
+              <button class="btn ${selected ? 'secondary' : 'ghost'}" data-select-home="${item.id}">${selected ? 'Selected on map' : 'Select on map'}</button>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      shelf.querySelectorAll('[data-select-home]').forEach(button => {
+        button.addEventListener('click', () => {
+          const id = Number(button.getAttribute('data-select-home'));
+          toggleSelection(id);
+          const listing = listings.find(item => item.id === id);
+          if (listing && map){
+            map.setView([listing.lat, listing.lng], Math.max(map.getZoom(), 12), { animate:true });
+          }
+        });
+      });
     }
 
     function renderHero(){
@@ -2730,9 +2938,11 @@ Right now the most useful next step is: ${model.nextMove}`;
 
       document.getElementById('resetFilters').addEventListener('click', () => {
         document.getElementById('cityFilter').value = 'all';
+        document.getElementById('minPrice').value = '';
         document.getElementById('maxPrice').value = '';
         document.getElementById('minBeds').value = '';
         document.getElementById('sortBy').value = 'none';
+        refreshFormattedNumberFields();
         mapView = null;
         renderMap();
       });
@@ -2782,9 +2992,20 @@ Right now the most useful next step is: ${model.nextMove}`;
 
     renderCityFilter();
     applyBuyerInputDefaults();
+    bindFormattedNumberFields();
     initMap();
     bindEvents();
+    ['cityFilter','minPrice','maxPrice','minBeds','sortBy'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const eventName = el.tagName === 'SELECT' ? 'change' : 'input';
+      el.addEventListener(eventName, () => {
+        mapView = null;
+        renderMap();
+      });
+    });
     renderAll();
+    refreshFormattedNumberFields();
   </script>
 </body>
 </html>
