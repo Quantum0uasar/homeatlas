@@ -250,32 +250,23 @@
       gap:12px;
     }
     .selection-card{
-    border:1px solid var(--line);
-    background:#fbfdff;
-    border-radius:20px;
-    overflow:hidden;
-    box-shadow:var(--shadow);
-    display:grid;
-    grid-template-rows:auto 1fr;
-  }
+      border:1px solid var(--line);
+      background:#fbfdff;
+      border-radius:20px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      display:grid;
+      grid-template-rows:auto 1fr;
+    }
     .selection-card img{
-    width:100%;
-    aspect-ratio:16 / 9;
-    object-fit:cover;
-    object-position:center;
-    display:block;
-    background:#e8eef8;
-    border-bottom:1px solid #e1e8f4;
-  }
-
-    .selection-card img{
-    width:100%;
-    aspect-ratio:16 / 9;
-    object-fit:cover;
-    object-position:center;
-    display:block;
-    background:#e8eef8;
-  }
+      width:100%;
+      aspect-ratio:16 / 9;
+      object-fit:cover;
+      object-position:center;
+      display:block;
+      background:#e8eef8;
+      border-bottom:1px solid #e1e8f4;
+    }
     .selection-body{
       padding:14px;
       display:grid;
@@ -533,6 +524,110 @@
       font-size:16px;
       font-weight:900;
       line-height:1.2;
+    }
+    .warning-banner{
+      border:1px solid #f2d27a;
+      background:#fff8df;
+      color:#6b4f00;
+      border-radius:16px;
+      padding:12px 14px;
+      font-size:13px;
+      line-height:1.6;
+    }
+    .quick-verdict{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      width:max-content;
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.16);
+      color:#dbeafe;
+    }
+    .action-grid{
+      display:grid;
+      grid-template-columns:1.1fr 1fr 1fr;
+      gap:14px;
+    }
+    .action-card{
+      border:1px solid #dbe5f3;
+      border-radius:20px;
+      background:linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+      padding:16px;
+      display:grid;
+      gap:12px;
+      box-shadow:0 12px 26px rgba(15,23,42,.05);
+    }
+    .action-card h4{ margin:0; font-size:20px; letter-spacing:-.02em; }
+    .action-list{
+      display:grid;
+      gap:8px;
+    }
+    .action-line{
+      border-radius:14px;
+      padding:11px 12px;
+      background:#fbfdff;
+      border:1px dashed #cbd9ee;
+      color:#334155;
+      font-size:13px;
+      line-height:1.58;
+    }
+    .checklist{
+      display:grid;
+      gap:8px;
+    }
+    .check-row{
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      gap:10px;
+      align-items:center;
+      border:1px solid #e1e8f4;
+      background:#fbfdff;
+      border-radius:14px;
+      padding:10px 12px;
+      font-size:13px;
+    }
+    .check-row.pass{ border-color:#9ae6b4; background:#ecfdf3; }
+    .check-row.warn{ border-color:#f2d27a; background:#fff8df; }
+    .check-row.fail{ border-color:#f3b6bd; background:#fff0f1; }
+    .check-icon{
+      width:22px;
+      height:22px;
+      border-radius:999px;
+      display:grid;
+      place-items:center;
+      font-weight:900;
+      font-size:12px;
+      background:#e2e8f0;
+      color:#0f172a;
+    }
+    .check-row.pass .check-icon{ background:#22c55e; color:white; }
+    .check-row.warn .check-icon{ background:#f59e0b; color:white; }
+    .check-row.fail .check-icon{ background:#ef4444; color:white; }
+    .check-note{ color:#64748b; font-size:12px; }
+    .coach-steps{
+      display:grid;
+      gap:10px;
+    }
+    .coach-step{
+      border-radius:16px;
+      border:1px solid #dbe5f3;
+      background:#fbfdff;
+      padding:12px 14px;
+      font-size:13px;
+      line-height:1.6;
+      color:#334155;
+    }
+    .coach-step strong{ color:#0f172a; }
+    .mini-note{
+      font-size:12px;
+      color:#64748b;
+      line-height:1.55;
     }
 
     .copilot-top{
@@ -1126,11 +1221,11 @@
       .split, .tracker-top, .three-col, .copilot-grid{ grid-template-columns:1fr; }
       .filters{ grid-template-columns:1fr 1fr; }
       .buyer-filters{ grid-template-columns:1fr 1fr; }
-      .selection-grid, .reality-grid, .reality-hero, .buyer-quick-grid{ grid-template-columns:1fr 1fr; }
+      .selection-grid, .reality-grid, .reality-hero, .buyer-quick-grid, .action-grid{ grid-template-columns:1fr 1fr; }
     }
     @media (max-width: 980px){
       body{ padding:14px; }
-      .hero-grid, .filters, .summary-grid, .selection-grid, .decision-grid, .decision-slider-grid, .decision-stats{ grid-template-columns:1fr; }
+      .hero-grid, .filters, .summary-grid, .selection-grid, .decision-grid, .decision-slider-grid, .decision-stats, .action-grid{ grid-template-columns:1fr; }
       #homesMap{ height:430px; }
       .journey-grid, .exception-area{
         grid-template-columns:1fr;
@@ -1171,7 +1266,7 @@
         </div>
         <div class="hero-card">
           <h3>What makes it stand out</h3>
-          <p>This version is intentionally laid out like a polished product demo: clean hierarchy, premium spacing, map-first exploration, route-aware borrower tracking, official TD guidance links, and a refined journey bar that no longer overlaps.</p>
+          <p>This version is intentionally laid out like a polished product demo: clean hierarchy, premium spacing, map-first exploration, route-aware borrower tracking, TD and FCAC guidance links, and a refined journey bar that no longer overlaps.</p>
           <div class="resource-links">
             <a class="resource-link" href="https://www.td.com/ca/en/personal-banking/products/mortgages/online-mortgage-journey" target="_blank" rel="noopener noreferrer">TD online mortgage journey ↗</a>
             <a class="resource-link" href="https://www.td.com/ca/en/personal-banking/products/mortgages/first-time-home-buyer/pre-approval" target="_blank" rel="noopener noreferrer">TD pre-approval ↗</a>
@@ -1231,31 +1326,31 @@
             <div class="filters buyer-filters" style="margin-top:0;">
               <div>
                 <label class="label" for="buyerIncome">Annual income</label>
-                <input class="input" id="buyerIncome" type="number" value="165000" />
+                <input class="input" id="buyerIncome" type="number" autocomplete="off" value="165000" />
               </div>
               <div>
                 <label class="label" for="buyerDown">Down payment</label>
-                <input class="input" id="buyerDown" type="number" value="220000" />
+                <input class="input" id="buyerDown" type="number" autocomplete="off" value="220000" />
               </div>
               <div>
                 <label class="label" for="buyerReserve">Extra cash reserve</label>
-                <input class="input" id="buyerReserve" type="number" value="45000" />
+                <input class="input" id="buyerReserve" type="number" autocomplete="off" value="45000" />
               </div>
               <div>
                 <label class="label" for="buyerOtherDebt">Other monthly debts</label>
-                <input class="input" id="buyerOtherDebt" type="number" value="0" />
+                <input class="input" id="buyerOtherDebt" type="number" autocomplete="off" value="0" />
               </div>
               <div>
                 <label class="label" for="buyerRate">Interest rate %</label>
-                <input class="input" id="buyerRate" type="number" step="0.01" value="5.09" />
+                <input class="input" id="buyerRate" type="number" autocomplete="off" step="0.01" value="5.09" />
               </div>
               <div>
                 <label class="label" for="buyerAmort">Amortization years</label>
-                <input class="input" id="buyerAmort" type="number" value="25" />
+                <input class="input" id="buyerAmort" type="number" autocomplete="off" value="25" />
               </div>
               <div>
-                <label class="label" for="buyerStress">Stress test +%</label>
-                <input class="input" id="buyerStress" type="number" step="0.1" value="1.0" />
+                <label class="label" for="buyerStress">Rate shock scenario +%</label>
+                <input class="input" id="buyerStress" type="number" autocomplete="off" step="0.1" value="1.0" />
               </div>
             </div>
             <div class="compare-band" id="compareBand" style="margin-top:12px;"></div>
@@ -1269,7 +1364,7 @@
       <div class="copilot-top">
         <div>
           <h2>HomeAtlas Reality Check</h2>
-          <p class="subtle">Choose one or two homes, enter a buyer profile, and let HomeAtlas turn the shortlist into a real purchase read: comfort ceiling, offer confidence, closing pressure, and what to do next.</p>
+          <p class="subtle">Choose one or two homes, enter a buyer profile, and let HomeAtlas turn the shortlist into a real purchase read: comfort ceiling, offer-readiness, closing pressure, and what to do next.</p>
         </div>
         <div class="copilot-badges" id="copilotBadges"></div>
       </div>
@@ -1277,17 +1372,19 @@
       <div class="copilot-grid">
         <div class="copilot-main">
           <div class="reality-hero" id="realityHero"></div>
+          <div class="action-grid" id="actionGrid"></div>
           <div class="reality-grid" id="realityGrid"></div>
         </div>
 
         <aside class="guide-shell">
           <div class="guide-head">
             <span class="decision-kicker">HomeAtlas guide</span>
-            <h3 style="margin:0;">AI-style buyer coach</h3>
-            <p class="subtle" style="margin:0;">Tap a prompt and HomeAtlas will explain the current situation in plain language using the selected homes and buyer snapshot.</p>
+            <h3 style="margin:0;">Buyer coach</h3>
+            <p class="subtle" style="margin:0;">Tap a prompt and HomeAtlas explains the current situation in plain language using the selected homes and buyer snapshot.</p>
           </div>
           <div class="guide-prompts" id="guidePrompts"></div>
           <div class="guide-thread" id="guideThread"></div>
+          <div class="coach-steps" id="coachSteps"></div>
           <div class="guide-footer">
             <a class="resource-link" href="https://www.canada.ca/en/financial-consumer-agency/services/buying-home.html" target="_blank" rel="noopener noreferrer">FCAC buying a home ↗</a>
             <a class="resource-link" href="https://itools-ioutils.fcac-acfc.gc.ca/MQ-HQ/MQ-EAPH-eng.aspx" target="_blank" rel="noopener noreferrer">Mortgage qualifier tool ↗</a>
@@ -1397,33 +1494,33 @@
       </div>
 
       <div class="panel">
-        <h3>Official TD public guidance links</h3>
+        <h3>TD and FCAC public guidance links</h3>
         <div class="resource-grid">
           <div class="resource-card">
-            <a href="https://www.td.com/ca/en/personal-banking/products/mortgages/online-mortgage-journey" target="_blank" rel="noopener noreferrer">Online mortgage journey ↗</a>
+            <a href="https://www.td.com/ca/en/personal-banking/products/mortgages/online-mortgage-journey" target="_blank" rel="noopener noreferrer">TD online mortgage journey ↗</a>
             <div class="subtle">TD’s online mortgage journey highlights immediate online pre-approval responses and a rate hold for up to 120 days, subject to conditions.</div>
           </div>
           <div class="resource-card">
-            <a href="https://www.td.com/ca/en/personal-banking/products/mortgages/first-time-home-buyer/pre-approval" target="_blank" rel="noopener noreferrer">Mortgage pre-approval ↗</a>
-            <div class="subtle">Public guidance explains that a pre-approval can outline a rate, term, and principal amount, while still being subject to conditions.</div>
+            <a href="https://www.td.com/ca/en/personal-banking/products/mortgages/first-time-home-buyer/pre-approval" target="_blank" rel="noopener noreferrer">TD mortgage pre-approval ↗</a>
+            <div class="subtle">TD’s public pre-approval guidance explains the rate hold, online application flow, and that conditions still apply.</div>
           </div>
           <div class="resource-card">
-            <a href="https://www.td.com/ca/en/personal-banking/products/mortgages/financing-between-homes" target="_blank" rel="noopener noreferrer">Bridge financing ↗</a>
+            <a href="https://www.canada.ca/en/financial-consumer-agency/services/buying-home.html" target="_blank" rel="noopener noreferrer">FCAC buying a home ↗</a>
+            <div class="subtle">FCAC’s home-buying guide covers saving, incentives, pre-approval, home search, and planning for upfront closing costs.</div>
+          </div>
+          <div class="resource-card">
+            <a href="https://www.canada.ca/en/financial-consumer-agency/services/mortgages/preparing-mortgage.html" target="_blank" rel="noopener noreferrer">FCAC preparing to get a mortgage ↗</a>
+            <div class="subtle">FCAC explains the 39% housing-cost guide, the 44% total-debt guide, and the stress-test logic used by federally regulated banks.</div>
+          </div>
+          <div class="resource-card">
+            <a href="https://www.td.com/ca/en/personal-banking/products/mortgages/financing-between-homes" target="_blank" rel="noopener noreferrer">TD bridge financing ↗</a>
             <div class="subtle">TD’s bridge financing page explains it can help when selling and buying closing dates do not line up, typically up to 90 days.</div>
-          </div>
-          <div class="resource-card">
-            <a href="https://www.td.com/ca/en/personal-banking/products/mortgages/renew-refinance/what-is-refinancing" target="_blank" rel="noopener noreferrer">What is refinancing? ↗</a>
-            <div class="subtle">Refinancing guidance focuses on goals like debt consolidation, renovations, or using available equity.</div>
-          </div>
-          <div class="resource-card">
-            <a href="https://www.td.com/ca/en/personal-banking/products/mortgages/renew-refinance/how-to-renew" target="_blank" rel="noopener noreferrer">Digital renewal process ↗</a>
-            <div class="subtle">Renewal guidance shows the digital renewal flow and points borrowers toward term selection and agreement review.</div>
           </div>
         </div>
       </div>
     </section>
 
-    <div class="footer-note">Created by Jaideep Singh • HomeAtlas demo • refined portfolio layout • map-first selection • route-aware mortgage journey bar</div>
+    <div class="footer-note">Created by Jaideep Singh — HomeAtlas demo with refined portfolio layout, map-first selection, and a route-aware mortgage journey bar. Built for learning; not affiliated with or endorsed by TD or FCAC.</div>
   </main>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -1561,6 +1658,24 @@
     const money = n => `$${Math.round(Number(n || 0)).toLocaleString()}`;
     const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
     const nowLabel = () => new Date().toLocaleString([], { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' });
+    const pct = n => `${(Number(n || 0) * 100).toFixed(1)}%`;
+    const signedMoney = n => `${Number(n || 0) < 0 ? '-' : ''}$${Math.round(Math.abs(Number(n || 0))).toLocaleString()}`;
+
+    function qualifyingRate(ratePct){
+      return Math.max(Number(ratePct || 0) + 2, 5.25);
+    }
+
+    function recommendationTone(verdict){
+      if (verdict === 'Offer-ready') return 'pass';
+      if (verdict === 'Almost ready') return 'warn';
+      if (verdict === 'Stretch') return 'warn';
+      return 'fail';
+    }
+
+    function smartTargetPrice(comfortCeiling, listingPrice){
+      if (!comfortCeiling) return Math.max(0, listingPrice * 0.8);
+      return Math.min(listingPrice, comfortCeiling);
+    }
 
     const placeholderSvg = text => `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600">
@@ -1602,6 +1717,68 @@
 
     const listings = parseCsv(csvData);
 
+    const buyerInputDefaults = {
+      income:165000,
+      down:220000,
+      reserve:45000,
+      otherDebt:0,
+      rate:5.09,
+      amort:25,
+      stress:1.0
+    };
+
+    const buyerInputFieldMap = {
+      buyerIncome:'income',
+      buyerDown:'down',
+      buyerReserve:'reserve',
+      buyerOtherDebt:'otherDebt',
+      buyerRate:'rate',
+      buyerAmort:'amort',
+      buyerStress:'stress'
+    };
+
+    function normalizeBuyerValue(key, value){
+      const numeric = Number(value);
+      if (!Number.isFinite(numeric)) return buyerInputDefaults[key];
+      if (key === 'income') return numeric >= 10000 ? numeric : buyerInputDefaults[key];
+      if (key === 'rate' || key === 'amort') return numeric > 0 ? numeric : buyerInputDefaults[key];
+      if (key === 'stress') return numeric >= 0 ? numeric : buyerInputDefaults[key];
+      return numeric >= 0 ? numeric : buyerInputDefaults[key];
+    }
+
+    function saveBuyerInputs(){
+      const payload = {};
+      Object.entries(buyerInputFieldMap).forEach(([id, key]) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        payload[key] = normalizeBuyerValue(key, el.value);
+      });
+      localStorage.setItem(`${storageKey}_buyer_inputs`, JSON.stringify(payload));
+    }
+
+    function applyBuyerInputDefaults(force=false){
+      let saved = {};
+      try{
+        saved = JSON.parse(localStorage.getItem(`${storageKey}_buyer_inputs`) || '{}') || {};
+      }catch(e){
+        saved = {};
+      }
+
+      Object.entries(buyerInputFieldMap).forEach(([id, key]) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const currentRaw = el.value;
+        const currentNumeric = Number(currentRaw);
+        const currentLooksInvalid = !currentRaw || !Number.isFinite(currentNumeric) || (key === 'income' && currentNumeric < 10000) || ((key === 'rate' || key === 'amort') && currentNumeric <= 0) || ((key !== 'income' && key !== 'rate' && key !== 'amort') && currentNumeric < 0);
+        const sourceValue = key in saved ? saved[key] : buyerInputDefaults[key];
+        if (force || currentLooksInvalid){
+          el.value = String(normalizeBuyerValue(key, sourceValue));
+        }
+      });
+
+      saveBuyerInputs();
+    }
+
     function mortgagePayment(principal, annualRatePct, years){
       const p = Number(principal || 0);
       const r = Number(annualRatePct || 0) / 100 / 12;
@@ -1624,40 +1801,35 @@
     }
 
     function propertyAnalysis(listing) {
-  const buyer = buyerSnapshot();
+      const buyer = buyerSnapshot();
+      const principal = Math.max(0, listing.price - buyer.down);
+      const monthly = mortgagePayment(principal, buyer.rate, buyer.amort);
+      const monthlyIncome = buyer.income / 12;
 
-  const principal = Math.max(0, listing.price - buyer.down);
-  const monthly = mortgagePayment(principal, buyer.rate, buyer.amort);
+      const housingCost = monthly + listing.price * 0.00075 + 280;
+      const totalDebt = housingCost + (buyer.otherDebt || 0);
 
-  const monthlyIncome = buyer.income / 12;
+      const housingRatio = monthlyIncome > 0 ? housingCost / monthlyIncome : 0;
+      const totalDebtRatio = monthlyIncome > 0 ? totalDebt / monthlyIncome : 0;
 
-  // Housing cost: mortgage + simple estimate for taxes/fees
-  const housingCost = monthly + listing.price * 0.00075 + 280;
+      let fit = 'Needs profile';
+      if (monthlyIncome > 0){
+        if (totalDebtRatio <= 0.32) fit = 'Strong fit';
+        else if (totalDebtRatio <= 0.42) fit = 'Possible with review';
+        else if (totalDebtRatio <= 0.52) fit = 'Stretch';
+        else fit = 'Tight';
+      }
 
-  // Total monthly debt = housing + other debts from the input
-  const totalDebt = housingCost + (buyer.otherDebt || 0);
-
-  const housingRatio = monthlyIncome > 0 ? housingCost / monthlyIncome : 1;
-  const totalDebtRatio = monthlyIncome > 0 ? totalDebt / monthlyIncome : 1;
-
-  let fit = 'Stretch';
-
-  // Fit decision based on total debt ratio (FCAC-style thresholds)
-  if (totalDebtRatio <= 0.32) fit = 'Strong fit';
-  else if (totalDebtRatio <= 0.42) fit = 'Possible with review';
-  else if (totalDebtRatio <= 0.52) fit = 'Stretch';
-  else fit = 'Tight';
-
-  return {
-    principal,
-    monthly,
-    carrying: housingCost,
-    ratio: totalDebtRatio,
-    housingRatio,
-    totalDebtRatio,
-    fit,
-  };
-}
+      return {
+        principal,
+        monthly,
+        carrying: housingCost,
+        ratio: totalDebtRatio,
+        housingRatio,
+        totalDebtRatio,
+        fit,
+      };
+    }
 
 
     function minimumDownPayment(price){
@@ -1803,42 +1975,65 @@
       const analysis = propertyAnalysis(listing);
       const closing = estimatedClosingCosts(listing);
       const minimumDown = minimumDownPayment(listing.price);
-      const monthlyIncome = Math.max(1, buyer.income / 12);
-      const housingRatio = analysis.carrying / monthlyIncome;
-      const totalDebtRatio = (analysis.carrying + buyer.otherDebt) / monthlyIncome;
-      const cashToClose = buyer.down + closing.total;
-      const extraCashLeft = buyer.reserve - closing.total;
-      const stressRate = buyer.rate + Math.max(0, buyer.stress || 0);
-      const stressedCarrying = mortgagePayment(Math.max(0, listing.price - buyer.down), stressRate, buyer.amort) + (listing.price * 0.00075) + 280;
-      const stressDelta = stressedCarrying - analysis.carrying;
-      const stressHousingRatio = stressedCarrying / monthlyIncome;
-      const appraisalGapCash = listing.price * 0.05;
+      const monthlyIncome = buyer.income > 0 ? buyer.income / 12 : 0;
+      const housingRatio = monthlyIncome > 0 ? analysis.carrying / monthlyIncome : 0;
+      const totalDebtRatio = monthlyIncome > 0 ? (analysis.carrying + buyer.otherDebt) / monthlyIncome : 0;
+
+      const qualifyingRateValue = qualifyingRate(buyer.rate);
+      const qualifyingMonthly = mortgagePayment(Math.max(0, listing.price - buyer.down), qualifyingRateValue, buyer.amort) + (listing.price * 0.00075) + 280;
+      const qualifyingHousingRatio = monthlyIncome > 0 ? qualifyingMonthly / monthlyIncome : 0;
+      const qualifyingTdsRatio = monthlyIncome > 0 ? (qualifyingMonthly + buyer.otherDebt) / monthlyIncome : 0;
+
+      const shockRate = buyer.rate + Math.max(0, buyer.stress || 0);
+      const shockMonthly = mortgagePayment(Math.max(0, listing.price - buyer.down), shockRate, buyer.amort) + (listing.price * 0.00075) + 280;
+      const shockDelta = shockMonthly - analysis.carrying;
+
+      const requiredCashToClose = minimumDown + closing.total;
+      const liquidCash = buyer.down + buyer.reserve;
+      const cashAfterClose = liquidCash - requiredCashToClose;
+      const cashGap = Math.max(0, requiredCashToClose - liquidCash);
+      const extraDownToMin = Math.max(0, minimumDown - buyer.down);
+
       const monthlyOutflow = Math.max(1, analysis.carrying + buyer.otherDebt);
-      const runwayMonths = extraCashLeft / monthlyOutflow;
+      const runwayMonths = cashAfterClose / monthlyOutflow;
       const comfortCeiling = binarySearchComfortCeiling();
-      const overComfort = listing.price - comfortCeiling;
-      const downGap = Math.max(0, minimumDown - buyer.down);
-      const reserveGap = Math.max(0, closing.total - buyer.reserve);
+      const priceGapToComfort = Math.max(0, listing.price - comfortCeiling);
+      const appraisalGapCash = listing.price * 0.05;
 
-      let score = 98;
-      score -= Math.max(0, (housingRatio - 0.39) * 180);
-      score -= Math.max(0, (totalDebtRatio - 0.44) * 160);
-      if (buyer.down < minimumDown) score -= 24;
-      if (extraCashLeft < 0) score -= 18;
-      else if (extraCashLeft < 10000) score -= 8;
-      if (stressHousingRatio > 0.44) score -= Math.min(16, (stressHousingRatio - 0.44) * 120);
-      score = Math.max(12, Math.min(98, Math.round(score)));
+      let score = 100;
+      if (extraDownToMin > 0) score -= 35;
+      if (cashGap > 0) score -= Math.min(25, cashGap / 4000);
+      if (housingRatio > 0.39) score -= Math.min(16, (housingRatio - 0.39) * 140);
+      if (totalDebtRatio > 0.44) score -= Math.min(18, (totalDebtRatio - 0.44) * 160);
+      if (qualifyingTdsRatio > 0.44) score -= Math.min(12, (qualifyingTdsRatio - 0.44) * 100);
+      if (cashAfterClose < 0) score -= 10;
+      else if (cashAfterClose < Math.max(10000, monthlyOutflow * 3)) score -= 6;
+      if (shockDelta > 400) score -= 5;
+      score = Math.max(5, Math.min(98, Math.round(score)));
 
-      let verdict = 'Safe to pursue';
-      if (score < 80) verdict = 'Possible with caution';
-      if (score < 65) verdict = 'Tight';
-      if (score < 50) verdict = 'High risk';
+      let verdict = 'Offer-ready';
+      if (extraDownToMin > 0 || cashGap > 0 || totalDebtRatio > 0.52) verdict = 'Not ready';
+      else if (qualifyingTdsRatio > 0.44 || cashAfterClose < 0) verdict = 'Stretch';
+      else if (cashAfterClose < Math.max(10000, monthlyOutflow * 3) || shockDelta > 400) verdict = 'Almost ready';
 
-      let mainFlag = 'You still have room to move through pre-approval and closing without the file feeling over-pressured.';
-      if (downGap > 0) mainFlag = `This home needs about ${money(downGap)} more down payment just to hit the minimum requirement.`;
-      else if (reserveGap > 0) mainFlag = `Closing costs are about ${money(reserveGap)} above the extra reserve entered, so the file may feel cash-tight on closing day.`;
-      else if (overComfort > 0) mainFlag = `This home sits about ${money(overComfort)} above the comfort ceiling implied by the current income, debt, rate, and reserve inputs.`;
-      else if (stressDelta > 250) mainFlag = `A ${buyer.stress.toFixed(1)}% rate shock adds about ${money(stressDelta)} per month, so keeping breathing room matters here.`;
+      let shortReason = 'it clears the main cash and debt-service checks better than the other selected options';
+      let mainFlag = 'The file clears the main budget, cash-to-close, and qualifying-rate checks.';
+      if (extraDownToMin > 0){
+        shortReason = `the minimum down payment is still short by about ${money(extraDownToMin)}`;
+        mainFlag = `This home needs about ${money(extraDownToMin)} more down payment just to hit the minimum requirement.`;
+      } else if (cashGap > 0){
+        shortReason = `cash to close is still short by about ${money(cashGap)}`;
+        mainFlag = `This file needs about ${money(cashGap)} more total cash to cover the minimum down payment and estimated closing costs.`;
+      } else if (qualifyingTdsRatio > 0.44){
+        shortReason = `the file is still above the 44% total-debt guide at the qualifying rate`;
+        mainFlag = `At the qualifying rate of ${qualifyingRateValue.toFixed(2)}%, this file still reads above the 44% total-debt guide.`;
+      } else if (priceGapToComfort > 0){
+        shortReason = `the home is about ${money(priceGapToComfort)} above the current comfort ceiling`;
+        mainFlag = `This home sits about ${money(priceGapToComfort)} above the comfort ceiling implied by the current income, debt, and cash inputs.`;
+      } else if (shockDelta > 400){
+        shortReason = `a rate shock would raise carrying cost by about ${money(shockDelta)} per month`;
+        mainFlag = `A ${buyer.stress.toFixed(1)}% rate-shock scenario adds about ${money(shockDelta)} per month, so the file has less breathing room than it first appears.`;
+      }
 
       return {
         analysis,
@@ -1846,18 +2041,23 @@
         minimumDown,
         housingRatio,
         totalDebtRatio,
-        cashToClose,
-        extraCashLeft,
-        stressDelta,
-        stressHousingRatio,
+        qualifyingRate: qualifyingRateValue,
+        qualifyingHousingRatio,
+        qualifyingTdsRatio,
+        requiredCashToClose,
+        liquidCash,
+        cashAfterClose,
+        cashGap,
+        extraDownToMin,
+        shockDelta,
         appraisalGapCash,
         runwayMonths,
+        monthlyOutflow,
         comfortCeiling,
-        overComfort,
-        downGap,
-        reserveGap,
+        priceGapToComfort,
         score,
         verdict,
+        shortReason,
         mainFlag
       };
     }
@@ -1867,114 +2067,117 @@
       const buyer = buyerSnapshot();
       const comfortCeiling = binarySearchComfortCeiling();
       const metrics = selected.map(listing => ({ listing, metrics: realityMetrics(listing) }));
-      const ranked = metrics.slice().sort((a,b) => b.metrics.score - a.metrics.score);
+      const ranked = metrics.slice().sort((a,b) => {
+        if (b.metrics.score !== a.metrics.score) return b.metrics.score - a.metrics.score;
+        return a.listing.price - b.listing.price;
+      });
       const best = ranked[0] || null;
-      const currentStep = !buyer.income || !buyer.down ? 0 : !selected.length ? 2 : 4;
-      const nextMove = !buyer.income || !buyer.down
-        ? 'Complete the buyer profile so HomeAtlas can size the budget properly.'
-        : !selected.length
-          ? 'Choose homes on the map, then compare them against your comfort ceiling.'
-          : (best && best.metrics.verdict === 'Safe to pursue')
-            ? `Get preapproved before going further on ${best.listing.address}.`
-            : 'Tighten the budget, raise the down payment, or pick a lower-stress home before moving ahead.';
-      return {
-        selected,
-        metrics,
-        ranked,
-        best,
-        comfortCeiling,
-        nextMove,
-        currentStep
-      };
-    }
+      const warnings = [];
+      if (buyer.income > 0 && buyer.income < 10000) warnings.push('Annual income looks unusually low. Double-check that you entered a full annual number, not a monthly amount or a shortened value.');
+      if (buyer.down > 0 && buyer.down < 5000) warnings.push('Down payment looks unusually low for a Toronto purchase. Make sure you entered the full cash amount available for the down payment.');
 
+      const nextMove = !buyer.income || !buyer.down
+        ? 'Complete the buyer profile so HomeAtlas can size the file properly.'
+        : !selected.length
+          ? 'Select one or two homes on the map to compare offer-readiness, closing cash, and next actions.'
+          : !best
+            ? 'Select a home to start.'
+            : best.metrics.extraDownToMin > 0
+              ? `Raise the down payment by about ${money(best.metrics.extraDownToMin)} before trying to move ahead on ${best.listing.address}.`
+              : best.metrics.cashGap > 0
+                ? `Build about ${money(best.metrics.cashGap)} more liquid cash to cover closing and keep the file stable.`
+                : best.metrics.qualifyingTdsRatio > 0.44
+                  ? `Take ${best.listing.address} into pre-approval only after lowering the target price or other monthly debt.`
+                  : `Take ${best.listing.address} into pre-approval and verify the document pack before making an offer.`;
+
+      const currentStep = !buyer.income || !buyer.down ? 0 : !selected.length ? 3 : 4;
+      return { selected, buyer, metrics, ranked, best, comfortCeiling, warnings, nextMove, currentStep };
+    }
     function buildGuideAnswer(mode){
       const model = buildRealityCheckModel();
-      const buyer = buyerSnapshot();
       const primary = model.best;
       if (!primary){
-        return 'Start by entering the buyer profile and selecting a home. Once you do, HomeAtlas will turn the shortlist into a real purchase read: comfort ceiling, closing pressure, rate shock, and next steps.';
+        return 'Start with the buyer profile and one or two selected homes. Then HomeAtlas can turn the shortlist into a real purchase read: offer-readiness, cash-to-close, rate-shock pressure, and what to do next.';
       }
 
-      const top = primary.metrics;
-      if (mode === 'preapproval'){
-        return `Before getting serious about offers, the clean next step is pre-approval. Based on the current profile, I would walk in with ID, income proof, a debt snapshot, and clear proof of the down payment and extra reserve.
+      const buyer = buyerSnapshot();
+      const m = primary.metrics;
+      const targetPrice = smartTargetPrice(model.comfortCeiling, primary.listing.price);
 
-For ${primary.listing.address}, the current monthly ownership cost is about ${money(top.analysis.carrying)} and the file currently reads as ${top.verdict.toLowerCase()}. If you want the buying process to feel smoother, get the pre-approval done before emotionally committing to the home.`;
+      if (mode === 'why'){
+        const blockers = [];
+        if (m.extraDownToMin > 0) blockers.push(`minimum down payment short by about ${money(m.extraDownToMin)}`);
+        if (m.cashGap > 0) blockers.push(`cash-to-close short by about ${money(m.cashGap)}`);
+        if (m.qualifyingTdsRatio > 0.44) blockers.push(`debt-service fit is above the 44% total-debt guide at the qualifying rate`);
+        if (!blockers.length) blockers.push('the file clears the main budget, cash, and qualifying-rate checks');
+        return `${primary.listing.address} currently reads as ${m.verdict.toLowerCase()}. The main reason is ${blockers.join(', ')}.
+
+HomeAtlas is not just asking whether you like the home. It is asking whether the file still works after minimum down payment, closing cash, and qualifying-rate pressure are applied.`;
       }
-      if (mode === 'closing'){
-        return `For ${primary.listing.address}, estimated Toronto closing costs are about ${money(top.closing.total)} before moving costs or furniture. That means the file wants roughly ${money(top.cashToClose)} in total cash between down payment and closing.
+      if (mode === 'documents'){
+        return `For pre-approval, bring identification, proof of employment, proof you can cover the down payment and closing costs, information on other assets, and information on debts or financial obligations. TD also lists address and employment-history details for in-branch pre-approval meetings.
 
-After covering those closing costs, the extra reserve entered leaves ${top.extraCashLeft >= 0 ? money(top.extraCashLeft) : '-' + money(Math.abs(top.extraCashLeft))}. This is the number that tells you whether the buyer reaches the front door feeling stable or squeezed.`;
+For ${primary.listing.address}, I would not move to offer mode until that packet is clean and the cash-to-close plan is believable on paper.`;
       }
-      if (mode === 'risk'){
-        return `Here is the stress read on ${primary.listing.address}: a ${buyer.stress.toFixed(1)}% rate bump adds about ${money(top.stressDelta)} per month, and a 5% appraisal shortfall could mean roughly ${money(top.appraisalGapCash)} of extra cash pressure.
+      if (mode === 'cash'){
+        return `For ${primary.listing.address}, HomeAtlas estimates about ${money(m.requiredCashToClose)} is needed between the down payment and Toronto closing costs. With the current numbers, cash left after closing is ${signedMoney(m.cashAfterClose)}.
 
-That does not mean the deal breaks automatically, but it shows where the file is fragile. The stronger move is choosing a home that still feels manageable after the first thing goes wrong.`;
+This is the number most buyers miss. A home can look affordable on the payment and still feel bad on closing day if the cash plan is thin.`;
       }
-      if (mode === 'steps'){
-        return `The official path is simple: save and prepare, check programs, get preapproved, find the home, choose the mortgage, and plan closing costs. Based on what is entered now, your most useful next move is: ${model.nextMove}
+      if (mode === 'fix'){
+        return `The cleanest way to flip the answer is to move the file closer to ${money(targetPrice)} or add about ${money(Math.max(m.extraDownToMin, m.cashGap))} more liquid cash. If the problem is debt-service pressure, lowering other monthly debt or choosing the lower-carry home will help faster than chasing cosmetic differences between listings.
 
-If you are comparing homes already, do not stop at list price. Look at monthly carry, closing pressure, and what cash is left after closing day.`;
+Also check whether FHSA room or Home Buyers' Plan eligibility can reduce the cash squeeze before you stretch on price.`;
       }
-      return `Based on ${money(buyer.income)} income, ${money(buyer.down)} down payment, and ${money(buyer.reserve)} extra reserve, HomeAtlas puts the current comfort ceiling near ${money(model.comfortCeiling)}. ${primary.listing.address} now scores ${top.score}/100 with a verdict of ${top.verdict.toLowerCase()}.
+      return `This week, keep the move simple: 1) confirm the real buyer profile, 2) pick the stronger of the selected homes, and 3) take that file into pre-approval with a clean document pack.
 
-The point is not just “can you buy it?” — it is “can you still feel okay after closing costs, debt pressure, and a rate shock?” Right now the next best move is: ${model.nextMove}`;
+Right now the most useful next step is: ${model.nextMove}`;
     }
-
     function buildPathCards(){
       const model = buildRealityCheckModel();
       const buyer = buyerSnapshot();
       const selectedCount = model.selected.length;
-      const completed = [];
-      if (buyer.down > 0 && buyer.income > 0) completed.push(0);
-      if (buyer.down > 0) completed.push(1);
-      if (buyer.income > 0 && buyer.down > 0) completed.push(2);
-      if (selectedCount > 0) completed.push(3);
-      if (selectedCount > 0) completed.push(4);
-      if (selectedCount > 0) completed.push(5);
-      const isDone = idx => completed.includes(idx) && idx < model.currentStep;
-      const isNow = idx => idx === model.currentStep || (model.currentStep >= 5 && idx === 5);
+      const best = model.best;
+      const targetPrice = smartTargetPrice(model.comfortCeiling, best ? best.listing.price : 0);
 
       return [
         {
-          title:'Save & prepare',
-          official:'Build the down payment and keep savings protected and accessible.',
-          translate:`HomeAtlas says: your entered down payment is ${money(buyer.down)} and extra reserve is ${money(buyer.reserve)}.`
+          title:'Budget & credit',
+          official:'Check your credit report and set a budget before shopping for a mortgage.',
+          translate:`HomeAtlas says: annual income is ${money(buyer.income)} and the current comfort ceiling is around ${money(model.comfortCeiling)}.`
         },
         {
-          title:'Programs & incentives',
-          official:'Check FHSA, HBP, rebates, and home-buyer incentives before stretching the budget.',
-          translate:'HomeAtlas says: do the incentive check before you commit, because tax-advantaged savings and credits change real cash pressure.'
+          title:'Down payment plan',
+          official:'Build the down payment and keep separate cash for closing costs.',
+          translate:`HomeAtlas says: down payment entered is ${money(buyer.down)} and extra reserve is ${money(buyer.reserve)}.`
         },
         {
           title:'Get preapproved',
           official:'Get preapproved before seriously shopping so your budget is grounded.',
-          translate:`HomeAtlas says: your comfort ceiling is around ${money(model.comfortCeiling)}, so that is the number to carry into pre-approval conversations.`
+          translate:`HomeAtlas says: carry ${money(targetPrice)} into pre-approval conversations, not just the highest asking price you like.`
         },
         {
-          title:'Find the home',
-          official:'Research homes, use online tools, and decide whether a realtor helps your search.',
-          translate:`HomeAtlas says: you currently have ${selectedCount} home${selectedCount === 1 ? '' : 's'} selected for comparison.`
+          title:'Compare real costs',
+          official:'Compare homes using the mortgage, debt load, and closing costs together.',
+          translate:`HomeAtlas says: you currently have ${selectedCount} selected home${selectedCount === 1 ? '' : 's'} and the best current fit is ${best ? best.listing.address : '—'}.`
         },
         {
-          title:'Choose the mortgage',
-          official:'Shop around and understand product features before choosing the loan.',
-          translate:`HomeAtlas says: compare the homes against all-in monthly carry, not only the asking price.`
+          title:'Offer-readiness',
+          official:'Do not jump from liking a home to making an offer without checking readiness.',
+          translate:`HomeAtlas says: the current read is ${best ? best.metrics.verdict : 'not enough data'} and the next move is ${model.nextMove}`
         },
         {
-          title:'Plan closing costs',
-          official:'Be ready for upfront costs on closing day, not just the mortgage itself.',
-          translate:`HomeAtlas says: the best current option needs about ${model.best ? money(model.best.metrics.closing.total) : '—'} in estimated Toronto closing costs.`
+          title:'Plan closing day',
+          official:'Be ready for upfront costs such as legal fees, title insurance, inspection, and tax adjustments.',
+          translate:`HomeAtlas says: the best current option needs about ${best ? money(best.metrics.closing.total) : '—'} in estimated Toronto closing costs before moving or furnishing.`
         }
       ].map((card, idx) => ({
         ...card,
         index: idx + 1,
-        status: isDone(idx) ? 'Done' : ((idx === model.currentStep || (model.currentStep > 5 && idx === 5)) ? 'Now' : 'Soon'),
-        now: idx === model.currentStep || (model.currentStep > 5 && idx === 5)
+        status: idx < model.currentStep ? 'Done' : (idx === model.currentStep ? 'Now' : 'Soon'),
+        now: idx === model.currentStep
       }));
     }
-
     function defaultState(){
       return {
         borrower:'A. Singh',
@@ -1982,7 +2185,7 @@ The point is not just “can you buy it?” — it is “can you still feel okay
         profileKey:'purchase_owner',
         stageIndex:3,
         selectedListingIds:[10,15],
-        guideMode:'afford',
+        guideMode:'why',
         lastUpdated:nowLabel(),
         updates:[
           { time:nowLabel(), actor:'Specialist update', status:'In review', stage:'Mortgage application', route:'Owner-occupied purchase', note:'Journey upgraded into a polished portfolio-style layout with route-aware milestone tracking.' },
@@ -2134,10 +2337,10 @@ The point is not just “can you buy it?” — it is “can you still feel okay
     function renderHero(){
       document.getElementById('heroMetrics').innerHTML = `
         <span class="metric-pill">${listings.length} Toronto listings wired in</span>
-        <span class="metric-pill">Side-by-side selected home imagery</span>
-        <span class="metric-pill">Route-aware mortgage journey bar</span>
-        <span class="metric-pill">Buyer-specific decision coach</span>
-        <span class="metric-pill">Official TD public guidance links</span>
+        <span class="metric-pill">Offer-readiness scoring</span>
+        <span class="metric-pill">TD and FCAC public guidance links</span>
+        <span class="metric-pill">Closing-cost and cash-to-close planning</span>
+        <span class="metric-pill">Buyer coach with concrete next steps</span>
       `;
     }
 
@@ -2183,52 +2386,55 @@ The point is not just “can you buy it?” — it is “can you still feel okay
         target.innerHTML = `<span class="status-chip">No selected homes yet</span>`;
         return;
       }
+      const ranked = selected.map(listing => ({ listing, metrics: realityMetrics(listing) })).sort((a,b) => b.metrics.score - a.metrics.score);
+      const best = ranked[0];
       if(selected.length === 1){
-        const item = selected[0];
-        const analysis = propertyAnalysis(item);
         target.innerHTML = `
-          <span class="status-chip">Selected: ${escapeHtml(item.address)}</span>
-          <span class="status-chip">Est. payment: ${money(analysis.monthly)}/mo</span>
-          <span class="status-chip">Fit: ${escapeHtml(analysis.fit)}</span>
+          <span class="status-chip">Selected: ${escapeHtml(best.listing.address)}</span>
+          <span class="status-chip">Offer-readiness: ${escapeHtml(best.metrics.verdict)}</span>
+          <span class="status-chip">Cash to close: ${money(best.metrics.requiredCashToClose)}</span>
+          <span class="status-chip">Cash after close: ${signedMoney(best.metrics.cashAfterClose)}</span>
         `;
         return;
       }
-      const [a,b] = selected;
-      const aa = propertyAnalysis(a);
-      const bb = propertyAnalysis(b);
-      const lowerPayment = aa.monthly <= bb.monthly ? a.address : b.address;
-      const saferFit = aa.ratio <= bb.ratio ? a.address : b.address;
+      const [first, second] = ranked;
+      const lowerMonthly = first.metrics.analysis.carrying <= second.metrics.analysis.carrying ? first.listing.address : second.listing.address;
+      const lowerCash = first.metrics.requiredCashToClose <= second.metrics.requiredCashToClose ? first.listing.address : second.listing.address;
+      const saferShock = first.metrics.shockDelta <= second.metrics.shockDelta ? first.listing.address : second.listing.address;
       target.innerHTML = `
-        <span class="status-chip">Comparing ${escapeHtml(a.address)} and ${escapeHtml(b.address)}</span>
-        <span class="status-chip">Lower payment: ${escapeHtml(lowerPayment)}</span>
-        <span class="status-chip">Safer fit for current buyer snapshot: ${escapeHtml(saferFit)}</span>
+        <span class="status-chip">Comparing ${escapeHtml(selected[0].address)} and ${escapeHtml(selected[1].address)}</span>
+        <span class="status-chip">Best offer-readiness: ${escapeHtml(best.listing.address)}</span>
+        <span class="status-chip">Lower all-in monthly: ${escapeHtml(lowerMonthly)}</span>
+        <span class="status-chip">Less cash needed at close: ${escapeHtml(lowerCash)}</span>
+        <span class="status-chip">More resilient to rate shock: ${escapeHtml(saferShock)}</span>
       `;
     }
-
-
     function renderDecisionCoach(){
       const target = document.getElementById('buyerQuickLook');
       if (!target) return;
       const model = buildRealityCheckModel();
       if (!model.best){
-        target.innerHTML = `<div class="selection-empty">Select one or two homes to unlock HomeAtlas Reality Check. You will get a comfort ceiling, offer confidence, closing pressure, and a guided next step.</div>`;
+        target.innerHTML = `<div class="selection-empty">Select one or two homes to unlock HomeAtlas Offer Readiness. You will get the real blocker, cash-to-close, pre-approval checklist, and a next-week action plan.</div>`;
         return;
       }
       const best = model.best;
+      const m = best.metrics;
+      const targetPrice = smartTargetPrice(model.comfortCeiling, best.listing.price);
+      const warningHtml = model.warnings.map(w => `<div class="warning-banner">${escapeHtml(w)}</div>`).join('');
       target.innerHTML = `
+        ${warningHtml}
         <div class="buyer-quick-card">
-          <span class="decision-kicker" style="width:max-content; background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.16); color:#dbeafe;">Reality check</span>
-          <h4>${escapeHtml(best.listing.address)} is the strongest current fit</h4>
-          <p>${escapeHtml(best.metrics.mainFlag)}</p>
+          <span class="quick-verdict">Can you make an offer this week?</span>
+          <h4>${escapeHtml(m.verdict === 'Offer-ready' ? 'Yes, with pre-approval discipline.' : m.verdict === 'Almost ready' ? 'Almost — clean up the cash plan first.' : m.verdict === 'Stretch' ? 'Only if you accept real pressure.' : 'Not yet.')}</h4>
+          <p>${escapeHtml(best.listing.address)} is the current best fit because ${escapeHtml(m.shortReason)}.</p>
           <div class="buyer-quick-grid">
-            <div class="buyer-quick-stat"><div class="k">Comfort ceiling</div><div class="v">${money(model.comfortCeiling)}</div></div>
-            <div class="buyer-quick-stat"><div class="k">Offer confidence</div><div class="v">${best.metrics.score}/100</div></div>
-            <div class="buyer-quick-stat"><div class="k">Next move</div><div class="v">${escapeHtml(model.nextMove)}</div></div>
+            <div class="buyer-quick-stat"><div class="k">Offer-readiness</div><div class="v">${m.score}/100</div></div>
+            <div class="buyer-quick-stat"><div class="k">Cash gap to fix</div><div class="v">${money(Math.max(m.extraDownToMin, m.cashGap))}</div></div>
+            <div class="buyer-quick-stat"><div class="k">Target price to shop</div><div class="v">${money(targetPrice)}</div></div>
           </div>
         </div>
       `;
     }
-
     function renderWeightControls(){
       return;
     }
@@ -2236,82 +2442,135 @@ The point is not just “can you buy it?” — it is “can you still feel okay
     function renderRealityCheck(){
       const badges = document.getElementById('copilotBadges');
       const hero = document.getElementById('realityHero');
+      const actions = document.getElementById('actionGrid');
       const grid = document.getElementById('realityGrid');
-      if (!badges || !hero || !grid) return;
+      if (!badges || !hero || !actions || !grid) return;
 
       const model = buildRealityCheckModel();
       badges.innerHTML = `
-        <span class="status-chip">FCAC housing guide: 39% housing-cost check</span>
-        <span class="status-chip">FCAC total debt guide: 44% debt-load check</span>
-        <span class="status-chip">Closing cost planning built in</span>
+        <span class="status-chip">FCAC guide: housing costs around 39%</span>
+        <span class="status-chip">FCAC guide: total debt around 44%</span>
+        <span class="status-chip">OSFI qualifying-rate check built in</span>
+        <span class="status-chip">CMHC minimum-down-payment logic built in</span>
       `;
 
       if (!model.best){
         hero.innerHTML = `
-          <div class="hero-insight primary"><div class="insight-label">Comfort ceiling</div><div class="insight-value">${money(model.comfortCeiling)}</div><div class="insight-copy">Enter income, down payment, reserve, and rate details, then select a home to see a real buyer read.</div></div>
-          <div class="hero-insight"><div class="insight-label">Next move</div><div class="insight-value">Profile first</div><div class="insight-copy">HomeAtlas needs a buyer snapshot and at least one selected home before it can advise.</div></div>
-          <div class="hero-insight"><div class="insight-label">What unlocks next</div><div class="insight-value">Offer confidence</div><div class="insight-copy">You will get monthly carry, cash to close, rate shock, and appraisal pressure instantly.</div></div>
-          <div class="hero-insight"><div class="insight-label">Why this matters</div><div class="insight-value">Decision support</div><div class="insight-copy">This turns the product into a buyer tool, not just a map and calculator.</div></div>
+          <div class="hero-insight primary"><div class="insight-label">Offer-readiness</div><div class="insight-value">Waiting</div><div class="insight-copy">Enter the buyer profile and select one or two homes to unlock the actual purchase read.</div></div>
+          <div class="hero-insight"><div class="insight-label">What you will get</div><div class="insight-value">Real blocker</div><div class="insight-copy">HomeAtlas will show whether the limit is down payment, closing cash, qualifying rate, or monthly debt pressure.</div></div>
+          <div class="hero-insight"><div class="insight-label">Cash view</div><div class="insight-value">Cash to close</div><div class="insight-copy">You will see the estimated down payment requirement and Toronto closing-cost pressure together.</div></div>
+          <div class="hero-insight"><div class="insight-label">Buyer coach</div><div class="insight-value">Action plan</div><div class="insight-copy">The coach becomes a next-step planner instead of a generic chat bubble.</div></div>
         `;
-        grid.innerHTML = `<div class="selection-empty" style="grid-column:1 / -1;">Choose homes on the map to see the full Reality Check comparison.</div>`;
+        actions.innerHTML = `<div class="selection-empty" style="grid-column:1 / -1;">Select one or two homes to unlock the checklist, document pack, and ways to improve the file.</div>`;
+        grid.innerHTML = `<div class="selection-empty" style="grid-column:1 / -1;">Choose homes on the map to see the full Offer Readiness comparison.</div>`;
         return;
       }
 
       const best = model.best;
+      const m = best.metrics;
+      const targetPrice = smartTargetPrice(model.comfortCeiling, best.listing.price);
       hero.innerHTML = `
-        <div class="hero-insight primary"><div class="insight-label">Best safe option</div><div class="insight-value">${escapeHtml(best.listing.address)}</div><div class="insight-copy">Highest current offer-confidence score for the entered buyer profile.</div></div>
-        <div class="hero-insight"><div class="insight-label">Comfort ceiling</div><div class="insight-value">${money(model.comfortCeiling)}</div><div class="insight-copy">Estimated max price that still fits the current income, debt, rate, down payment, and reserve inputs.</div></div>
-        <div class="hero-insight"><div class="insight-label">Current verdict</div><div class="insight-value">${escapeHtml(best.metrics.verdict)}</div><div class="insight-copy">${escapeHtml(best.metrics.mainFlag)}</div></div>
-        <div class="hero-insight"><div class="insight-label">Next move</div><div class="insight-value">${escapeHtml(model.nextMove)}</div><div class="insight-copy">Use this to move from “interesting listing” to “ready buyer action.”</div></div>
+        <div class="hero-insight primary"><div class="insight-label">Best current fit</div><div class="insight-value">${escapeHtml(best.listing.address)}</div><div class="insight-copy">Best selected home after budget, cash-to-close, reserve, and qualifying-rate checks.</div></div>
+        <div class="hero-insight"><div class="insight-label">Offer-readiness</div><div class="insight-value">${m.score}/100</div><div class="insight-copy">${escapeHtml(m.verdict)} — ${escapeHtml(m.mainFlag)}</div></div>
+        <div class="hero-insight"><div class="insight-label">Required cash to close</div><div class="insight-value">${money(m.requiredCashToClose)}</div><div class="insight-copy">Minimum down payment plus estimated Toronto closing costs.</div></div>
+        <div class="hero-insight"><div class="insight-label">Target price to shop</div><div class="insight-value">${money(targetPrice)}</div><div class="insight-copy">A price around here should feel more stable for the current buyer snapshot.</div></div>
+      `;
+
+      const checks = [
+        { label:'Minimum down payment covered', note: `Need at least ${money(m.minimumDown)} for this home.`, ok: m.extraDownToMin === 0, warn: m.extraDownToMin === 0 && buyerSnapshot().down - m.minimumDown < 15000 },
+        { label:'Cash to close is covered', note: `Estimated cash to close is ${money(m.requiredCashToClose)}.`, ok: m.cashGap === 0, warn: m.cashGap === 0 && m.cashAfterClose < 15000 },
+        { label:'Housing-cost guide', note: `Current housing ratio is ${pct(m.housingRatio)} against the 39% guide.`, ok: m.housingRatio <= 0.39, warn: m.housingRatio > 0.39 && m.housingRatio <= 0.44 },
+        { label:'Total-debt guide', note: `Current total debt ratio is ${pct(m.totalDebtRatio)} against the 44% guide.`, ok: m.totalDebtRatio <= 0.44, warn: m.totalDebtRatio > 0.44 && m.totalDebtRatio <= 0.48 },
+        { label:'Qualifying-rate pressure', note: `At ${m.qualifyingRate.toFixed(2)}%, the qualifying total debt ratio is ${pct(m.qualifyingTdsRatio)}.`, ok: m.qualifyingTdsRatio <= 0.44, warn: m.qualifyingTdsRatio > 0.44 && m.qualifyingTdsRatio <= 0.48 },
+        { label:'Reserve after closing', note: `Cash left after closing is ${signedMoney(m.cashAfterClose)}.`, ok: m.cashAfterClose >= Math.max(10000, m.monthlyOutflow * 3), warn: m.cashAfterClose >= 0 && m.cashAfterClose < Math.max(10000, m.monthlyOutflow * 3) }
+      ];
+
+      const checklistHtml = checks.map(item => {
+        const cls = item.ok ? 'pass' : item.warn ? 'warn' : 'fail';
+        const icon = item.ok ? '✓' : item.warn ? '!' : '×';
+        const status = item.ok ? 'Pass' : item.warn ? 'Watch' : 'Fix';
+        return `<div class="check-row ${cls}"><div class="check-icon">${icon}</div><div><strong>${escapeHtml(item.label)}</strong><div class="check-note">${escapeHtml(item.note)}</div></div><div class="check-note">${status}</div></div>`;
+      }).join('');
+
+      const improveLines = [
+        m.extraDownToMin > 0 ? `Add about ${money(m.extraDownToMin)} more just to hit the minimum down payment.` : null,
+        m.cashGap > 0 ? `Add about ${money(m.cashGap)} more total cash to cover closing and keep the file liquid.` : null,
+        best.listing.price > targetPrice ? `Shopping nearer ${money(targetPrice)} should materially improve the file.` : null,
+        m.totalDebtRatio > 0.44 ? `Reducing other monthly debt or picking the lower-carry home will help the fastest.` : null,
+        'Check whether FHSA room or the Home Buyers’ Plan can reduce cash pressure before you stretch on price.'
+      ].filter(Boolean).map(line => `<div class="action-line">${escapeHtml(line)}</div>`).join('');
+
+      actions.innerHTML = `
+        <article class="action-card">
+          <span class="decision-kicker">Offer-readiness checklist</span>
+          <h4>Why the file is or is not ready</h4>
+          <div class="checklist">${checklistHtml}</div>
+        </article>
+        <article class="action-card">
+          <span class="decision-kicker">Pre-approval pack</span>
+          <h4>Bring this before you fall in love with a listing</h4>
+          <div class="action-list">
+            <div class="action-line">Identification and current address details.</div>
+            <div class="action-line">Proof of employment and income, plus recent employment history if needed.</div>
+            <div class="action-line">Proof you can cover the down payment and closing costs.</div>
+            <div class="action-line">A list of other assets and all debts or financial obligations.</div>
+          </div>
+          <div class="mini-note">This is grounded in FCAC’s pre-approval checklist and TD’s pre-approval preparation guidance.</div>
+        </article>
+        <article class="action-card">
+          <span class="decision-kicker">How to flip the answer</span>
+          <h4>Concrete moves, not generic advice</h4>
+          <div class="action-list">${improveLines}</div>
+        </article>
       `;
 
       grid.innerHTML = model.ranked.map((entry, idx) => {
-        const m = entry.metrics;
-        const extraReserveText = m.extraCashLeft >= 0 ? money(m.extraCashLeft) : '-' + money(Math.abs(m.extraCashLeft));
-        const runwayText = m.runwayMonths >= 0 ? `${m.runwayMonths.toFixed(1)} months` : `-${Math.abs(m.runwayMonths).toFixed(1)} months`;
+        const item = entry.listing;
+        const x = entry.metrics;
+        const tone = recommendationTone(x.verdict);
         return `
           <article class="reality-card ${idx === 0 ? 'top-pick' : ''}">
             <div class="reality-top">
               <div>
-                <span class="verdict-pill">${idx === 0 ? 'Top pick' : 'Comparison home'}</span>
-                <h3 class="reality-title">${escapeHtml(entry.listing.address)}</h3>
-                <div class="subtle">${entry.listing.beds} bed • ${entry.listing.baths} bath • ${entry.listing.sqft.toLocaleString()} sqft • ${money(entry.listing.price)}</div>
+                <span class="verdict-pill">${idx === 0 ? 'Best current fit' : 'Comparison home'}</span>
+                <h3 class="reality-title">${escapeHtml(item.address)}</h3>
+                <div class="subtle">${item.beds} bed • ${item.baths} bath • ${item.sqft.toLocaleString()} sqft • ${money(item.price)}</div>
               </div>
-              <div class="score-badge"><span class="big">${m.score}</span><span class="small">Offer confidence</span></div>
+              <div class="score-badge"><span class="big">${x.score}</span><span class="small">Offer-readiness</span></div>
             </div>
-            <div class="decision-copy">${escapeHtml(m.verdict)} — ${escapeHtml(m.mainFlag)}</div>
+            <div class="decision-copy">${escapeHtml(x.verdict)} — ${escapeHtml(x.mainFlag)}</div>
             <div class="reality-stats">
-              <div class="reality-stat"><div class="k">All-in monthly</div><div class="v">${money(m.analysis.carrying)}</div></div>
-              <div class="reality-stat"><div class="k">Housing ratio</div><div class="v">${(m.housingRatio * 100).toFixed(1)}%</div></div>
-              <div class="reality-stat"><div class="k">Total debt ratio</div><div class="v">${(m.totalDebtRatio * 100).toFixed(1)}%</div></div>
-              <div class="reality-stat"><div class="k">Cash to close</div><div class="v">${money(m.cashToClose)}</div></div>
-              <div class="reality-stat"><div class="k">Reserve left</div><div class="v">${extraReserveText}</div></div>
-              <div class="reality-stat"><div class="k">Runway</div><div class="v">${runwayText}</div></div>
+              <div class="reality-stat"><div class="k">All-in monthly</div><div class="v">${money(x.analysis.carrying)}</div></div>
+              <div class="reality-stat"><div class="k">Qualifying rate</div><div class="v">${x.qualifyingRate.toFixed(2)}%</div></div>
+              <div class="reality-stat"><div class="k">Cash to close</div><div class="v">${money(x.requiredCashToClose)}</div></div>
+              <div class="reality-stat"><div class="k">Housing ratio</div><div class="v">${pct(x.housingRatio)}</div></div>
+              <div class="reality-stat"><div class="k">Total debt ratio</div><div class="v">${pct(x.totalDebtRatio)}</div></div>
+              <div class="reality-stat"><div class="k">Cash after close</div><div class="v">${signedMoney(x.cashAfterClose)}</div></div>
             </div>
             <div class="reality-flags">
-              <div class="flag-line"><strong>Rate shock:</strong> +${buyerSnapshot().stress.toFixed(1)}% would add about ${money(m.stressDelta)} per month.</div>
-              <div class="flag-line"><strong>5% appraisal gap:</strong> roughly ${money(m.appraisalGapCash)} more cash may be needed if value comes in low.</div>
-              <div class="flag-line"><strong>Closing read:</strong> estimated Toronto closing costs are about ${money(m.closing.total)} before moving or furnishing costs.</div>
+              <div class="flag-line"><strong>Main blocker:</strong> ${escapeHtml(x.mainFlag)}</div>
+              <div class="flag-line"><strong>Rate-shock scenario:</strong> +${buyerSnapshot().stress.toFixed(1)}% adds about ${money(x.shockDelta)} per month.</div>
+              <div class="flag-line"><strong>5% appraisal gap:</strong> about ${money(x.appraisalGapCash)} of extra cash may be needed if value comes in low.</div>
             </div>
           </article>
         `;
       }).join('');
     }
-
     function renderGuide(){
       const prompts = document.getElementById('guidePrompts');
       const thread = document.getElementById('guideThread');
-      if (!prompts || !thread) return;
-      const mode = state.guideMode || 'afford';
+      const coachSteps = document.getElementById('coachSteps');
+      if (!prompts || !thread || !coachSteps) return;
+      const mode = state.guideMode || 'why';
       const items = [
-        ['afford', 'Can I afford this?'],
-        ['preapproval', 'What do I need for pre-approval?'],
-        ['closing', 'What hits me on closing day?'],
-        ['risk', 'What could go wrong?'],
-        ['steps', 'What should I do next?']
+        ['why', 'Why is this not ready?'],
+        ['documents', 'What do I need for pre-approval?'],
+        ['cash', 'How much cash do I really need?'],
+        ['fix', 'How do I make this work?'],
+        ['week', 'What should I do this week?']
       ];
       prompts.innerHTML = items.map(([key, label]) => `<button class="guide-chip ${mode === key ? 'active' : ''}" data-guide="${key}">${label}</button>`).join('');
-      const userPrompt = items.find(([key]) => key === mode)?.[1] || 'Can I afford this?';
+      const userPrompt = items.find(([key]) => key === mode)?.[1] || items[0][1];
       const answer = buildGuideAnswer(mode);
       thread.innerHTML = `
         <div class="guide-row">
@@ -2323,6 +2582,20 @@ The point is not just “can you buy it?” — it is “can you still feel okay
           <div class="guide-bubble bot">${escapeHtml(answer)}</div>
         </div>
       `;
+
+      const model = buildRealityCheckModel();
+      if (!model.best){
+        coachSteps.innerHTML = `<div class="coach-step"><strong>Start here:</strong> fill the buyer profile, then choose one or two homes so the coach can move from generic guidance to a real action plan.</div>`;
+      } else {
+        const best = model.best;
+        const steps = [
+          `Check the buyer profile first. The current next move is: ${model.nextMove}`,
+          `Use ${best.listing.address} as the lead file, because it is currently the strongest selected fit.`,
+          `Do not book emotionally around the listing until the pre-approval packet and cash-to-close plan are both clean.`
+        ];
+        coachSteps.innerHTML = steps.map((step, idx) => `<div class="coach-step"><strong>Step ${idx + 1}:</strong> ${escapeHtml(step)}</div>`).join('');
+      }
+
       prompts.querySelectorAll('[data-guide]').forEach(btn => {
         btn.addEventListener('click', () => {
           state.guideMode = btn.dataset.guide;
@@ -2331,7 +2604,6 @@ The point is not just “can you buy it?” — it is “can you still feel okay
         });
       });
     }
-
     function renderPathScroller(){
       const scroller = document.getElementById('pathScroller');
       if (!scroller) return;
@@ -2467,6 +2739,7 @@ The point is not just “can you buy it?” — it is “can you still feel okay
 
       ['buyerIncome','buyerDown','buyerReserve','buyerOtherDebt','buyerRate','buyerAmort','buyerStress'].forEach(id => {
         document.getElementById(id).addEventListener('input', () => {
+          saveBuyerInputs();
           renderSelectionGrid();
           renderCompareBand();
           renderDecisionCoach();
@@ -2499,13 +2772,16 @@ The point is not just “can you buy it?” — it is “can you still feel okay
 
       document.getElementById('resetDemo').addEventListener('click', () => {
         localStorage.removeItem(storageKey);
+        localStorage.removeItem(`${storageKey}_buyer_inputs`);
         state = defaultState();
         mapView = null;
+        applyBuyerInputDefaults(true);
         renderAll();
       });
     }
 
     renderCityFilter();
+    applyBuyerInputDefaults();
     initMap();
     bindEvents();
     renderAll();
