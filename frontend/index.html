@@ -93,18 +93,18 @@
       letter-spacing:-.04em;
     }
     .creator-tag{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      margin:0 0 14px;
-      padding:10px 14px;
-      border-radius:999px;
-      background:rgba(255,255,255,.12);
-      border:1px solid rgba(255,255,255,.18);
-      color:#e0edff;
-      font-size:13px;
-      font-weight:800;
-      letter-spacing:.02em;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    margin:0 0 14px;
+    padding:10px 14px;
+    border-radius:999px;
+    background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.18);
+    color:#e0edff;
+    font-size:13px;
+    font-weight:800;
+    letter-spacing:.02em;
     }
     .hero p{
       margin:0;
@@ -250,21 +250,32 @@
       gap:12px;
     }
     .selection-card{
-      border:1px solid var(--line);
-      background:#fbfdff;
-      border-radius:20px;
-      overflow:hidden;
-      box-shadow:var(--shadow);
-      display:grid;
-      grid-template-rows:180px auto;
-    }
+    border:1px solid var(--line);
+    background:#fbfdff;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+    display:grid;
+    grid-template-rows:auto 1fr;
+  }
     .selection-card img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      background:#e8eef8;
-      display:block;
-    }
+    width:100%;
+    aspect-ratio:16 / 9;
+    object-fit:cover;
+    object-position:center;
+    display:block;
+    background:#e8eef8;
+    border-bottom:1px solid #e1e8f4;
+  }
+
+    .selection-card img{
+    width:100%;
+    aspect-ratio:16 / 9;
+    object-fit:cover;
+    object-position:center;
+    display:block;
+    background:#e8eef8;
+  }
     .selection-body{
       padding:14px;
       display:grid;
@@ -1612,20 +1623,41 @@
       };
     }
 
-    function propertyAnalysis(listing){
-      const buyer = buyerSnapshot();
-      const principal = Math.max(0, listing.price - buyer.down);
-      const monthly = mortgagePayment(principal, buyer.rate, buyer.amort);
-      const monthlyIncome = buyer.income / 12;
-      const carrying = monthly + (listing.price * 0.00075) + 280;
-      const ratio = monthlyIncome > 0 ? carrying / monthlyIncome : 1;
-      let fit = 'Stretch';
-      if (ratio <= .32) fit = 'Strong fit';
-      else if (ratio <= .42) fit = 'Possible with review';
-      else if (ratio <= .52) fit = 'Stretch';
-      else fit = 'Tight';
-      return { principal, monthly, carrying, ratio, fit };
-    }
+    function propertyAnalysis(listing) {
+  const buyer = buyerSnapshot();
+
+  const principal = Math.max(0, listing.price - buyer.down);
+  const monthly = mortgagePayment(principal, buyer.rate, buyer.amort);
+
+  const monthlyIncome = buyer.income / 12;
+
+  // Housing cost: mortgage + simple estimate for taxes/fees
+  const housingCost = monthly + listing.price * 0.00075 + 280;
+
+  // Total monthly debt = housing + other debts from the input
+  const totalDebt = housingCost + (buyer.otherDebt || 0);
+
+  const housingRatio = monthlyIncome > 0 ? housingCost / monthlyIncome : 1;
+  const totalDebtRatio = monthlyIncome > 0 ? totalDebt / monthlyIncome : 1;
+
+  let fit = 'Stretch';
+
+  // Fit decision based on total debt ratio (FCAC-style thresholds)
+  if (totalDebtRatio <= 0.32) fit = 'Strong fit';
+  else if (totalDebtRatio <= 0.42) fit = 'Possible with review';
+  else if (totalDebtRatio <= 0.52) fit = 'Stretch';
+  else fit = 'Tight';
+
+  return {
+    principal,
+    monthly,
+    carrying: housingCost,
+    ratio: totalDebtRatio,
+    housingRatio,
+    totalDebtRatio,
+    fit,
+  };
+}
 
 
     function minimumDownPayment(price){
