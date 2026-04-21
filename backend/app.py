@@ -194,14 +194,6 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@app.get("/cities")
-def get_cities() -> list[str]:
-    conn = get_conn()
-    rows = conn.execute("SELECT DISTINCT city FROM listings ORDER BY city").fetchall()
-    conn.close()
-    return [row["city"] for row in rows]
-
-
 @app.get("/listings")
 def get_listings() -> list[dict[str, Any]]:
     conn = get_conn()

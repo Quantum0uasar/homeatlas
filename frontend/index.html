@@ -1,434 +1,3011 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HomeAtlas</title>
+  <title>HomeAtlas — Portfolio Mortgage Journey Demo</title>
   <link rel="preconnect" href="https://unpkg.com" />
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""
-  />
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    :root{
+      --bg:#eef4fb;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --line:#d7e2f0;
+      --navy:#0b1739;
+      --navy-2:#13295d;
+      --blue:#1d4ed8;
+      --blue-2:#3b82f6;
+      --blue-soft:#dbeafe;
+      --green:#22c55e;
+      --green-soft:#dcfce7;
+      --amber:#f59e0b;
+      --amber-soft:#fef3c7;
+      --purple:#8b5cf6;
+      --purple-soft:#ede9fe;
+      --red:#ef4444;
+      --red-soft:#fee2e2;
+      --teal:#14b8a6;
+      --teal-soft:#ccfbf1;
+      --shadow:0 16px 40px rgba(15,23,42,.08);
+      --shadow-lg:0 24px 64px rgba(15,23,42,.14);
+      --radius:24px;
+    }
+    *{ box-sizing:border-box; }
+    html,body{
+      margin:0;
+      min-height:100%;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(59,130,246,.14), transparent 30%),
+        linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
+    }
+    body{ padding:24px; }
+    .shell{ max-width:1500px; margin:0 auto; display:grid; gap:20px; }
+    .hero{
+      position:relative;
+      overflow:hidden;
+      border-radius:32px;
+      padding:32px;
+      background:linear-gradient(135deg, #051127 0%, #11214c 45%, #1d4ed8 100%);
+      color:white;
+      box-shadow:var(--shadow-lg);
+    }
+    .hero:before{
+      content:"";
+      position:absolute;
+      right:-60px;
+      top:-60px;
+      width:280px;
+      height:280px;
+      border-radius:999px;
+      background:radial-gradient(circle, rgba(255,255,255,.34), rgba(255,255,255,.08), transparent 70%);
+      pointer-events:none;
+    }
+    .hero-grid{
+      position:relative;
+      z-index:1;
+      display:grid;
+      grid-template-columns:minmax(0,1.3fr) minmax(320px,.9fr);
+      gap:24px;
+      align-items:start;
+    }
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.11);
+      border:1px solid rgba(255,255,255,.18);
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+      color:#dbeafe;
+    }
+    .hero h1{
+      margin:16px 0 12px;
+      font-size:clamp(42px, 5vw, 68px);
+      line-height:.96;
+      letter-spacing:-.04em;
+    }
+    .creator-tag{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    margin:0 0 14px;
+    padding:10px 14px;
+    border-radius:999px;
+    background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.18);
+    color:#e0edff;
+    font-size:13px;
+    font-weight:800;
+    letter-spacing:.02em;
+    }
+    .hero p{
+      margin:0;
+      max-width:900px;
+      line-height:1.62;
+      font-size:17px;
+      color:#dbeafe;
+    }
+    .hero-metrics{
+      margin-top:22px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .metric-pill, .resource-link, .tab-btn, .legend-pill, .status-chip{
+      border-radius:999px;
+      font-weight:800;
+      font-size:13px;
+      text-decoration:none;
+    }
+    .metric-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 14px;
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.18);
+      color:white;
+    }
+    .hero-card{
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:24px;
+      padding:18px;
+      backdrop-filter:blur(8px);
+      display:grid;
+      gap:14px;
+    }
+    .hero-card h3{ margin:0; font-size:22px; letter-spacing:-.02em; }
+    .hero-card p{ font-size:14px; }
+    .resource-links{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .resource-link{
+      padding:10px 12px;
+      background:rgba(2,6,23,.22);
+      border:1px solid rgba(191,219,254,.22);
+      color:#e0edff;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .panel{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:22px;
+    }
+    .panel h2, .panel h3, .panel h4{
+      margin:0 0 10px;
+      line-height:1.12;
+      letter-spacing:-.02em;
+    }
+    .subtle{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.62;
+      margin:0;
+    }
+    .split{
+      display:grid;
+      grid-template-columns:minmax(0,1.3fr) minmax(340px,.86fr);
+      gap:20px;
+      align-items:start;
+    }
+    .filters{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0,1fr));
+      gap:12px;
+    }
+    .label{
+      display:block;
+      margin-bottom:7px;
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+      color:#53657f;
+    }
+    .input, .select, .textarea{
+      width:100%;
+      border:1px solid #cad7e7;
+      background:#fff;
+      color:var(--text);
+      border-radius:16px;
+      padding:12px 14px;
+      font-size:14px;
+      font-family:inherit;
+      outline:none;
+      transition:border-color .18s ease, box-shadow .18s ease;
+    }
+    .textarea{ min-height:94px; resize:vertical; }
+    .input:focus, .select:focus, .textarea:focus{
+      border-color:#60a5fa;
+      box-shadow:0 0 0 4px rgba(96,165,250,.12);
+    }
+    .button-row{ display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+    .btn{
+      border:none;
+      border-radius:14px;
+      padding:11px 14px;
+      font-weight:800;
+      font-size:14px;
+      font-family:inherit;
+      cursor:pointer;
+      transition:transform .15s ease, box-shadow .15s ease;
+      box-shadow:var(--shadow);
+    }
+    .btn:hover{ transform:translateY(-1px); }
+    .btn.primary{ background:linear-gradient(135deg, #0b1739, #1d4ed8); color:white; }
+    .btn.secondary{ background:#eef4ff; color:#173b77; }
+    .btn.ghost{ background:white; color:#173b77; border:1px solid #d3dff0; box-shadow:none; }
+
+    #homesMap{
+      height:590px;
+      border-radius:24px;
+      overflow:hidden;
+      border:1px solid var(--line);
+      margin-top:16px;
+    }
+    .selection-column{
+      display:grid;
+      gap:14px;
+    }
+    .selection-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+    .selection-card{
+      border:1px solid var(--line);
+      background:#fbfdff;
+      border-radius:20px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      display:grid;
+      grid-template-rows:auto 1fr;
+    }
+    .selection-card img{
+      width:100%;
+      aspect-ratio:16 / 9;
+      object-fit:cover;
+      object-position:center;
+      display:block;
+      background:#e8eef8;
+      border-bottom:1px solid #e1e8f4;
+    }
+    .selection-body{
+      padding:14px;
+      display:grid;
+      gap:10px;
+    }
+    .selection-title{
+      font-weight:900;
+      font-size:18px;
+      line-height:1.15;
+      letter-spacing:-.02em;
+    }
+    .selection-sub{
+      color:var(--muted);
+      font-size:13px;
+    }
+    .stat-grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:10px;
+    }
+    .mini-stat{
+      padding:10px;
+      border-radius:14px;
+      background:#f6f9ff;
+      border:1px solid #e1e8f4;
+    }
+    .mini-stat .k{
+      font-size:11px;
+      font-weight:800;
+      color:#64748b;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      margin-bottom:6px;
+    }
+    .mini-stat .v{
+      font-size:15px;
+      font-weight:900;
+      line-height:1.15;
+    }
+    .selection-empty{
+      border:1px dashed #c9d8ea;
+      border-radius:20px;
+      padding:18px;
+      background:#f8fbff;
+      color:#60718e;
+      line-height:1.58;
+    }
+    .compare-band{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .status-chip{
+      padding:10px 12px;
+      background:#eff6ff;
+      border:1px solid #d5e4fb;
+      color:#173b77;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .results-bar{
+      margin-top:14px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .filtered-shelf-wrap{
+      margin-top:16px;
+      padding:16px;
+      border:1px solid var(--line);
+      border-radius:20px;
+      background:#fbfdff;
+      box-shadow:var(--shadow);
+    }
+    .shelf-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+    .filtered-shelf{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:12px;
+    }
+    .result-card{
+      border:1px solid #e1e8f4;
+      border-radius:18px;
+      background:white;
+      padding:14px;
+      display:grid;
+      gap:10px;
+    }
+    .result-rank{
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+      color:#64748b;
+    }
+    .result-title{
+      font-size:17px;
+      font-weight:900;
+      line-height:1.15;
+      letter-spacing:-.02em;
+    }
+    .result-meta{
+      color:#64748b;
+      font-size:13px;
+      line-height:1.55;
+    }
+    .result-stats{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:10px;
+    }
+    .result-stat{
+      padding:10px;
+      border-radius:14px;
+      background:#f6f9ff;
+      border:1px solid #e1e8f4;
+    }
+    .result-stat .k{
+      font-size:11px;
+      font-weight:800;
+      color:#64748b;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      margin-bottom:6px;
+    }
+    .result-stat .v{
+      font-size:15px;
+      font-weight:900;
+      line-height:1.15;
+    }
+    .result-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+
+    .decision-shell{
+      margin-top:16px;
+      border:1px solid #d7e4f6;
+      border-radius:20px;
+      background:linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+      padding:16px;
+      display:grid;
+      gap:14px;
+    }
+    .decision-head{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+      flex-wrap:wrap;
+    }
+    .decision-headline{
+      display:grid;
+      gap:6px;
+    }
+    .decision-kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#eff6ff;
+      border:1px solid #d5e4fb;
+      color:#173b77;
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+    .decision-slider-grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:12px;
+    }
+    .slider-card{
+      border:1px solid #dce6f4;
+      border-radius:16px;
+      background:#fbfdff;
+      padding:12px;
+      display:grid;
+      gap:10px;
+    }
+    .slider-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      font-size:13px;
+      font-weight:800;
+      color:#334155;
+    }
+    .slider-value{
+      min-width:30px;
+      height:30px;
+      border-radius:999px;
+      display:grid;
+      place-items:center;
+      background:#091630;
+      color:white;
+      font-size:13px;
+      font-weight:900;
+    }
+    .range{
+      width:100%;
+      accent-color:#1d4ed8;
+      cursor:pointer;
+    }
+    .decision-grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:12px;
+    }
+    .decision-card{
+      border:1px solid #dbe5f3;
+      border-radius:18px;
+      background:#fbfdff;
+      padding:14px;
+      display:grid;
+      gap:8px;
+      box-shadow:0 10px 22px rgba(15,23,42,.05);
+    }
+    .decision-card.primary{
+      background:linear-gradient(135deg, #091630 0%, #163675 100%);
+      border-color:#091630;
+      color:white;
+    }
+    .decision-card.primary .decision-label,
+    .decision-card.primary .decision-copy,
+    .decision-card.primary .decision-sub{
+      color:#dbeafe;
+    }
+    .decision-label{
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      color:#64748b;
+    }
+    .decision-title{
+      font-size:18px;
+      font-weight:900;
+      line-height:1.15;
+      letter-spacing:-.02em;
+    }
+    .decision-copy{
+      font-size:13px;
+      line-height:1.6;
+      color:#334155;
+    }
+    .decision-sub{
+      font-size:12px;
+      line-height:1.5;
+      color:#64748b;
+    }
+    .decision-stats{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:10px;
+    }
+    .decision-stat{
+      padding:10px;
+      border-radius:14px;
+      background:#f6f9ff;
+      border:1px solid #e1e8f4;
+    }
+    .decision-stat .k{
+      font-size:11px;
+      font-weight:800;
+      color:#64748b;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      margin-bottom:6px;
+    }
+    .decision-stat .v{
+      font-size:15px;
+      font-weight:900;
+      line-height:1.2;
+    }
+    .decision-note{
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px dashed #cbd9ee;
+      background:#f8fbff;
+      color:#334155;
+      line-height:1.6;
+      font-size:13px;
+    }
+
+    .buyer-filters{ grid-template-columns:repeat(3, minmax(0,1fr)); }
+    .buyer-quicklook{
+      margin-top:14px;
+      display:grid;
+      gap:12px;
+    }
+    .buyer-quick-card{
+      border:1px solid #d7e4f6;
+      border-radius:18px;
+      background:linear-gradient(135deg, #091630 0%, #163675 100%);
+      color:white;
+      padding:16px;
+      display:grid;
+      gap:10px;
+      box-shadow:0 16px 36px rgba(15,23,42,.12);
+    }
+    .buyer-quick-card h4{ margin:0; font-size:22px; letter-spacing:-.02em; }
+    .buyer-quick-card p{ margin:0; color:#dbeafe; line-height:1.6; font-size:14px; }
+    .buyer-quick-grid{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:10px;
+    }
+    .buyer-quick-stat{
+      border-radius:14px;
+      padding:12px;
+      background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.14);
+    }
+    .buyer-quick-stat .k{
+      font-size:11px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      color:#bfdbfe;
+      margin-bottom:6px;
+    }
+    .buyer-quick-stat .v{
+      font-size:16px;
+      font-weight:900;
+      line-height:1.2;
+    }
+    .warning-banner{
+      border:1px solid #f2d27a;
+      background:#fff8df;
+      color:#6b4f00;
+      border-radius:16px;
+      padding:12px 14px;
+      font-size:13px;
+      line-height:1.6;
+    }
+    .quick-verdict{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      width:max-content;
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.16);
+      color:#dbeafe;
+    }
+    .action-grid{
+      display:grid;
+      grid-template-columns:1.1fr 1fr 1fr;
+      gap:14px;
+    }
+    .action-card{
+      border:1px solid #dbe5f3;
+      border-radius:20px;
+      background:linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+      padding:16px;
+      display:grid;
+      gap:12px;
+      box-shadow:0 12px 26px rgba(15,23,42,.05);
+    }
+    .action-card h4{ margin:0; font-size:20px; letter-spacing:-.02em; }
+    .action-list{
+      display:grid;
+      gap:8px;
+    }
+    .action-line{
+      border-radius:14px;
+      padding:11px 12px;
+      background:#fbfdff;
+      border:1px dashed #cbd9ee;
+      color:#334155;
+      font-size:13px;
+      line-height:1.58;
+    }
+    .checklist{
+      display:grid;
+      gap:8px;
+    }
+    .check-row{
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      gap:10px;
+      align-items:center;
+      border:1px solid #e1e8f4;
+      background:#fbfdff;
+      border-radius:14px;
+      padding:10px 12px;
+      font-size:13px;
+    }
+    .check-row.pass{ border-color:#9ae6b4; background:#ecfdf3; }
+    .check-row.warn{ border-color:#f2d27a; background:#fff8df; }
+    .check-row.fail{ border-color:#f3b6bd; background:#fff0f1; }
+    .check-icon{
+      width:22px;
+      height:22px;
+      border-radius:999px;
+      display:grid;
+      place-items:center;
+      font-weight:900;
+      font-size:12px;
+      background:#e2e8f0;
+      color:#0f172a;
+    }
+    .check-row.pass .check-icon{ background:#22c55e; color:white; }
+    .check-row.warn .check-icon{ background:#f59e0b; color:white; }
+    .check-row.fail .check-icon{ background:#ef4444; color:white; }
+    .check-note{ color:#64748b; font-size:12px; }
+    .coach-steps{
+      display:grid;
+      gap:10px;
+    }
+    .coach-step{
+      border-radius:16px;
+      border:1px solid #dbe5f3;
+      background:#fbfdff;
+      padding:12px 14px;
+      font-size:13px;
+      line-height:1.6;
+      color:#334155;
+    }
+    .coach-step strong{ color:#0f172a; }
+    .mini-note{
+      font-size:12px;
+      color:#64748b;
+      line-height:1.55;
+    }
+
+    .copilot-top{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      align-items:flex-start;
+      flex-wrap:wrap;
+      margin-bottom:18px;
+    }
+    .copilot-badges{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:flex-end;
+    }
+    .copilot-grid{
+      display:grid;
+      grid-template-columns:minmax(0,1.2fr) minmax(340px,.82fr);
+      gap:18px;
+      align-items:start;
+    }
+    .copilot-main{ display:grid; gap:16px; }
+    .reality-hero{
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0,1fr));
+      gap:12px;
+    }
+    .hero-insight{
+      border:1px solid #dbe5f4;
+      border-radius:18px;
+      background:#fbfdff;
+      padding:14px;
+      box-shadow:0 12px 26px rgba(15,23,42,.05);
+      display:grid;
+      gap:8px;
+    }
+    .hero-insight.primary{
+      background:linear-gradient(135deg, #091630 0%, #163675 100%);
+      border-color:#091630;
+      color:white;
+    }
+    .hero-insight.primary .insight-label,
+    .hero-insight.primary .insight-copy{ color:#dbeafe; }
+    .insight-label{
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      color:#64748b;
+    }
+    .insight-value{
+      font-size:24px;
+      font-weight:900;
+      line-height:1.05;
+      letter-spacing:-.03em;
+    }
+    .insight-copy{
+      color:#475569;
+      font-size:13px;
+      line-height:1.55;
+    }
+    .reality-grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:14px;
+    }
+    .reality-card{
+      border:1px solid #dbe5f3;
+      border-radius:22px;
+      background:linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+      padding:16px;
+      display:grid;
+      gap:14px;
+      box-shadow:0 14px 30px rgba(15,23,42,.06);
+    }
+    .reality-card.top-pick{
+      border-color:#0f2c68;
+      box-shadow:0 20px 40px rgba(29,78,216,.12);
+    }
+    .reality-top{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+      flex-wrap:wrap;
+    }
+    .reality-title{
+      font-size:24px;
+      font-weight:900;
+      line-height:1.05;
+      letter-spacing:-.03em;
+      margin:0;
+    }
+    .score-badge{
+      min-width:92px;
+      border-radius:16px;
+      background:#091630;
+      color:white;
+      padding:10px 12px;
+      text-align:center;
+      box-shadow:0 10px 24px rgba(15,23,42,.12);
+    }
+    .score-badge .big{ display:block; font-size:24px; font-weight:900; line-height:1; }
+    .score-badge .small{ display:block; font-size:11px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; color:#dbeafe; margin-top:4px; }
+    .verdict-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:9px 12px;
+      border-radius:999px;
+      background:#eff6ff;
+      border:1px solid #d5e4fb;
+      color:#173b77;
+      font-size:12px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+    }
+    .reality-stats{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:10px;
+    }
+    .reality-stat{
+      border-radius:14px;
+      padding:11px;
+      background:#f6f9ff;
+      border:1px solid #e1e8f4;
+    }
+    .reality-stat .k{ font-size:11px; font-weight:800; color:#64748b; text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px; }
+    .reality-stat .v{ font-size:15px; font-weight:900; line-height:1.2; }
+    .reality-flags{ display:grid; gap:8px; }
+    .flag-line{
+      border-radius:14px;
+      padding:11px 12px;
+      background:#fbfdff;
+      border:1px dashed #cbd9ee;
+      color:#334155;
+      font-size:13px;
+      line-height:1.55;
+    }
+    .flag-line strong{ color:#0f172a; }
+
+    .guide-shell{
+      border:1px solid #d7e4f6;
+      border-radius:22px;
+      background:linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+      padding:16px;
+      display:grid;
+      gap:14px;
+      box-shadow:0 14px 30px rgba(15,23,42,.06);
+      position:sticky;
+      top:18px;
+    }
+    .guide-head{ display:grid; gap:8px; }
+    .guide-prompts{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .guide-chip{
+      border:none;
+      border-radius:999px;
+      padding:10px 12px;
+      font-size:13px;
+      font-weight:800;
+      cursor:pointer;
+      background:#edf3ff;
+      border:1px solid #d5e4fb;
+      color:#173b77;
+    }
+    .guide-chip.active{
+      background:#091630;
+      color:white;
+      border-color:#091630;
+      box-shadow:0 12px 24px rgba(15,23,42,.12);
+    }
+    .guide-thread{ display:grid; gap:12px; }
+    .guide-row{ display:flex; gap:10px; align-items:flex-start; }
+    .guide-avatar{
+      width:36px;
+      height:36px;
+      border-radius:999px;
+      display:grid;
+      place-items:center;
+      font-weight:900;
+      font-size:12px;
+      flex:0 0 auto;
+    }
+    .guide-avatar.user{ background:#e2e8f0; color:#1e293b; }
+    .guide-avatar.bot{ background:#091630; color:white; }
+    .guide-bubble{
+      border-radius:18px;
+      padding:12px 14px;
+      border:1px solid #dbe5f3;
+      background:#fbfdff;
+      color:#334155;
+      line-height:1.62;
+      font-size:14px;
+      white-space:pre-line;
+    }
+    .guide-bubble.bot{
+      background:linear-gradient(135deg, #091630 0%, #163675 100%);
+      border-color:#091630;
+      color:#e0edff;
+    }
+    .guide-footer{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    .path-shell{
+      margin-top:18px;
+      border:1px solid #d7e4f6;
+      border-radius:22px;
+      background:linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+      padding:16px;
+      display:grid;
+      gap:14px;
+    }
+    .path-scroller{
+      display:grid;
+      grid-auto-flow:column;
+      grid-auto-columns:minmax(260px, 320px);
+      gap:14px;
+      overflow-x:auto;
+      padding-bottom:6px;
+      scroll-snap-type:x proximity;
+    }
+    .path-card{
+      scroll-snap-align:start;
+      border:1px solid #dbe5f3;
+      border-radius:20px;
+      background:#fbfdff;
+      padding:15px;
+      display:grid;
+      gap:10px;
+      box-shadow:0 12px 26px rgba(15,23,42,.05);
+      min-height:240px;
+    }
+    .path-card.now{
+      border-color:#0f2c68;
+      box-shadow:0 18px 36px rgba(29,78,216,.12);
+    }
+    .path-step{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+    }
+    .path-index{
+      width:34px;
+      height:34px;
+      border-radius:999px;
+      display:grid;
+      place-items:center;
+      background:#091630;
+      color:white;
+      font-weight:900;
+      font-size:14px;
+    }
+    .path-status{
+      padding:7px 10px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+      background:#eff6ff;
+      border:1px solid #d5e4fb;
+      color:#173b77;
+    }
+    .path-title{ font-size:18px; font-weight:900; line-height:1.15; letter-spacing:-.02em; }
+    .path-copy, .path-translate{ font-size:13px; line-height:1.58; color:#475569; }
+    .path-translate strong{ color:#0f172a; }
+
+    .tracker-top{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) minmax(320px,.88fr);
+      gap:18px;
+      align-items:start;
+    }
+    .route-tabs{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+      margin-bottom:18px;
+    }
+    .tab-btn{
+      padding:11px 16px;
+      border:1px solid #c9d8ef;
+      background:#edf3ff;
+      color:#1f4b92;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+    .tab-btn.active{
+      background:#091630;
+      color:white;
+      border-color:#091630;
+      box-shadow:0 14px 34px rgba(15,23,42,.12);
+    }
+
+    .journey-shell{
+      margin-top:6px;
+      border:1px solid var(--line);
+      border-radius:28px;
+      background:linear-gradient(180deg, #fdfefe 0%, #f7fbff 100%);
+      padding:28px 24px 22px;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
+    }
+    .journey-grid{
+      position:relative;
+      display:grid;
+      grid-template-columns:repeat(7, minmax(0,1fr));
+      gap:14px;
+      align-items:start;
+      padding-top:48px;
+    }
+    .journey-track{
+      position:absolute;
+      left:36px;
+      right:36px;
+      top:86px;
+      height:10px;
+      border-radius:999px;
+      background:#dce7f6;
+      overflow:hidden;
+      z-index:0;
+    }
+    .journey-progress{
+      height:100%;
+      border-radius:999px;
+      background:linear-gradient(90deg, #1d4ed8 0%, #0b1739 100%);
+      width:0%;
+      transition:width .28s ease;
+    }
+    .stage-col{
+      position:relative;
+      z-index:1;
+      display:grid;
+      justify-items:center;
+      align-content:start;
+      gap:12px;
+      min-height:210px;
+      text-align:center;
+      padding-top:40px;
+    }
+    .stage-index{
+      width:42px;
+      height:42px;
+      border-radius:999px;
+      display:grid;
+      place-items:center;
+      font-weight:900;
+      font-size:20px;
+      background:white;
+      border:3px solid #c7d7ef;
+      color:#0f172a;
+      box-shadow:0 10px 24px rgba(15,23,42,.08);
+    }
+    .stage-col.done .stage-index{
+      background:var(--green-soft);
+      border-color:var(--green);
+      color:#166534;
+    }
+    .stage-col.current .stage-index{
+      background:#091630;
+      border-color:#091630;
+      color:white;
+      transform:scale(1.08);
+    }
+    .stage-name{
+      font-weight:900;
+      font-size:15px;
+      line-height:1.14;
+      letter-spacing:-.02em;
+      max-width:168px;
+    }
+    .stage-copy{
+      color:#60718e;
+      font-size:13px;
+      line-height:1.5;
+      max-width:170px;
+    }
+    .current-label{
+      position:absolute;
+      top:0;
+      left:50%;
+      transform:translateX(-50%);
+      background:#091630;
+      color:white;
+      border-radius:999px;
+      padding:10px 14px;
+      font-size:13px;
+      font-weight:900;
+      box-shadow:0 14px 34px rgba(15,23,42,.18);
+      white-space:nowrap;
+      max-width:210px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      z-index:3;
+    }
+
+    .exception-area{
+      margin-top:12px;
+      padding-top:14px;
+      border-top:1px dashed #d5e0f0;
+      display:grid;
+      grid-template-columns:repeat(7, minmax(0,1fr));
+      gap:14px;
+      align-items:start;
+    }
+    .exception-col{
+      min-height:1px;
+    }
+    .branch-stack{
+      display:grid;
+      gap:12px;
+    }
+    .branch-card{
+      border-radius:20px;
+      padding:14px;
+      background:white;
+      border:1px solid #d9e4f3;
+      box-shadow:0 12px 24px rgba(15,23,42,.05);
+      line-height:1.5;
+      position:relative;
+    }
+    .branch-card:before{
+      content:"";
+      position:absolute;
+      top:-16px;
+      left:22px;
+      width:2px;
+      height:16px;
+      background:#c9d7ea;
+      border-radius:999px;
+    }
+    .branch-card h4{
+      margin:0 0 8px;
+      font-size:16px;
+      line-height:1.2;
+    }
+    .branch-card p{
+      margin:0;
+      color:#334155;
+      font-size:13px;
+    }
+    .branch-card.amber{ background:#fff8df; border-color:#f2d27a; }
+    .branch-card.purple{ background:#f4ecff; border-color:#dac3ff; }
+    .branch-card.red{ background:#fff0f1; border-color:#f3b6bd; }
+    .branch-card.teal{ background:#e8fffb; border-color:#8fe2d7; }
+    .branch-card.green{ background:#ecfdf3; border-color:#9ae6b4; }
+    .legend-row{
+      margin-top:18px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .legend-pill{
+      padding:10px 14px;
+      border:1px solid #d4e1f2;
+      background:#f8fbff;
+      color:#40526d;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .legend-dot{
+      width:10px;
+      height:10px;
+      border-radius:999px;
+      display:inline-block;
+    }
+
+    .tracker-right{
+      display:grid;
+      gap:14px;
+    }
+    .summary-card{
+      border:1px solid var(--line);
+      border-radius:20px;
+      background:#fbfdff;
+      padding:16px;
+      display:grid;
+      gap:12px;
+    }
+    .summary-grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:10px;
+    }
+    .summary-item{
+      background:#f6f9ff;
+      border:1px solid #e1e8f4;
+      border-radius:16px;
+      padding:12px;
+    }
+    .summary-item .k{
+      font-size:11px;
+      font-weight:800;
+      color:#64748b;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      margin-bottom:6px;
+    }
+    .summary-item .v{
+      font-size:16px;
+      font-weight:900;
+      line-height:1.2;
+    }
+
+    .three-col{
+      display:grid;
+      grid-template-columns:minmax(0,1.05fr) minmax(0,1fr) minmax(320px,.9fr);
+      gap:18px;
+      align-items:start;
+    }
+    .timeline-list{
+      display:grid;
+      gap:12px;
+    }
+    .timeline-item{
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px;
+      background:#f9fbff;
+    }
+    .timeline-meta{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      color:#60718e;
+      font-size:12px;
+      font-weight:800;
+      margin-bottom:6px;
+    }
+    .timeline-title{
+      font-size:15px;
+      font-weight:900;
+      margin-bottom:6px;
+    }
+    .list{
+      margin:0;
+      padding-left:18px;
+      color:#334155;
+      line-height:1.66;
+    }
+    .resource-card{
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px;
+      background:#fbfdff;
+      display:grid;
+      gap:8px;
+    }
+    .resource-card a{
+      color:#17408b;
+      font-weight:800;
+      text-decoration:none;
+    }
+    .resource-grid{
+      display:grid;
+      gap:12px;
+    }
+    .qa-answer{
+      min-height:170px;
+      border-radius:18px;
+      border:1px solid #d7e4fb;
+      background:#f8fbff;
+      padding:14px;
+      color:#24354d;
+      line-height:1.65;
+      white-space:pre-line;
+    }
+    .footer-note{
+      text-align:center;
+      color:#6b7c95;
+      font-size:12px;
+      padding:8px 0 18px;
+    }
+
+    .leaflet-popup-content-wrapper{ border-radius:16px; }
+    .leaflet-popup-content{ margin:12px 14px; font-size:13px; line-height:1.5; }
+
+    @media (max-width: 1280px){
+      .split, .tracker-top, .three-col, .copilot-grid{ grid-template-columns:1fr; }
+      .filters{ grid-template-columns:1fr 1fr; }
+      .buyer-filters{ grid-template-columns:1fr 1fr; }
+      .selection-grid, .reality-grid, .reality-hero, .buyer-quick-grid, .action-grid{ grid-template-columns:1fr 1fr; }
+    }
+    @media (max-width: 980px){
+      body{ padding:14px; }
+      .hero-grid, .filters, .summary-grid, .selection-grid, .decision-grid, .decision-slider-grid, .decision-stats, .action-grid{ grid-template-columns:1fr; }
+      #homesMap{ height:430px; }
+      .journey-grid, .exception-area{
+        grid-template-columns:1fr;
+      }
+      .journey-track{ display:none; }
+      .stage-col{
+        min-height:auto;
+        justify-items:start;
+        text-align:left;
+        padding-left:56px;
+      }
+      .stage-index{
+        position:absolute;
+        left:0;
+        top:54px;
+      }
+      .current-label{
+        left:0;
+        transform:none;
+      }
+      .exception-col{
+        display:none;
+      }
+      .tab-btn{ width:100%; text-align:center; }
+    }
+  </style>
 </head>
 <body>
-  <div class="app-shell">
-    <header class="site-header">
-      <div class="brand-group">
-        <span class="eyebrow">Built by Jaideep Singh</span>
-        <div class="brand-row">
-          <div class="brand-mark">HA</div>
-          <div>
-            <h1 class="brand-name">HomeAtlas</h1>
-            <p class="brand-subtitle">Search homes. Compare affordability. Know if you are ready.</p>
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">Portfolio-grade product experience</div>
+          <h1>HomeAtlas</h1>
+          <div class="creator-tag">Created by Jaideep Singh</div>
+          <p>A polished, internship-caliber mortgage journey and home-search experience. Browse live listing markers, compare selected homes with side-by-side imagery, and follow a borrower journey that reacts to route changes, milestone movement, and real-world exception paths.</p>
+          <div class="hero-metrics" id="heroMetrics"></div>
+        </div>
+        <div class="hero-card">
+          <h3>What makes it stand out</h3>
+          <p>This version is intentionally laid out like a polished product demo: clean hierarchy, premium spacing, map-first exploration, route-aware borrower tracking, TD and FCAC guidance links, and a clear borrower journey bar.</p>
+          <div class="resource-links">
+            <a class="resource-link" href="https://www.td.com/ca/en/personal-banking/products/mortgages/online-mortgage-journey" target="_blank" rel="noopener noreferrer">TD online mortgage journey ↗</a>
+            <a class="resource-link" href="https://www.td.com/ca/en/personal-banking/products/mortgages/first-time-home-buyer/pre-approval" target="_blank" rel="noopener noreferrer">TD pre-approval ↗</a>
+            <a class="resource-link" href="https://www.td.com/ca/en/personal-banking/products/mortgages/financing-between-homes" target="_blank" rel="noopener noreferrer">TD bridge financing ↗</a>
           </div>
         </div>
       </div>
+    </section>
 
-      <div class="header-status">
-        <span class="status-pill" id="api-status">API: checking...</span>
-        <button class="secondary-btn small-btn" id="restart-flow-btn" type="button">Restart flow</button>
-      </div>
-    </header>
+    <section class="panel">
+      <div class="split">
+        <div>
+          <h2>Explore Toronto homes on the map</h2>
+          <p class="subtle">Use the filters, then click a marker to select up to two homes. The map preserves your zoom and pan while you compare.</p>
 
-    <nav class="stepper" aria-label="HomeAtlas steps">
-      <button class="step-chip active" data-step-link="1" type="button">Intro</button>
-      <button class="step-chip" data-step-link="2" type="button">Setup</button>
-      <button class="step-chip" data-step-link="3" type="button">Explore</button>
-      <button class="step-chip" data-step-link="4" type="button">Compare</button>
-      <button class="step-chip" data-step-link="5" type="button">Affordability</button>
-      <button class="step-chip" data-step-link="6" type="button">More</button>
-    </nav>
-
-    <main>
-      <section class="screen active" id="screen-1">
-        <div class="hero-grid">
-          <div class="hero-copy card">
-            <span class="eyebrow">Portfolio-grade product demo</span>
-            <h2>Your journey starts here.</h2>
-            <p class="hero-text">
-              HomeAtlas turns home browsing into a guided decision flow. Start with your buyer profile,
-              explore listings on a live map, compare two homes side by side, and then see whether the numbers support a real offer.
-            </p>
-
-            <div class="hero-actions">
-              <button class="primary-btn" id="start-btn" type="button">Start the guided tour</button>
-              <button class="secondary-btn" id="jump-explore-btn" type="button">Go straight to the map</button>
+          <div class="filters" style="grid-template-columns:repeat(5, minmax(0,1fr));">
+            <div>
+              <label class="label" for="cityFilter">City</label>
+              <select class="select" id="cityFilter"></select>
             </div>
-
-            <div class="feature-grid">
-              <div class="feature-pill">Map-first home search</div>
-              <div class="feature-pill">Buyer snapshot inputs</div>
-              <div class="feature-pill">Two-home comparison</div>
-              <div class="feature-pill">Offer-readiness guidance</div>
+            <div>
+              <label class="label" for="minPrice">Min price</label>
+              <input class="input" id="minPrice" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 900,000" />
             </div>
-          </div>
-
-          <div class="hero-preview card">
-            <div class="preview-badge">What this demo shows</div>
-            <div class="preview-stack">
-              <div class="preview-item">
-                <span class="preview-step">1</span>
-                <div>
-                  <h3>Set up the buyer</h3>
-                  <p>Income, down payment, debts, and target range.</p>
-                </div>
-              </div>
-              <div class="preview-item">
-                <span class="preview-step">2</span>
-                <div>
-                  <h3>Browse listings on the map</h3>
-                  <p>Select up to two homes and keep the search visual.</p>
-                </div>
-              </div>
-              <div class="preview-item">
-                <span class="preview-step">3</span>
-                <div>
-                  <h3>See the real trade-offs</h3>
-                  <p>Monthly payment, cash to close, and modeled readiness.</p>
-                </div>
-              </div>
+            <div>
+              <label class="label" for="maxPrice">Max price</label>
+              <input class="input" id="maxPrice" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 1,500,000" />
             </div>
-
-            <div class="built-by-panel">
-              <p class="built-by-label">Creator note</p>
-              <p class="built-by-text">
-                Designed as a cleaner, guided product experience so first-time users immediately understand what HomeAtlas does.
-              </p>
+            <div>
+              <label class="label" for="minBeds">Min beds</label>
+              <input class="input" id="minBeds" type="number" placeholder="e.g. 3" />
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="screen" id="screen-2">
-        <div class="screen-header">
-          <div>
-            <span class="eyebrow">Step 1</span>
-            <h2>Set up the buyer profile</h2>
-            <p>Keep the basics up front. Advanced inputs stay tucked away until they are needed.</p>
-          </div>
-        </div>
-
-        <div class="setup-grid">
-          <div class="card">
-            <form id="buyer-form" class="form-grid">
-              <label>
-                City
-                <select id="city-input"></select>
-              </label>
-
-              <label>
-                Minimum price
-                <input id="setup-min-price" type="number" inputmode="numeric" placeholder="900000" />
-              </label>
-
-              <label>
-                Maximum price
-                <input id="setup-max-price" type="number" inputmode="numeric" placeholder="1500000" />
-              </label>
-
-              <label>
-                Annual income
-                <input id="income-input" type="number" inputmode="numeric" placeholder="165000" />
-              </label>
-
-              <label>
-                Down payment
-                <input id="down-payment-input" type="number" inputmode="numeric" placeholder="220000" />
-              </label>
-
-              <label>
-                Extra cash reserve
-                <input id="cash-reserve-input" type="number" inputmode="numeric" placeholder="45000" />
-              </label>
-
-              <div class="advanced-toggle-row">
-                <button class="secondary-btn" id="toggle-advanced-btn" type="button">Show advanced details</button>
-              </div>
-
-              <div class="advanced-grid hidden" id="advanced-fields">
-                <label>
-                  Other monthly debts
-                  <input id="monthly-debts-input" type="number" inputmode="numeric" placeholder="0" />
-                </label>
-
-                <label>
-                  Interest rate %
-                  <input id="interest-rate-input" type="number" inputmode="decimal" step="0.01" placeholder="5.09" />
-                </label>
-
-                <label>
-                  Amortization years
-                  <input id="amort-years-input" type="number" inputmode="numeric" placeholder="25" />
-                </label>
-
-                <label>
-                  Rate shock scenario +%
-                  <input id="rate-shock-input" type="number" inputmode="decimal" step="0.1" placeholder="1.0" />
-                </label>
-              </div>
-            </form>
-          </div>
-
-          <aside class="card sticky-card">
-            <span class="eyebrow">Live summary</span>
-            <h3>Buyer snapshot</h3>
-            <div id="buyer-summary" class="summary-list"></div>
-          </aside>
-        </div>
-
-        <div class="screen-actions">
-          <button class="secondary-btn" data-back="1" type="button">Back</button>
-          <button class="primary-btn" id="continue-to-explore-btn" type="button">Continue to map</button>
-        </div>
-      </section>
-
-      <section class="screen" id="screen-3">
-        <div class="screen-header">
-          <div>
-            <span class="eyebrow">Step 2</span>
-            <h2>Explore homes</h2>
-            <p>Select up to two homes. The right panel keeps the shortlist visible while the map stays central.</p>
-          </div>
-        </div>
-
-        <div class="explore-grid">
-          <aside class="card filters-card">
-            <h3>Filters</h3>
-
-            <label>
-              City
-              <select id="filter-city"></select>
-            </label>
-
-            <label>
-              Min price
-              <input id="filter-min-price" type="number" inputmode="numeric" placeholder="900000" />
-            </label>
-
-            <label>
-              Max price
-              <input id="filter-max-price" type="number" inputmode="numeric" placeholder="1500000" />
-            </label>
-
-            <label>
-              Min beds
-              <input id="filter-beds" type="number" inputmode="numeric" placeholder="3" />
-            </label>
-
-            <label>
-              Sort view
-              <select id="sort-view">
-                <option value="default">Default order</option>
-                <option value="price-asc">Price low to high</option>
-                <option value="price-desc">Price high to low</option>
-                <option value="beds-desc">Most bedrooms</option>
+            <div>
+              <label class="label" for="sortBy">Sort view</label>
+              <select class="select" id="sortBy">
+                <option value="none">Default</option>
+                <option value="priceAsc">Price low to high</option>
+                <option value="priceDesc">Price high to low</option>
+                <option value="bedsDesc">Most bedrooms</option>
               </select>
-            </label>
-
-            <div class="filters-actions">
-              <button class="primary-btn" id="apply-filters-btn" type="button">Apply filters</button>
-              <button class="secondary-btn" id="reset-filters-btn" type="button">Reset</button>
-            </div>
-
-            <div class="mini-metrics">
-              <div class="mini-metric">
-                <span class="mini-label">Homes shown</span>
-                <strong id="homes-shown">0</strong>
-              </div>
-              <div class="mini-metric">
-                <span class="mini-label">Visible range</span>
-                <strong id="visible-range">$0 – $0</strong>
-              </div>
-            </div>
-          </aside>
-
-          <div class="map-column">
-            <div class="card map-card">
-              <div class="map-toolbar">
-                <div>
-                  <h3>Toronto search map</h3>
-                  <p>Click a marker or a result card to add it to the shortlist.</p>
-                </div>
-              </div>
-              <div id="map"></div>
-            </div>
-
-            <div class="card result-card">
-              <div class="result-header">
-                <h3>Sorted results</h3>
-                <p>This shelf makes sorting obvious even when markers stay in real map positions.</p>
-              </div>
-              <div id="results-list" class="results-list"></div>
             </div>
           </div>
 
-          <aside class="card selected-card">
-            <div class="selected-header">
-              <h3>Selected homes</h3>
-              <p>Pick up to two homes for side-by-side comparison.</p>
+          <div class="button-row">
+            <button class="btn primary" id="applyFilters">Apply filters</button>
+            <button class="btn secondary" id="resetFilters">Reset filters</button>
+          </div>
+
+          <div class="results-bar">
+            <span class="status-chip" id="resultsCountChip">0 homes shown</span>
+            <span class="status-chip" id="resultsSortChip">Default order</span>
+            <span class="status-chip" id="resultsRangeChip">Visible price range: —</span>
+          </div>
+
+          <div id="homesMap"></div>
+
+          <div class="filtered-shelf-wrap">
+            <div class="shelf-head">
+              <div>
+                <h3 style="margin:0 0 6px;">Sorted results</h3>
+                <p class="subtle" style="margin:0;">The sort view already sorts the listings, but because the markers stay in their real map positions it can feel invisible. This shelf follows the chosen sort order so the change is obvious.</p>
+              </div>
             </div>
-            <div id="selected-homes-panel" class="selected-homes-panel"></div>
-            <button class="primary-btn full-width" id="compare-selected-btn" type="button">Compare selected homes</button>
-          </aside>
+            <div class="filtered-shelf" id="filteredShelf"></div>
+          </div>
         </div>
 
-        <div class="screen-actions">
-          <button class="secondary-btn" data-back="2" type="button">Back</button>
-          <button class="secondary-btn" data-next="4" type="button">Skip to compare</button>
-        </div>
-      </section>
+        <div class="selection-column">
+          <div class="panel" style="padding:18px;">
+            <h3>Selected homes</h3>
+            <p class="subtle">Images are shown side by side. Click the same marker again to remove it.</p>
+            <div class="selection-grid" id="selectionGrid"></div>
+          </div>
 
-      <section class="screen" id="screen-4">
-        <div class="screen-header">
+          <div class="panel" style="padding:18px;">
+            <h3>Buyer snapshot</h3>
+            <div class="filters buyer-filters" style="margin-top:0;">
+              <div>
+                <label class="label" for="buyerIncome">Annual income</label>
+                <input class="input" id="buyerIncome" type="text" inputmode="numeric" autocomplete="off" value="165000" />
+              </div>
+              <div>
+                <label class="label" for="buyerDown">Down payment</label>
+                <input class="input" id="buyerDown" type="text" inputmode="numeric" autocomplete="off" value="220000" />
+              </div>
+              <div>
+                <label class="label" for="buyerReserve">Extra cash reserve</label>
+                <input class="input" id="buyerReserve" type="text" inputmode="numeric" autocomplete="off" value="45000" />
+              </div>
+              <div>
+                <label class="label" for="buyerOtherDebt">Other monthly debts</label>
+                <input class="input" id="buyerOtherDebt" type="text" inputmode="numeric" autocomplete="off" value="0" />
+              </div>
+              <div>
+                <label class="label" for="buyerRate">Interest rate %</label>
+                <input class="input" id="buyerRate" type="number" autocomplete="off" step="0.01" value="5.09" />
+              </div>
+              <div>
+                <label class="label" for="buyerAmort">Amortization years</label>
+                <input class="input" id="buyerAmort" type="number" autocomplete="off" value="25" />
+              </div>
+              <div>
+                <label class="label" for="buyerStress">Rate shock scenario +%</label>
+                <input class="input" id="buyerStress" type="number" autocomplete="off" step="0.1" value="1.0" />
+              </div>
+            </div>
+            <div class="compare-band" id="compareBand" style="margin-top:12px;"></div>
+            <div class="buyer-quicklook" id="buyerQuickLook"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="copilot-top">
+        <div>
+          <h2>HomeAtlas Reality Check</h2>
+          <p class="subtle">Choose one or two homes, enter a buyer profile, and let HomeAtlas turn the shortlist into a real purchase read: comfort ceiling, offer-readiness, closing pressure, and what to do next.</p>
+        </div>
+        <div class="copilot-badges" id="copilotBadges"></div>
+      </div>
+
+      <div class="copilot-grid">
+        <div class="copilot-main">
+          <div class="reality-hero" id="realityHero"></div>
+          <div class="action-grid" id="actionGrid"></div>
+          <div class="reality-grid" id="realityGrid"></div>
+        </div>
+
+        <aside class="guide-shell">
+          <div class="guide-head">
+            <span class="decision-kicker">HomeAtlas guide</span>
+            <h3 style="margin:0;">Buyer coach</h3>
+            <p class="subtle" style="margin:0;">Tap a prompt and HomeAtlas explains the current situation in plain language using the selected homes and buyer snapshot.</p>
+          </div>
+          <div class="guide-prompts" id="guidePrompts"></div>
+          <div class="guide-thread" id="guideThread"></div>
+          <div class="coach-steps" id="coachSteps"></div>
+          <div class="guide-footer">
+            <a class="resource-link" href="https://www.canada.ca/en/financial-consumer-agency/services/buying-home.html" target="_blank" rel="noopener noreferrer">FCAC buying a home ↗</a>
+            <a class="resource-link" href="https://itools-ioutils.fcac-acfc.gc.ca/MQ-HQ/MQ-EAPH-eng.aspx" target="_blank" rel="noopener noreferrer">Mortgage qualifier tool ↗</a>
+          </div>
+        </aside>
+      </div>
+
+      <div class="path-shell">
+        <div class="path-head">
           <div>
-            <span class="eyebrow">Step 3</span>
-            <h2>Compare homes</h2>
-            <p>The product should make the decision easier, not noisier. This screen surfaces the headline answer first.</p>
+            <h3 style="margin:0 0 6px;">Official home-buying path, translated into next actions</h3>
+            <p class="subtle" style="margin:0;">This scroller mirrors the major sections on the Financial Consumer Agency of Canada’s home-buying guide, then adds a plain-English “what this means for you now” layer.</p>
           </div>
         </div>
+        <div class="path-scroller" id="pathScroller"></div>
+      </div>
+    </section>
 
-        <div id="comparison-summary" class="comparison-summary card"></div>
-
-        <div class="comparison-grid">
-          <div id="comparison-home-a" class="card property-card"></div>
-          <div id="comparison-home-b" class="card property-card"></div>
+    <section class="panel">
+      <div class="tracker-top">
+        <div>
+          <h2>Borrower journey bar</h2>
+          <p class="subtle">A cleaner project-style progress bar with true stage movement, route switching, and exception cards anchored beneath the stage they usually affect.</p>
+          <div class="route-tabs" id="routeTabs"></div>
         </div>
 
-        <div class="screen-actions">
-          <button class="secondary-btn" data-back="3" type="button">Back</button>
-          <button class="primary-btn" data-next="5" type="button">See full affordability check</button>
-        </div>
-      </section>
+        <div class="tracker-right">
+          <div class="summary-card">
+            <h3 style="margin:0;">File snapshot</h3>
+            <div class="summary-grid">
+              <div class="summary-item"><div class="k">Borrower</div><div class="v" id="summaryBorrower">A. Singh</div></div>
+              <div class="summary-item"><div class="k">Current route</div><div class="v" id="summaryRoute">Owner-occupied purchase</div></div>
+              <div class="summary-item"><div class="k">Current stage</div><div class="v" id="summaryStage">Mortgage application</div></div>
+              <div class="summary-item"><div class="k">Status</div><div class="v" id="summaryStatus">In review</div></div>
+            </div>
+          </div>
 
-      <section class="screen" id="screen-5">
-        <div class="screen-header">
+          <div class="summary-card">
+            <h3 style="margin:0;">Specialist controls</h3>
+            <div>
+              <label class="label" for="borrowerInput">Borrower name</label>
+              <input class="input" id="borrowerInput" value="A. Singh" />
+            </div>
+            <div>
+              <label class="label" for="statusSelect">Client-facing status</label>
+              <select class="select" id="statusSelect">
+                <option>In review</option>
+                <option>Waiting on documents</option>
+                <option>Conditionally approved</option>
+                <option>Approved</option>
+                <option>Funded</option>
+                <option>Attention needed</option>
+              </select>
+            </div>
+            <div>
+              <label class="label" for="stageSelect">Move to stage</label>
+              <select class="select" id="stageSelect"></select>
+            </div>
+            <div>
+              <label class="label" for="agentNote">Borrower timeline note</label>
+              <textarea class="textarea" id="agentNote" placeholder="Example: Updated income docs received; valuation still pending."></textarea>
+            </div>
+            <div class="button-row">
+              <button class="btn primary" id="publishUpdate">Publish update</button>
+              <button class="btn ghost" id="resetDemo">Reset demo</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="journey-shell">
+        <div class="journey-grid" id="journeyGrid">
+          <div class="journey-track"><div class="journey-progress" id="journeyProgress"></div></div>
+        </div>
+        <div class="exception-area" id="exceptionArea"></div>
+        <div class="legend-row">
+          <span class="legend-pill"><span class="legend-dot" style="background:#22c55e"></span>Completed stage</span>
+          <span class="legend-pill"><span class="legend-dot" style="background:#091630"></span>Current borrower stage</span>
+          <span class="legend-pill"><span class="legend-dot" style="background:#1d4ed8"></span>Main borrower route</span>
+          <span class="legend-pill"><span class="legend-dot" style="background:#f59e0b"></span>Possible exception path</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="three-col">
+      <div class="panel">
+        <h3>Borrower timeline</h3>
+        <div class="timeline-list" id="timelineList"></div>
+      </div>
+
+      <div class="panel">
+        <h3>What usually comes next</h3>
+        <div class="summary-card" style="margin-top:0;">
+          <div class="summary-item">
+            <div class="k">Stage guidance</div>
+            <div class="v" id="nextStageHeadline">—</div>
+          </div>
           <div>
-            <span class="eyebrow">Step 4</span>
-            <h2>Affordability check</h2>
-            <p>Use the selected home and buyer snapshot to surface the real blockers: payment pressure, cash to close, and resilience.</p>
+            <h4 style="margin:6px 0 10px;">Typical next documents</h4>
+            <ul class="list" id="docsList"></ul>
           </div>
-
-          <button class="secondary-btn" id="save-scenario-btn" type="button">Save current scenario</button>
-        </div>
-
-        <div class="metrics-grid">
-          <div id="metric-best-fit" class="card metric-card"></div>
-          <div id="metric-readiness" class="card metric-card"></div>
-          <div id="metric-cash" class="card metric-card"></div>
-          <div id="metric-comfort" class="card metric-card"></div>
-        </div>
-
-        <div class="analysis-grid">
-          <div id="readiness-checklist" class="card checklist-card"></div>
-          <div id="next-steps-card" class="card next-steps-card"></div>
-        </div>
-
-        <div class="screen-actions">
-          <button class="secondary-btn" data-back="4" type="button">Back</button>
-          <button class="primary-btn" data-next="6" type="button">Open more tools</button>
-        </div>
-      </section>
-
-      <section class="screen" id="screen-6">
-        <div class="screen-header">
           <div>
-            <span class="eyebrow">Step 5</span>
-            <h2>More tools</h2>
-            <p>Keep the advanced pieces available without forcing them onto the first screen.</p>
+            <h4 style="margin:6px 0 10px;">Suggested next actions</h4>
+            <ul class="list" id="actionsList"></ul>
           </div>
         </div>
+      </div>
 
-        <div class="tab-row">
-          <button class="tab-btn active" data-tab="coach" type="button">Buyer coach</button>
-          <button class="tab-btn" data-tab="resources" type="button">Resources</button>
-          <button class="tab-btn" data-tab="journey" type="button">Mortgage journey</button>
-        </div>
-
-        <div class="tab-panel active" id="tab-coach">
-          <div id="coach-panel" class="card coach-card"></div>
-        </div>
-
-        <div class="tab-panel" id="tab-resources">
-          <div class="card resources-card">
-            <h3>Public guidance links</h3>
-            <div class="resource-list">
-              <a href="https://www.td.com/ca/en/personal-banking/products/mortgages" target="_blank" rel="noreferrer">TD mortgage journey</a>
-              <a href="https://www.td.com/ca/en/personal-banking/products/mortgages/pre-approval" target="_blank" rel="noreferrer">TD pre-approval</a>
-              <a href="https://www.td.com/ca/en/personal-banking/products/mortgages/bridge-financing" target="_blank" rel="noreferrer">TD bridge financing</a>
-              <a href="https://www.canada.ca/en/financial-consumer-agency/services/mortgages/buying-home.html" target="_blank" rel="noreferrer">FCAC buying a home</a>
-              <a href="https://www.canada.ca/en/financial-consumer-agency/services/mortgages/preparing-mortgage.html" target="_blank" rel="noreferrer">FCAC preparing for a mortgage</a>
-            </div>
-            <p class="resource-note">
-              Keep these links in the advanced area so the product flow stays clean while still showing that the demo is grounded in real public resources.
-            </p>
+      <div class="panel">
+        <h3>TD and FCAC public guidance links</h3>
+        <div class="resource-grid">
+          <div class="resource-card">
+            <a href="https://www.td.com/ca/en/personal-banking/products/mortgages/online-mortgage-journey" target="_blank" rel="noopener noreferrer">TD online mortgage journey ↗</a>
+            <div class="subtle">TD’s online mortgage journey highlights immediate online pre-approval responses and a rate hold for up to 120 days, subject to conditions.</div>
+          </div>
+          <div class="resource-card">
+            <a href="https://www.td.com/ca/en/personal-banking/products/mortgages/first-time-home-buyer/pre-approval" target="_blank" rel="noopener noreferrer">TD mortgage pre-approval ↗</a>
+            <div class="subtle">TD’s public pre-approval guidance explains the rate hold, online application flow, and that conditions still apply.</div>
+          </div>
+          <div class="resource-card">
+            <a href="https://www.canada.ca/en/financial-consumer-agency/services/buying-home.html" target="_blank" rel="noopener noreferrer">FCAC buying a home ↗</a>
+            <div class="subtle">FCAC’s home-buying guide covers saving, incentives, pre-approval, home search, and planning for upfront closing costs.</div>
+          </div>
+          <div class="resource-card">
+            <a href="https://www.canada.ca/en/financial-consumer-agency/services/mortgages/preparing-mortgage.html" target="_blank" rel="noopener noreferrer">FCAC preparing to get a mortgage ↗</a>
+            <div class="subtle">FCAC explains the 39% housing-cost guide, the 44% total-debt guide, and the stress-test logic used by federally regulated banks.</div>
+          </div>
+          <div class="resource-card">
+            <a href="https://www.td.com/ca/en/personal-banking/products/mortgages/financing-between-homes" target="_blank" rel="noopener noreferrer">TD bridge financing ↗</a>
+            <div class="subtle">TD’s bridge financing page explains it can help when selling and buying closing dates do not line up, typically up to 90 days.</div>
           </div>
         </div>
+      </div>
+    </section>
 
-        <div class="tab-panel" id="tab-journey">
-          <div class="card journey-card">
-            <h3>Borrower journey demo</h3>
-            <p>The workflow simulation lives here as an optional advanced view instead of competing with the main search experience.</p>
+    <div class="footer-note">Created by Jaideep Singh — HomeAtlas demo with refined portfolio layout, map-first selection, and a route-aware mortgage journey bar. Built for learning; not affiliated with or endorsed by TD or FCAC.</div>
+  </main>
 
-            <div class="journey-track">
-              <div class="journey-stage done">
-                <strong>1</strong>
-                <span>Budget</span>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const csvData = `id,address,city,lat,lng,price,beds,baths,sqft,url,realtor_name,realtor_phone,mortgage_contact,image_url
+1,18 Willowdale Park Dr,Toronto,43.772,-79.414,1389000,3,3,1800,https://example.com/demo/willowdale,Ava Martin,555-111-2222,TD Mortgage Team Toronto,assets/home1.jpg
+2,42 Leaside Manor Rd,Toronto,43.709,-79.364,1749000,4,3,2200,https://example.com/demo/leaside,Liam Carter,555-333-4444,TD Mortgage Team Toronto,assets/home2.jpg
+3,77 High Park Gardens,Toronto,43.651,-79.466,1649000,4,3,2100,https://example.com/demo/highpark,Emily Ross,555-444-1188,TD Mortgage Team Toronto,assets/home3.jpg
+4,15 Beaches Lane,Toronto,43.673,-79.287,1899000,4,3,2350,https://example.com/demo/beaches,Noah Bennett,555-221-7744,TD Mortgage Team Toronto,assets/home4.jpg
+5,31 Leslieville Row,Toronto,43.662,-79.335,1499000,3,3,1850,https://example.com/demo/leslieville,Chloe Adams,555-876-2211,TD Mortgage Team Toronto,assets/home5.jpg
+6,9 Roncesvalles Ave West,Toronto,43.644,-79.449,1725000,4,3,2150,https://example.com/demo/roncesvalles,Daniel Brooks,555-612-7741,TD Mortgage Team Toronto,assets/home6.jpg
+7,58 Don Mills Crest,Toronto,43.736,-79.346,1325000,3,3,1780,https://example.com/demo/donmills,Sophia Turner,555-431-9922,TD Mortgage Team Toronto,assets/home7.jpg
+8,103 Lawrence Park View,Toronto,43.726,-79.395,2499000,4,4,3100,https://example.com/demo/lawrencepark,Jacob Hill,555-884-3001,TD Mortgage Team Toronto,assets/home8.jpg
+9,26 Etobicoke Heights Dr,Toronto,43.643,-79.566,1199000,3,2,1700,https://example.com/demo/etobicoke,Olivia Clark,555-200-8181,TD Mortgage Team Toronto,assets/home9.jpg
+10,87 Scarborough Bluffs Rd,Toronto,43.717,-79.232,1299000,4,3,2000,https://example.com/demo/bluffs,Ethan Lewis,555-907-4411,TD Mortgage Team Toronto,assets/home10.jpg
+11,14 Danforth Village Way,Toronto,43.683,-79.318,1249000,3,2,1650,https://example.com/demo/danforth,Grace Hall,555-641-8890,TD Mortgage Team Toronto,assets/home11.jpg
+12,61 Midtown Cedar Ave,Toronto,43.703,-79.401,1589000,3,3,1900,https://example.com/demo/midtown,Lucas Young,555-518-2400,TD Mortgage Team Toronto,assets/home12.jpg
+13,39 Annex Court,Toronto,43.671,-79.403,2199000,4,4,2600,https://example.com/demo/annex,Hannah Scott,555-330-7788,TD Mortgage Team Toronto,assets/home13.jpg
+14,72 Bloor West Terrace,Toronto,43.649,-79.484,1675000,4,3,2250,https://example.com/demo/bloorwest,Mason Green,555-729-1155,TD Mortgage Team Toronto,assets/home14.jpg
+15,22 Harbourfront Quay,Toronto,43.640,-79.381,999000,2,2,1100,https://example.com/demo/harbourfront,Amelia King,555-430-7721,TD Mortgage Team Toronto,assets/home15.jpg
+16,95 Distillery Lane,Toronto,43.651,-79.359,1149000,3,2,1350,https://example.com/demo/distillery,Logan Wright,555-803-5566,TD Mortgage Team Toronto,assets/home16.jpg
+17,44 North York Summit,Toronto,43.754,-79.438,1469000,4,3,2050,https://example.com/demo/northyork,Harper Baker,555-228-4040,TD Mortgage Team Toronto,assets/home17.jpg
+18,11 Forest Hill Rise,Toronto,43.701,-79.425,3299000,5,5,4200,https://example.com/demo/foresthill,Benjamin Perez,555-155-9911,TD Mortgage Team Toronto,assets/home18.jpg
+19,28 Cabbagetown Mews,Toronto,43.666,-79.367,1399000,3,3,1750,https://example.com/demo/cabbagetown,Ella Mitchell,555-477-6223,TD Mortgage Team Toronto,assets/home19.jpg
+20,53 Junction Heights,Toronto,43.665,-79.470,1275000,3,3,1680,https://example.com/demo/junction,Jack Turner,555-902-3310,TD Mortgage Team Toronto,assets/home20.jpg`;
+
+    const routeProfiles = {
+      purchase_owner: {
+        label:'Owner-occupied purchase',
+        stages:[
+          { label:'Discovery & budget', copy:'Define comfort range and ownership-cost fit.', docs:['Income picture and debt snapshot.','Down payment target.','Expected ownership costs.'], next:['Set a realistic payment comfort zone.','Review legal fees, land transfer tax, inspection, moving costs, and repairs.'] },
+          { label:'Pre-approval', copy:'Borrower side is assessed before offer work.', docs:['ID and income documents.','Liabilities overview.','Down payment proof.'], next:['Complete the pre-approval package cleanly.','Remember that public guidance says a pre-approval can still be subject to conditions.'] },
+          { label:'Search & offer prep', copy:'Shortlist homes that match the real payment fit.', docs:['Property shortlist.','Estimated taxes and fees.'], next:['Compare total ownership cost, not only the asking price.','Keep credit and debt stable while shopping.'] },
+          { label:'Mortgage application', copy:'Submit the property-specific file after offer acceptance.', docs:['Accepted agreement of purchase and sale.','Updated statements.'], next:['Submit the property file quickly.','Be ready for property-specific questions.'] },
+          { label:'Property review', copy:'Value and property risk are reviewed closely.', docs:['Appraisal if requested.','Condo/property follow-ups if requested.'], next:['Prepare for value-related changes.','Keep cash-to-close position clear.'] },
+          { label:'Conditions', copy:'Clear the last items before legal completion.', docs:['Any final lender conditions.','Updated source-of-funds support if asked.'], next:['Resolve remaining conditions promptly.','Confirm final cash to close.'] },
+          { label:'Funding', copy:'Lawyer instructions and funding complete the file.', docs:['Final legal package.'], next:['Save final legal documents.','Move into post-closing management.'] }
+        ],
+        exceptions:{
+          0:[{title:'Affordability / ownership-cost review', text:'TD public guidance emphasizes budgeting for additional ownership costs such as legal fees, land transfer tax, valuation, inspection, moving costs, and repairs.', tone:'amber'}],
+          1:[{title:'Pre-approval conditions outstanding', text:'A pre-approval can still be subject to conditions, and the borrower may need to satisfy document or qualification requirements before moving forward.', tone:'purple'}],
+          3:[{title:'Down payment source review', text:'The borrower may need to support the source of funds and exact cash-to-close position before the file is finalized.', tone:'purple'}],
+          4:[{title:'Low appraisal / value change', text:'If the property review changes value expectations, the structure, required cash, or final approval path may need to change.', tone:'red'}],
+          5:[{title:'Sale and purchase dates do not line up', text:'TD bridge financing guidance explains that bridge financing may help when the borrower is closing on a new home before the current one sells, typically for up to 90 days.', tone:'teal'}]
+        }
+      },
+      builder: {
+        label:'Builder / pre-build closing',
+        stages:[
+          { label:'Reservation & deposits', copy:'Track reservation and builder deposit obligations.', docs:['Builder agreement.','Deposit schedule.'], next:['Understand deposit timing clearly.','Track total cash already committed.'] },
+          { label:'Initial qualification', copy:'Early qualification checks the borrower side at today’s numbers.', docs:['Income docs.','Credit/debt snapshot.'], next:['Treat early qualification as a baseline.','Stress test later rate movement.'] },
+          { label:'Construction period', copy:'The file stays warm while the project progresses.', docs:['Builder notices.','Upgrade and timeline notes.'], next:['Monitor delay notices.','Keep funds and debt stable through construction.'] },
+          { label:'Re-qualification', copy:'The borrower may need a fresh review near closing.', docs:['Updated pay stubs.','Updated balances and debt picture.'], next:['Refresh affordability with current rates.','Avoid new debt before final closing.'] },
+          { label:'Final value / adjustments', copy:'Closing adjustments and builder costs become real.', docs:['Builder statement of adjustments.'], next:['Check cash to close carefully.','Review extra builder adjustments.'] },
+          { label:'Lawyer prep & conditions', copy:'Final lender and legal conditions get cleared.', docs:['Final conditions.','Legal package.'], next:['Coordinate legal timing.','Confirm exact funding day.'] },
+          { label:'Final closing', copy:'Builder file completes through final funding.', docs:['Final legal documents.'], next:['Save adjustment statements.','Store final closing paperwork.'] }
+        ],
+        exceptions:{
+          0:[{title:'Deposit schedule pressure', text:'Builder deals often require tighter deposit planning and cash tracking much earlier than a regular resale purchase.', tone:'amber'}],
+          2:[{title:'Builder delay notice', text:'A delay can shift timelines and force the file back into refreshed document collection or re-qualification.', tone:'teal'}],
+          3:[{title:'Re-qualification with current rates', text:'A long construction gap can change affordability, debt tolerance, or document freshness before final closing.', tone:'purple'}],
+          4:[{title:'Adjustment increase', text:'Builder adjustments can raise the real cash needed at closing even when the purchase price is unchanged.', tone:'red'}]
+        }
+      },
+      refinance: {
+        label:'Refinance',
+        stages:[
+          { label:'Refinance goals', copy:'Clarify why the borrower wants to refinance.', docs:['Current mortgage balance.','Refinance purpose notes.'], next:['Confirm whether the goal is debt consolidation, renovations, or equity access.','Check if refinancing still fits the borrower objective.'] },
+          { label:'Qualification', copy:'Borrower strength is reviewed against the refinance request.', docs:['Income documents.','Debt statements.'], next:['Document income clearly.','Combine current mortgage context with full debt picture.'] },
+          { label:'Equity fit', copy:'Review available equity and structural fit.', docs:['Estimated property value.','Payout estimate.'], next:['Check how much equity is realistically available.','Model payment change before proceeding.'] },
+          { label:'Refinance application', copy:'Formal application with purpose and supporting docs.', docs:['Updated refinance application.','Purpose support.'], next:['Submit the final refinance structure.','Be ready for costs and legal registration questions.'] },
+          { label:'Property review', copy:'Value and property details shape the final room to refinance.', docs:['Valuation if needed.'], next:['Prepare for valuation-driven change.','Reconfirm if refinance still solves the borrower goal.'] },
+          { label:'Offer & conditions', copy:'Remaining lender conditions are cleared.', docs:['Signed disclosures.'], next:['Resolve the last conditions.','Confirm payout instructions.'] },
+          { label:'Registration & funding', copy:'Legal registration and final funding complete the refinance.', docs:['Final legal documents.'], next:['Store payout and registration records.','Begin operating under the new mortgage structure.'] }
+        ],
+        exceptions:{
+          2:[{title:'Refinance goal or equity fit changed', text:'Refinance can be appropriate for debt consolidation, renovations, or equity access, but the structure may need to change if the borrower goal changes.', tone:'amber'}],
+          4:[{title:'Low appraisal / value change', text:'If value comes in below expectation, the amount available to refinance may tighten and the structure may need to be adjusted.', tone:'red'}],
+          5:[{title:'Registration cost review', text:'Public refinance guidance points borrowers toward valuation, legal registration, discharge fees, and possible prepayment costs.', tone:'purple'}]
+        }
+      },
+      renewal: {
+        label:'Renewal',
+        stages:[
+          { label:'Maturity planning', copy:'Start early and identify the borrower’s next-term priorities.', docs:['Current statement.','Maturity date.'], next:['Think about future plans before term selection.','Start before maturity pressure appears.'] },
+          { label:'Rate & term review', copy:'Compare renewal choices rather than only the headline rate.', docs:['Renewal offer.'], next:['Compare term length and payment fit.','Use the digital renewal flow if appropriate.'] },
+          { label:'Payment scenario', copy:'Check what different terms mean for cash flow.', docs:['Budget notes.'], next:['Run multiple payment scenarios.','Ask whether flexibility matters more than the lowest rate.'] },
+          { label:'Decision confirmation', copy:'Lock in the selected direction.', docs:['Selected term notes.'], next:['Avoid delaying the final choice.','Confirm the borrower understands the structure.'] },
+          { label:'Agreement prep', copy:'Review the renewal agreement carefully.', docs:['Renewal agreement.'], next:['Check term, rate, and payment details.','Read the agreement closely before acceptance.'] },
+          { label:'Signed renewal', copy:'The borrower accepts the new term.', docs:['Accepted renewal agreement.'], next:['Store the agreement.','Prepare for the new term start date.'] },
+          { label:'New term active', copy:'Renewal is complete and the new term is live.', docs:['Final confirmation.'], next:['Monitor comfort under the new payment.','Track future renewal opportunities.'] }
+        ],
+        exceptions:{
+          1:[{title:'Payment-stress review', text:'Rate and term choice may need to lean toward payment comfort rather than only the shortest-term headline pricing.', tone:'amber'}],
+          3:[{title:'Refinance instead of renew', text:'If the borrower’s goals move toward restructuring or equity access, the path may shift from a simple renewal into a refinance conversation.', tone:'purple'}]
+        }
+      },
+      rental_investment: {
+        label:'Rental / investment',
+        stages:[
+          { label:'Investor goals', copy:'Define rental strategy, reserves, and return expectations.', docs:['Goal summary.','Reserve target.'], next:['Clarify whether the property is long-term rental or another investment play.','Set reserve expectations.'] },
+          { label:'Qualification', copy:'Borrower profile and reserve strength are assessed.', docs:['Income docs.','Debt and asset picture.'], next:['Show stronger reserve discipline.','Package the borrower side cleanly.'] },
+          { label:'Property & rent review', copy:'Compare price against realistic rent and carrying cost.', docs:['Rent estimate.','Taxes and fees.'], next:['Check cash flow and reserve comfort.','Avoid relying on optimistic rent assumptions.'] },
+          { label:'Rental offset review', copy:'Income treatment and reserve support are tested.', docs:['Rent support.','Source-of-funds support.'], next:['Respond quickly to rent and reserve questions.','Re-test the deal if assumptions soften.'] },
+          { label:'Value & cash flow', copy:'Property value and rental fit shape the final structure.', docs:['Valuation or rent schedule if requested.'], next:['Prepare for conservative value treatment.','Make sure the deal still works under softer assumptions.'] },
+          { label:'Conditions', copy:'Final reserve and lender conditions are cleared.', docs:['Final condition items.'], next:['Clear remaining items.','Confirm exact funding timing.'] },
+          { label:'Funding', copy:'Investment file completes through legal funding.', docs:['Final legal documents.'], next:['Save final deal records.','Track ongoing performance assumptions.'] }
+        ],
+        exceptions:{
+          2:[{title:'Rent estimate realism check', text:'A strong-looking listing can still be weak if rent assumptions, vacancy tolerance, or reserve comfort are too optimistic.', tone:'amber'}],
+          3:[{title:'Rental offset policy review', text:'The file may need deeper support for rental income treatment and reserve strength before finalizing the structure.', tone:'purple'}],
+          4:[{title:'Value / cash flow compression', text:'A tighter value outcome or weaker rent math can change the deal from “works on paper” to “needs adjustment.”', tone:'red'}]
+        }
+      },
+      power_sale: {
+        label:'Power of sale',
+        stages:[
+          { label:'Risk fit', copy:'Check budget, speed, and risk tolerance.', docs:['Budget target.','Risk tolerance notes.'], next:['Make sure the borrower understands faster timelines and property risk.','Do not assume a normal resale experience.'] },
+          { label:'Borrower qualification', copy:'Keep the borrower side clean and fast.', docs:['Income documents.','Down payment proof.'], next:['Keep documents ready for tight timelines.','Avoid new debt while the file is active.'] },
+          { label:'Offer & legal caution', copy:'Review property info carefully before offer.', docs:['Offer details.','Legal review notes.'], next:['Understand “as is” style risk.','Make legal review part of the decision, not an afterthought.'] },
+          { label:'Mortgage application', copy:'Submit the property-specific file.', docs:['Accepted agreement.','Updated statements.'], next:['Move quickly with the lender file.','Be ready for extra property questions.'] },
+          { label:'Property / title review', copy:'Property and legal risk are reviewed closely.', docs:['Appraisal if requested.','Legal/title follow-ups.'], next:['Prepare for title or legal complications.','Do not assume the same timing as a clean resale.'] },
+          { label:'Conditions & timing', copy:'Last conditions before funding.', docs:['Final condition list.'], next:['Clear conditions quickly.','Coordinate timing carefully.'] },
+          { label:'Funding / possession', copy:'Legal completion and possession.', docs:['Final legal documents.'], next:['Store closing records.','Shift into post-possession follow-up.'] }
+        ],
+        exceptions:{
+          0:[{title:'Affordability / ownership-cost review', text:'The borrower still needs a realistic ownership budget even when the property opportunity looks attractive.', tone:'amber'}],
+          1:[{title:'Pre-approval conditions outstanding', text:'Borrower qualification may still need to satisfy conditions before the file is fully ready for a fast offer path.', tone:'purple'}],
+          4:[{title:'Title / legal issue', text:'Power-of-sale files can require stronger legal caution if title wording, property condition, or legal limitations need more review.', tone:'red'}],
+          5:[{title:'Sale and purchase dates do not line up', text:'If another property is also in the picture, bridge financing timing can become relevant depending on the closing sequence.', tone:'teal'}]
+        }
+      }
+    };
+
+    const money = n => `$${Math.round(Number(n || 0)).toLocaleString()}`;
+    const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+    const nowLabel = () => new Date().toLocaleString([], { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' });
+    const pct = n => `${(Number(n || 0) * 100).toFixed(1)}%`;
+    const signedMoney = n => `${Number(n || 0) < 0 ? '-' : ''}$${Math.round(Math.abs(Number(n || 0))).toLocaleString()}`;
+
+    function qualifyingRate(ratePct){
+      return Math.max(Number(ratePct || 0) + 2, 5.25);
+    }
+
+    function recommendationTone(verdict){
+      if (verdict === 'Offer-ready') return 'pass';
+      if (verdict === 'Almost ready') return 'warn';
+      if (verdict === 'Stretch') return 'warn';
+      return 'fail';
+    }
+
+    function smartTargetPrice(comfortCeiling, listingPrice){
+      if (!comfortCeiling) return Math.max(0, listingPrice * 0.8);
+      return Math.min(listingPrice, comfortCeiling);
+    }
+
+    const placeholderSvg = text => `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600">
+        <defs>
+          <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#dbeafe"/>
+            <stop offset="100%" stop-color="#ffffff"/>
+          </linearGradient>
+        </defs>
+        <rect width="900" height="600" fill="url(#g)"/>
+        <circle cx="735" cy="120" r="58" fill="#bfdbfe"/>
+        <rect x="110" y="310" width="680" height="160" rx="20" fill="#ffffff" opacity=".9"/>
+        <path d="M220 345l120-96 120 96v135H220z" fill="#1d4ed8" opacity=".92"/>
+        <path d="M470 330l120-110 120 110v150H470z" fill="#0f172a" opacity=".9"/>
+        <rect x="268" y="395" width="54" height="44" rx="8" fill="#ffffff" opacity=".8"/>
+        <rect x="360" y="395" width="54" height="44" rx="8" fill="#ffffff" opacity=".8"/>
+        <rect x="558" y="385" width="64" height="54" rx="10" fill="#dbeafe"/>
+        <text x="110" y="110" font-size="48" font-family="Inter, Arial, sans-serif" font-weight="800" fill="#0f172a">${text}</text>
+      </svg>
+    `)}`;
+
+    function parseCsv(text){
+      const rows = text.trim().split('\n');
+      const headers = rows.shift().split(',');
+      return rows.map(row => {
+        const cols = row.split(',');
+        const item = {};
+        headers.forEach((header, idx) => item[header] = cols[idx]);
+        item.id = Number(item.id);
+        item.lat = Number(item.lat);
+        item.lng = Number(item.lng);
+        item.price = Number(item.price);
+        item.beds = Number(item.beds);
+        item.baths = Number(item.baths);
+        item.sqft = Number(item.sqft);
+        return item;
+      });
+    }
+
+    const listings = parseCsv(csvData);
+
+    const buyerInputDefaults = {
+      income:165000,
+      down:220000,
+      reserve:45000,
+      otherDebt:0,
+      rate:5.09,
+      amort:25,
+      stress:1.0
+    };
+
+    const buyerInputFieldMap = {
+      buyerIncome:'income',
+      buyerDown:'down',
+      buyerReserve:'reserve',
+      buyerOtherDebt:'otherDebt',
+      buyerRate:'rate',
+      buyerAmort:'amort',
+      buyerStress:'stress'
+    };
+
+    const formattedNumberIds = ['minPrice','maxPrice','buyerIncome','buyerDown','buyerReserve','buyerOtherDebt'];
+
+    function parseLooseNumber(value){
+      if (value == null) return 0;
+      const cleaned = String(value).replace(/,/g, '').replace(/\s+/g, '').trim();
+      if (!cleaned) return 0;
+      const numeric = Number(cleaned);
+      return Number.isFinite(numeric) ? numeric : 0;
+    }
+
+    function formatIntegerLike(value){
+      const numeric = parseLooseNumber(value);
+      return numeric ? Math.round(numeric).toLocaleString() : '';
+    }
+
+    function refreshFormattedNumberFields(){
+      formattedNumberIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const numeric = parseLooseNumber(el.value);
+        el.value = numeric ? Math.round(numeric).toLocaleString() : '';
+      });
+    }
+
+    function bindFormattedNumberFields(){
+      formattedNumberIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el || el.dataset.formatBound === '1') return;
+        el.dataset.formatBound = '1';
+        el.addEventListener('focus', () => {
+          const numeric = parseLooseNumber(el.value);
+          el.value = numeric ? String(Math.round(numeric)) : '';
+        });
+        el.addEventListener('blur', () => {
+          const numeric = parseLooseNumber(el.value);
+          el.value = numeric ? Math.round(numeric).toLocaleString() : '';
+          if (buyerInputFieldMap[id]) saveBuyerInputs();
+        });
+      });
+    }
+
+    function currentSortLabel(){
+      const sortBy = document.getElementById('sortBy').value;
+      if (sortBy === 'priceAsc') return 'Sorted: price low to high';
+      if (sortBy === 'priceDesc') return 'Sorted: price high to low';
+      if (sortBy === 'bedsDesc') return 'Sorted: most bedrooms first';
+      return 'Default order';
+    }
+
+    function normalizeBuyerValue(key, value){
+      const numeric = parseLooseNumber(value);
+      if (!Number.isFinite(numeric)) return buyerInputDefaults[key];
+      if (key === 'income') return numeric >= 10000 ? numeric : buyerInputDefaults[key];
+      if (key === 'rate' || key === 'amort') return numeric > 0 ? numeric : buyerInputDefaults[key];
+      if (key === 'stress') return numeric >= 0 ? numeric : buyerInputDefaults[key];
+      return numeric >= 0 ? numeric : buyerInputDefaults[key];
+    }
+
+    function saveBuyerInputs(){
+      const payload = {};
+      Object.entries(buyerInputFieldMap).forEach(([id, key]) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        payload[key] = normalizeBuyerValue(key, el.value);
+      });
+      localStorage.setItem(`${storageKey}_buyer_inputs`, JSON.stringify(payload));
+    }
+
+    function applyBuyerInputDefaults(force=false){
+      let saved = {};
+      try{
+        saved = JSON.parse(localStorage.getItem(`${storageKey}_buyer_inputs`) || '{}') || {};
+      }catch(e){
+        saved = {};
+      }
+
+      Object.entries(buyerInputFieldMap).forEach(([id, key]) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const currentRaw = el.value;
+        const currentNumeric = Number(currentRaw);
+        const currentLooksInvalid = !currentRaw || !Number.isFinite(currentNumeric) || (key === 'income' && currentNumeric < 10000) || ((key === 'rate' || key === 'amort') && currentNumeric <= 0) || ((key !== 'income' && key !== 'rate' && key !== 'amort') && currentNumeric < 0);
+        const sourceValue = key in saved ? saved[key] : buyerInputDefaults[key];
+        if (force || currentLooksInvalid){
+          const normalized = normalizeBuyerValue(key, sourceValue);
+          el.value = formattedNumberIds.includes(id) ? formatIntegerLike(normalized) : String(normalized);
+        }
+      });
+
+      saveBuyerInputs();
+      refreshFormattedNumberFields();
+    }
+
+    function mortgagePayment(principal, annualRatePct, years){
+      const p = Number(principal || 0);
+      const r = Number(annualRatePct || 0) / 100 / 12;
+      const n = Number(years || 0) * 12;
+      if (p <= 0 || n <= 0) return 0;
+      if (r === 0) return p / n;
+      return p * ((r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1));
+    }
+
+    function buyerSnapshot(){
+      return {
+        income:parseLooseNumber(document.getElementById('buyerIncome').value || 0),
+        down:parseLooseNumber(document.getElementById('buyerDown').value || 0),
+        reserve:parseLooseNumber((document.getElementById('buyerReserve') && document.getElementById('buyerReserve').value) || 0),
+        otherDebt:parseLooseNumber((document.getElementById('buyerOtherDebt') && document.getElementById('buyerOtherDebt').value) || 0),
+        rate:Number(document.getElementById('buyerRate').value || 0),
+        amort:Number(document.getElementById('buyerAmort').value || 25),
+        stress:Number((document.getElementById('buyerStress') && document.getElementById('buyerStress').value) || 1)
+      };
+    }
+
+    function propertyAnalysis(listing) {
+      const buyer = buyerSnapshot();
+      const principal = Math.max(0, listing.price - buyer.down);
+      const monthly = mortgagePayment(principal, buyer.rate, buyer.amort);
+      const monthlyIncome = buyer.income / 12;
+
+      const housingCost = monthly + listing.price * 0.00075 + 280;
+      const totalDebt = housingCost + (buyer.otherDebt || 0);
+
+      const housingRatio = monthlyIncome > 0 ? housingCost / monthlyIncome : 0;
+      const totalDebtRatio = monthlyIncome > 0 ? totalDebt / monthlyIncome : 0;
+
+      let fit = 'Needs profile';
+      if (monthlyIncome > 0){
+        if (totalDebtRatio <= 0.32) fit = 'Strong fit';
+        else if (totalDebtRatio <= 0.42) fit = 'Possible with review';
+        else if (totalDebtRatio <= 0.52) fit = 'Stretch';
+        else fit = 'Tight';
+      }
+
+      return {
+        principal,
+        monthly,
+        carrying: housingCost,
+        ratio: totalDebtRatio,
+        housingRatio,
+        totalDebtRatio,
+        fit,
+      };
+    }
+
+
+    function minimumDownPayment(price){
+      const p = Number(price || 0);
+      if (p >= 1500000) return p * 0.20;
+      if (p > 500000) return (500000 * 0.05) + ((p - 500000) * 0.10);
+      return p * 0.05;
+    }
+
+    function marginalTax(amount, brackets){
+      let remaining = Number(amount || 0);
+      let lower = 0;
+      let total = 0;
+      for (const bracket of brackets){
+        const upper = bracket.upTo;
+        const taxable = Math.max(0, Math.min(remaining, upper - lower));
+        total += taxable * bracket.rate;
+        remaining -= taxable;
+        lower = upper;
+        if (remaining <= 0) break;
+      }
+      if (remaining > 0){
+        const lastRate = brackets[brackets.length - 1].rate;
+        total += remaining * lastRate;
+      }
+      return total;
+    }
+
+    function ontarioLandTransferTax(price){
+      return marginalTax(price, [
+        { upTo:55000, rate:0.005 },
+        { upTo:250000, rate:0.01 },
+        { upTo:400000, rate:0.015 },
+        { upTo:2000000, rate:0.02 },
+        { upTo:Number.MAX_SAFE_INTEGER, rate:0.025 }
+      ]);
+    }
+
+    function torontoLandTransferTax(price){
+      return marginalTax(price, [
+        { upTo:55000, rate:0.005 },
+        { upTo:250000, rate:0.01 },
+        { upTo:400000, rate:0.015 },
+        { upTo:2000000, rate:0.02 },
+        { upTo:3000000, rate:0.025 },
+        { upTo:4000000, rate:0.044 },
+        { upTo:5000000, rate:0.0545 },
+        { upTo:10000000, rate:0.065 },
+        { upTo:20000000, rate:0.0755 },
+        { upTo:Number.MAX_SAFE_INTEGER, rate:0.086 }
+      ]);
+    }
+
+    function estimatedClosingCosts(listing){
+      const provincial = ontarioLandTransferTax(listing.price);
+      const municipal = torontoLandTransferTax(listing.price);
+      const legal = 2500;
+      const appraisal = 450;
+      const inspection = 650;
+      const setupBuffer = 1800;
+      return {
+        provincial,
+        municipal,
+        legal,
+        appraisal,
+        inspection,
+        setupBuffer,
+        total: provincial + municipal + legal + appraisal + inspection + setupBuffer
+      };
+    }
+
+    function clamp01(value){
+      return Math.max(0, Math.min(1, value));
+    }
+
+    function scaleLowerBetter(value, low, high){
+      if (high === low) return 1;
+      return clamp01((high - value) / (high - low));
+    }
+
+    function scaleHigherBetter(value, low, high){
+      if (high === low) return 1;
+      return clamp01((value - low) / (high - low));
+    }
+
+    function paymentFactor(ratePct, years){
+      const r = Number(ratePct || 0) / 100 / 12;
+      const n = Number(years || 0) * 12;
+      if (n <= 0) return 0;
+      if (r === 0) return 1 / n;
+      return (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+    }
+
+    function decisionMetrics(listing){
+      const buyer = buyerSnapshot();
+      const analysis = propertyAnalysis(listing);
+      const closing = estimatedClosingCosts(listing);
+      const minimumDown = minimumDownPayment(listing.price);
+      const totalCashNeed = minimumDown + closing.total;
+      const availableCash = buyer.down;
+      const cashCushion = availableCash - totalCashNeed;
+      const monthlyBuffer = Math.max(0, (buyer.income / 12) - analysis.carrying);
+      const spaceValue = listing.sqft + (listing.beds * 140) + (listing.baths * 60);
+      return {
+        analysis,
+        closing,
+        minimumDown,
+        totalCashNeed,
+        availableCash,
+        cashCushion,
+        monthlyBuffer,
+        spaceValue
+      };
+    }
+
+    function binarySearchComfortCeiling(){
+      const buyer = buyerSnapshot();
+      const monthlyIncome = buyer.income / 12;
+      if (monthlyIncome <= 0 || buyer.down <= 0) return 0;
+
+      const canCarry = price => {
+        if (buyer.down < minimumDownPayment(price)) return false;
+        const closing = estimatedClosingCosts({ price });
+        if (buyer.reserve < closing.total) return false;
+        const monthly = mortgagePayment(Math.max(0, price - buyer.down), buyer.rate, buyer.amort) + (price * 0.00075) + 280;
+        const housingRatio = monthly / monthlyIncome;
+        const totalDebtRatio = (monthly + buyer.otherDebt) / monthlyIncome;
+        return housingRatio <= 0.39 && totalDebtRatio <= 0.44;
+      };
+
+      let low = 0;
+      let high = 4000000;
+      while (high - low > 2500){
+        const mid = (low + high) / 2;
+        if (canCarry(mid)) low = mid;
+        else high = mid;
+      }
+      return Math.max(0, Math.floor(low / 5000) * 5000);
+    }
+
+    function realityMetrics(listing){
+      const buyer = buyerSnapshot();
+      const analysis = propertyAnalysis(listing);
+      const closing = estimatedClosingCosts(listing);
+      const minimumDown = minimumDownPayment(listing.price);
+      const monthlyIncome = buyer.income > 0 ? buyer.income / 12 : 0;
+      const housingRatio = monthlyIncome > 0 ? analysis.carrying / monthlyIncome : 0;
+      const totalDebtRatio = monthlyIncome > 0 ? (analysis.carrying + buyer.otherDebt) / monthlyIncome : 0;
+
+      const qualifyingRateValue = qualifyingRate(buyer.rate);
+      const qualifyingMonthly = mortgagePayment(Math.max(0, listing.price - buyer.down), qualifyingRateValue, buyer.amort) + (listing.price * 0.00075) + 280;
+      const qualifyingHousingRatio = monthlyIncome > 0 ? qualifyingMonthly / monthlyIncome : 0;
+      const qualifyingTdsRatio = monthlyIncome > 0 ? (qualifyingMonthly + buyer.otherDebt) / monthlyIncome : 0;
+
+      const shockRate = buyer.rate + Math.max(0, buyer.stress || 0);
+      const shockMonthly = mortgagePayment(Math.max(0, listing.price - buyer.down), shockRate, buyer.amort) + (listing.price * 0.00075) + 280;
+      const shockDelta = shockMonthly - analysis.carrying;
+
+      const requiredCashToClose = minimumDown + closing.total;
+      const liquidCash = buyer.down + buyer.reserve;
+      const cashAfterClose = liquidCash - requiredCashToClose;
+      const cashGap = Math.max(0, requiredCashToClose - liquidCash);
+      const extraDownToMin = Math.max(0, minimumDown - buyer.down);
+
+      const monthlyOutflow = Math.max(1, analysis.carrying + buyer.otherDebt);
+      const runwayMonths = cashAfterClose / monthlyOutflow;
+      const comfortCeiling = binarySearchComfortCeiling();
+      const priceGapToComfort = Math.max(0, listing.price - comfortCeiling);
+      const appraisalGapCash = listing.price * 0.05;
+
+      let score = 100;
+      if (extraDownToMin > 0) score -= 35;
+      if (cashGap > 0) score -= Math.min(25, cashGap / 4000);
+      if (housingRatio > 0.39) score -= Math.min(16, (housingRatio - 0.39) * 140);
+      if (totalDebtRatio > 0.44) score -= Math.min(18, (totalDebtRatio - 0.44) * 160);
+      if (qualifyingTdsRatio > 0.44) score -= Math.min(12, (qualifyingTdsRatio - 0.44) * 100);
+      if (cashAfterClose < 0) score -= 10;
+      else if (cashAfterClose < Math.max(10000, monthlyOutflow * 3)) score -= 6;
+      if (shockDelta > 400) score -= 5;
+      score = Math.max(5, Math.min(98, Math.round(score)));
+
+      let verdict = 'Offer-ready';
+      if (extraDownToMin > 0 || cashGap > 0 || totalDebtRatio > 0.52) verdict = 'Not ready';
+      else if (qualifyingTdsRatio > 0.44 || cashAfterClose < 0) verdict = 'Stretch';
+      else if (cashAfterClose < Math.max(10000, monthlyOutflow * 3) || shockDelta > 400) verdict = 'Almost ready';
+
+      let shortReason = 'it clears the main cash and debt-service checks better than the other selected options';
+      let mainFlag = 'The file clears the main budget, cash-to-close, and qualifying-rate checks.';
+      if (extraDownToMin > 0){
+        shortReason = `the minimum down payment is still short by about ${money(extraDownToMin)}`;
+        mainFlag = `This home needs about ${money(extraDownToMin)} more down payment just to hit the minimum requirement.`;
+      } else if (cashGap > 0){
+        shortReason = `cash to close is still short by about ${money(cashGap)}`;
+        mainFlag = `This file needs about ${money(cashGap)} more total cash to cover the minimum down payment and estimated closing costs.`;
+      } else if (qualifyingTdsRatio > 0.44){
+        shortReason = `the file is still above the 44% total-debt guide at the qualifying rate`;
+        mainFlag = `At the qualifying rate of ${qualifyingRateValue.toFixed(2)}%, this file still reads above the 44% total-debt guide.`;
+      } else if (priceGapToComfort > 0){
+        shortReason = `the home is about ${money(priceGapToComfort)} above the current comfort ceiling`;
+        mainFlag = `This home sits about ${money(priceGapToComfort)} above the comfort ceiling implied by the current income, debt, and cash inputs.`;
+      } else if (shockDelta > 400){
+        shortReason = `a rate shock would raise carrying cost by about ${money(shockDelta)} per month`;
+        mainFlag = `A ${buyer.stress.toFixed(1)}% rate-shock scenario adds about ${money(shockDelta)} per month, so the file has less breathing room than it first appears.`;
+      }
+
+      return {
+        analysis,
+        closing,
+        minimumDown,
+        housingRatio,
+        totalDebtRatio,
+        qualifyingRate: qualifyingRateValue,
+        qualifyingHousingRatio,
+        qualifyingTdsRatio,
+        requiredCashToClose,
+        liquidCash,
+        cashAfterClose,
+        cashGap,
+        extraDownToMin,
+        shockDelta,
+        appraisalGapCash,
+        runwayMonths,
+        monthlyOutflow,
+        comfortCeiling,
+        priceGapToComfort,
+        score,
+        verdict,
+        shortReason,
+        mainFlag
+      };
+    }
+
+    function buildRealityCheckModel(){
+      const selected = selectedListings();
+      const buyer = buyerSnapshot();
+      const comfortCeiling = binarySearchComfortCeiling();
+      const metrics = selected.map(listing => ({ listing, metrics: realityMetrics(listing) }));
+      const ranked = metrics.slice().sort((a,b) => {
+        if (b.metrics.score !== a.metrics.score) return b.metrics.score - a.metrics.score;
+        return a.listing.price - b.listing.price;
+      });
+      const best = ranked[0] || null;
+      const warnings = [];
+      if (buyer.income > 0 && buyer.income < 10000) warnings.push('Annual income looks unusually low. Double-check that you entered a full annual number, not a monthly amount or a shortened value.');
+      if (buyer.down > 0 && buyer.down < 5000) warnings.push('Down payment looks unusually low for a Toronto purchase. Make sure you entered the full cash amount available for the down payment.');
+
+      const nextMove = !buyer.income || !buyer.down
+        ? 'Complete the buyer profile so HomeAtlas can size the file properly.'
+        : !selected.length
+          ? 'Select one or two homes on the map to compare offer-readiness, closing cash, and next actions.'
+          : !best
+            ? 'Select a home to start.'
+            : best.metrics.extraDownToMin > 0
+              ? `Raise the down payment by about ${money(best.metrics.extraDownToMin)} before trying to move ahead on ${best.listing.address}.`
+              : best.metrics.cashGap > 0
+                ? `Build about ${money(best.metrics.cashGap)} more liquid cash to cover closing and keep the file stable.`
+                : best.metrics.qualifyingTdsRatio > 0.44
+                  ? `Take ${best.listing.address} into pre-approval only after lowering the target price or other monthly debt.`
+                  : `Take ${best.listing.address} into pre-approval and verify the document pack before making an offer.`;
+
+      const currentStep = !buyer.income || !buyer.down ? 0 : !selected.length ? 3 : 4;
+      return { selected, buyer, metrics, ranked, best, comfortCeiling, warnings, nextMove, currentStep };
+    }
+    function buildGuideAnswer(mode){
+      const model = buildRealityCheckModel();
+      const primary = model.best;
+      if (!primary){
+        return 'Start with the buyer profile and one or two selected homes. Then HomeAtlas can turn the shortlist into a real purchase read: offer-readiness, cash-to-close, rate-shock pressure, and what to do next.';
+      }
+
+      const buyer = buyerSnapshot();
+      const m = primary.metrics;
+      const targetPrice = smartTargetPrice(model.comfortCeiling, primary.listing.price);
+
+      if (mode === 'why'){
+        const blockers = [];
+        if (m.extraDownToMin > 0) blockers.push(`minimum down payment short by about ${money(m.extraDownToMin)}`);
+        if (m.cashGap > 0) blockers.push(`cash-to-close short by about ${money(m.cashGap)}`);
+        if (m.qualifyingTdsRatio > 0.44) blockers.push(`debt-service fit is above the 44% total-debt guide at the qualifying rate`);
+        if (!blockers.length) blockers.push('the file clears the main budget, cash, and qualifying-rate checks');
+        return `${primary.listing.address} currently reads as ${m.verdict.toLowerCase()}. The main reason is ${blockers.join(', ')}.
+
+HomeAtlas is not just asking whether you like the home. It is asking whether the file still works after minimum down payment, closing cash, and qualifying-rate pressure are applied.`;
+      }
+      if (mode === 'documents'){
+        return `For pre-approval, bring identification, proof of employment, proof you can cover the down payment and closing costs, information on other assets, and information on debts or financial obligations. TD also lists address and employment-history details for in-branch pre-approval meetings.
+
+For ${primary.listing.address}, I would not move to offer mode until that packet is clean and the cash-to-close plan is believable on paper.`;
+      }
+      if (mode === 'cash'){
+        return `For ${primary.listing.address}, HomeAtlas estimates about ${money(m.requiredCashToClose)} is needed between the down payment and Toronto closing costs. With the current numbers, cash left after closing is ${signedMoney(m.cashAfterClose)}.
+
+This is the number most buyers miss. A home can look affordable on the payment and still feel bad on closing day if the cash plan is thin.`;
+      }
+      if (mode === 'fix'){
+        return `The cleanest way to flip the answer is to move the file closer to ${money(targetPrice)} or add about ${money(Math.max(m.extraDownToMin, m.cashGap))} more liquid cash. If the problem is debt-service pressure, lowering other monthly debt or choosing the lower-carry home will help faster than chasing cosmetic differences between listings.
+
+Also check whether FHSA room or Home Buyers' Plan eligibility can reduce the cash squeeze before you stretch on price.`;
+      }
+      return `This week, keep the move simple: 1) confirm the real buyer profile, 2) pick the stronger of the selected homes, and 3) take that file into pre-approval with a clean document pack.
+
+Right now the most useful next step is: ${model.nextMove}`;
+    }
+    function buildPathCards(){
+      const model = buildRealityCheckModel();
+      const buyer = buyerSnapshot();
+      const selectedCount = model.selected.length;
+      const best = model.best;
+      const targetPrice = smartTargetPrice(model.comfortCeiling, best ? best.listing.price : 0);
+
+      return [
+        {
+          title:'Budget & credit',
+          official:'Check your credit report and set a budget before shopping for a mortgage.',
+          translate:`HomeAtlas says: annual income is ${money(buyer.income)} and the current comfort ceiling is around ${money(model.comfortCeiling)}.`
+        },
+        {
+          title:'Down payment plan',
+          official:'Build the down payment and keep separate cash for closing costs.',
+          translate:`HomeAtlas says: down payment entered is ${money(buyer.down)} and extra reserve is ${money(buyer.reserve)}.`
+        },
+        {
+          title:'Get preapproved',
+          official:'Get preapproved before seriously shopping so your budget is grounded.',
+          translate:`HomeAtlas says: carry ${money(targetPrice)} into pre-approval conversations, not just the highest asking price you like.`
+        },
+        {
+          title:'Compare real costs',
+          official:'Compare homes using the mortgage, debt load, and closing costs together.',
+          translate:`HomeAtlas says: you currently have ${selectedCount} selected home${selectedCount === 1 ? '' : 's'} and the best current fit is ${best ? best.listing.address : '—'}.`
+        },
+        {
+          title:'Offer-readiness',
+          official:'Do not jump from liking a home to making an offer without checking readiness.',
+          translate:`HomeAtlas says: the current read is ${best ? best.metrics.verdict : 'not enough data'} and the next move is ${model.nextMove}`
+        },
+        {
+          title:'Plan closing day',
+          official:'Be ready for upfront costs such as legal fees, title insurance, inspection, and tax adjustments.',
+          translate:`HomeAtlas says: the best current option needs about ${best ? money(best.metrics.closing.total) : '—'} in estimated Toronto closing costs before moving or furnishing.`
+        }
+      ].map((card, idx) => ({
+        ...card,
+        index: idx + 1,
+        status: idx < model.currentStep ? 'Done' : (idx === model.currentStep ? 'Now' : 'Soon'),
+        now: idx === model.currentStep
+      }));
+    }
+    function defaultState(){
+      return {
+        borrower:'A. Singh',
+        status:'In review',
+        profileKey:'purchase_owner',
+        stageIndex:3,
+        selectedListingIds:[10,15],
+        guideMode:'why',
+        lastUpdated:nowLabel(),
+        updates:[
+          { time:nowLabel(), actor:'Specialist update', status:'In review', stage:'Mortgage application', route:'Owner-occupied purchase', note:'Journey upgraded into a polished portfolio-style layout with route-aware milestone tracking.' },
+          { time:nowLabel(), actor:'Selection update', status:'In review', stage:'Mortgage application', route:'Owner-occupied purchase', note:'Map selection keeps zoom and now shows selected home images side by side.' }
+        ]
+      };
+    }
+
+    const storageKey = 'homeatlas_extraordinary_demo_v1';
+    let state = (() => {
+      try{
+        const raw = JSON.parse(localStorage.getItem(storageKey) || '');
+        return raw && typeof raw === 'object'
+          ? { ...defaultState(), ...raw, decisionWeights:{ ...defaultState().decisionWeights, ...(raw.decisionWeights || {}) } }
+          : defaultState();
+      }catch(e){ return defaultState(); }
+    })();
+
+    let map, markers = [], mapView = null;
+
+    function captureMapView(){
+      if(!map) return null;
+      const center = map.getCenter();
+      return { lat:center.lat, lng:center.lng, zoom:map.getZoom() };
+    }
+
+    function applySavedView(){
+      if(!map || !mapView) return false;
+      map.setView([mapView.lat, mapView.lng], mapView.zoom, { animate:false });
+      return true;
+    }
+
+    function saveState(){
+      localStorage.setItem(storageKey, JSON.stringify(state));
+    }
+
+    function currentProfile(){
+      return routeProfiles[state.profileKey] || routeProfiles.purchase_owner;
+    }
+
+    function currentStage(){
+      return currentProfile().stages[state.stageIndex] || currentProfile().stages[0];
+    }
+
+    function filteredListings(){
+      const city = document.getElementById('cityFilter').value;
+      const minPrice = parseLooseNumber(document.getElementById('minPrice').value || 0);
+      const maxPrice = parseLooseNumber(document.getElementById('maxPrice').value || 0);
+      const minBeds = Number(document.getElementById('minBeds').value || 0);
+      const sortBy = document.getElementById('sortBy').value;
+      let result = listings.filter(item => {
+        if(city !== 'all' && item.city !== city) return false;
+        if(minPrice && item.price < minPrice) return false;
+        if(maxPrice && item.price > maxPrice) return false;
+        if(minBeds && item.beds < minBeds) return false;
+        return true;
+      });
+      if(sortBy === 'priceAsc') result = result.slice().sort((a,b) => a.price - b.price);
+      if(sortBy === 'priceDesc') result = result.slice().sort((a,b) => b.price - a.price);
+      if(sortBy === 'bedsDesc') result = result.slice().sort((a,b) => b.beds - a.beds);
+      return result;
+    }
+
+    function selectedListings(){
+      return state.selectedListingIds.map(id => listings.find(item => item.id === id)).filter(Boolean);
+    }
+
+    function markerIcon(active=false){
+      const fill = active ? '#091630' : '#1d4ed8';
+      return L.divIcon({
+        className:'ha-marker',
+        iconSize:[30,44],
+        iconAnchor:[15,40],
+        html:`
+          <svg viewBox="0 0 30 44" width="30" height="44" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M15 2C7.8 2 2 7.8 2 15c0 10 13 26 13 26s13-16 13-26C28 7.8 22.2 2 15 2Z" fill="${fill}" stroke="#ffffff" stroke-width="1.8"/>
+            <circle cx="15" cy="15" r="5" fill="#ffffff"/>
+          </svg>`
+      });
+    }
+
+    function initMap(){
+      map = L.map('homesMap', { zoomControl:true, scrollWheelZoom:true }).setView([43.69, -79.40], 11);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom:19,
+        attribution:'&copy; OpenStreetMap contributors'
+      }).addTo(map);
+      map.on('movestart zoomstart', () => {
+        mapView = captureMapView();
+      });
+      renderMap();
+    }
+
+    function toggleSelection(id){
+      const set = new Set(state.selectedListingIds);
+      if(set.has(id)){
+        set.delete(id);
+      } else {
+        if(set.size >= 2){
+          const first = Array.from(set)[0];
+          set.delete(first);
+        }
+        set.add(id);
+      }
+      state.selectedListingIds = Array.from(set);
+      state.lastUpdated = nowLabel();
+      state.updates.unshift({
+        time:state.lastUpdated,
+        actor:'Map interaction',
+        status:state.status,
+        stage:currentStage().label,
+        route:currentProfile().label,
+        note:'Selected homes updated from the map.'
+      });
+      state.updates = state.updates.slice(0,10);
+      saveState();
+      renderMap();
+      renderSelectionGrid();
+      renderCompareBand();
+    }
+
+    function renderMap(){
+      if(!map) return;
+      mapView = captureMapView() || mapView;
+      markers.forEach(marker => map.removeLayer(marker));
+      markers = [];
+      const result = filteredListings();
+      renderFilteredShelf(result);
+      result.forEach(item => {
+        const analysis = propertyAnalysis(item);
+        const selected = state.selectedListingIds.includes(item.id);
+        const marker = L.marker([item.lat, item.lng], { icon: markerIcon(selected) }).addTo(map);
+        marker.bindPopup(`
+          <div style="min-width:220px;">
+            <strong>${escapeHtml(item.address)}</strong><br>
+            ${money(item.price)} • ${escapeHtml(item.city)}<br>
+            ${item.beds} bed • ${item.baths} bath • ${item.sqft.toLocaleString()} sqft<br>
+            Est. payment: ${money(analysis.monthly)}/mo<br>
+            Fit: ${escapeHtml(analysis.fit)}<br><br>
+            <span style="font-weight:800;color:#173b77;">${selected ? 'Selected on map' : 'Click marker to select'}</span>
+          </div>
+        `);
+        marker.on('click', () => toggleSelection(item.id));
+        markers.push(marker);
+      });
+      const group = L.featureGroup(markers);
+      if(group.getLayers().length && !applySavedView()){
+        map.fitBounds(group.getBounds().pad(.16));
+      }
+    }
+
+    function renderFilteredShelf(result){
+      const countChip = document.getElementById('resultsCountChip');
+      const sortChip = document.getElementById('resultsSortChip');
+      const rangeChip = document.getElementById('resultsRangeChip');
+      const shelf = document.getElementById('filteredShelf');
+      if (!countChip || !sortChip || !rangeChip || !shelf) return;
+
+      countChip.textContent = `${result.length} home${result.length === 1 ? '' : 's'} shown`;
+      sortChip.textContent = currentSortLabel();
+      if (result.length){
+        const prices = result.map(item => item.price);
+        rangeChip.textContent = `Visible price range: ${money(Math.min(...prices))} – ${money(Math.max(...prices))}`;
+      } else {
+        rangeChip.textContent = 'Visible price range: —';
+      }
+
+      if (!result.length){
+        shelf.innerHTML = `<div class="selection-empty" style="grid-column:1 / -1;">No homes match the current city, price, and bedroom filters.</div>`;
+        return;
+      }
+
+      shelf.innerHTML = result.slice(0, 6).map((item, idx) => {
+        const analysis = propertyAnalysis(item);
+        const selected = state.selectedListingIds.includes(item.id);
+        return `
+          <article class="result-card">
+            <div class="result-rank">${idx + 1}. ${escapeHtml(currentSortLabel())}</div>
+            <div class="result-title">${escapeHtml(item.address)}</div>
+            <div class="result-meta">${escapeHtml(item.city)} • ${item.beds} bed • ${item.baths} bath • ${item.sqft.toLocaleString()} sqft</div>
+            <div class="result-stats">
+              <div class="result-stat"><div class="k">Price</div><div class="v">${money(item.price)}</div></div>
+              <div class="result-stat"><div class="k">Est. monthly</div><div class="v">${money(analysis.monthly)}</div></div>
+            </div>
+            <div class="result-actions">
+              <button class="btn ${selected ? 'secondary' : 'ghost'}" data-select-home="${item.id}">${selected ? 'Selected on map' : 'Select on map'}</button>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      shelf.querySelectorAll('[data-select-home]').forEach(button => {
+        button.addEventListener('click', () => {
+          const id = Number(button.getAttribute('data-select-home'));
+          toggleSelection(id);
+          const listing = listings.find(item => item.id === id);
+          if (listing && map){
+            map.setView([listing.lat, listing.lng], Math.max(map.getZoom(), 12), { animate:true });
+          }
+        });
+      });
+    }
+
+    function renderHero(){
+      document.getElementById('heroMetrics').innerHTML = `
+        <span class="metric-pill">${listings.length} Toronto listings wired in</span>
+        <span class="metric-pill">Offer-readiness scoring</span>
+        <span class="metric-pill">TD and FCAC public guidance links</span>
+        <span class="metric-pill">Closing-cost and cash-to-close planning</span>
+        <span class="metric-pill">Buyer coach with concrete next steps</span>
+      `;
+    }
+
+    function renderCityFilter(){
+      const cities = ['all', ...new Set(listings.map(item => item.city))];
+      document.getElementById('cityFilter').innerHTML = cities.map(city => `<option value="${city}">${city === 'all' ? 'All cities' : escapeHtml(city)}</option>`).join('');
+    }
+
+    function renderSelectionGrid(){
+      const target = document.getElementById('selectionGrid');
+      const selected = selectedListings();
+      if(!selected.length){
+        target.innerHTML = `<div class="selection-empty" style="grid-column:1 / -1;">Click a home marker to show it here with its image, payment estimate, and quick fit.</div>`;
+        return;
+      }
+      target.innerHTML = selected.map(item => {
+        const analysis = propertyAnalysis(item);
+        const imgSrc = item.image_url || placeholderSvg(item.address);
+        return `
+          <article class="selection-card">
+            <img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(item.address)}" onerror="this.onerror=null;this.src='${placeholderSvg(item.address).replace(/'/g, "\\'")}';">
+            <div class="selection-body">
+              <div>
+                <div class="selection-title">${escapeHtml(item.address)}</div>
+                <div class="selection-sub">${escapeHtml(item.city)} • ${item.beds} bed • ${item.baths} bath • ${item.sqft.toLocaleString()} sqft</div>
               </div>
-              <div class="journey-stage done">
-                <strong>2</strong>
-                <span>Search</span>
-              </div>
-              <div class="journey-stage active">
-                <strong>3</strong>
-                <span>Compare</span>
-              </div>
-              <div class="journey-stage">
-                <strong>4</strong>
-                <span>Pre-approval</span>
-              </div>
-              <div class="journey-stage">
-                <strong>5</strong>
-                <span>Closing</span>
+              <div class="stat-grid">
+                <div class="mini-stat"><div class="k">Price</div><div class="v">${money(item.price)}</div></div>
+                <div class="mini-stat"><div class="k">Est. monthly</div><div class="v">${money(analysis.monthly)}</div></div>
+                <div class="mini-stat"><div class="k">Fit</div><div class="v">${escapeHtml(analysis.fit)}</div></div>
+                <div class="mini-stat"><div class="k">Realtor</div><div class="v">${escapeHtml(item.realtor_name)}</div></div>
               </div>
             </div>
+          </article>
+        `;
+      }).join('');
+    }
 
-            <div class="journey-cards">
-              <div class="journey-mini-card">
-                <h4>Current route</h4>
-                <p id="journey-route-text">Owner-occupied purchase</p>
-              </div>
-              <div class="journey-mini-card">
-                <h4>Current stage</h4>
-                <p id="journey-stage-text">Compare and validate fit</p>
-              </div>
-              <div class="journey-mini-card">
-                <h4>Typical next move</h4>
-                <p id="journey-next-text">Carry the strongest home into a pre-approval conversation with a clean cash plan.</p>
-              </div>
-            </div>
+    function renderCompareBand(){
+      const target = document.getElementById('compareBand');
+      const selected = selectedListings();
+      if(!selected.length){
+        target.innerHTML = `<span class="status-chip">No selected homes yet</span>`;
+        return;
+      }
+      const ranked = selected.map(listing => ({ listing, metrics: realityMetrics(listing) })).sort((a,b) => b.metrics.score - a.metrics.score);
+      const best = ranked[0];
+      if(selected.length === 1){
+        target.innerHTML = `
+          <span class="status-chip">Selected: ${escapeHtml(best.listing.address)}</span>
+          <span class="status-chip">Offer-readiness: ${escapeHtml(best.metrics.verdict)}</span>
+          <span class="status-chip">Cash to close: ${money(best.metrics.requiredCashToClose)}</span>
+          <span class="status-chip">Cash after close: ${signedMoney(best.metrics.cashAfterClose)}</span>
+        `;
+        return;
+      }
+      const [first, second] = ranked;
+      const lowerMonthly = first.metrics.analysis.carrying <= second.metrics.analysis.carrying ? first.listing.address : second.listing.address;
+      const lowerCash = first.metrics.requiredCashToClose <= second.metrics.requiredCashToClose ? first.listing.address : second.listing.address;
+      const saferShock = first.metrics.shockDelta <= second.metrics.shockDelta ? first.listing.address : second.listing.address;
+      target.innerHTML = `
+        <span class="status-chip">Comparing ${escapeHtml(selected[0].address)} and ${escapeHtml(selected[1].address)}</span>
+        <span class="status-chip">Best offer-readiness: ${escapeHtml(best.listing.address)}</span>
+        <span class="status-chip">Lower all-in monthly: ${escapeHtml(lowerMonthly)}</span>
+        <span class="status-chip">Less cash needed at close: ${escapeHtml(lowerCash)}</span>
+        <span class="status-chip">More resilient to rate shock: ${escapeHtml(saferShock)}</span>
+      `;
+    }
+    function renderDecisionCoach(){
+      const target = document.getElementById('buyerQuickLook');
+      if (!target) return;
+      const model = buildRealityCheckModel();
+      if (!model.best){
+        target.innerHTML = `<div class="selection-empty">Select one or two homes to unlock HomeAtlas Offer Readiness. You will get the real blocker, cash-to-close, pre-approval checklist, and a next-week action plan.</div>`;
+        return;
+      }
+      const best = model.best;
+      const m = best.metrics;
+      const targetPrice = smartTargetPrice(model.comfortCeiling, best.listing.price);
+      const warningHtml = model.warnings.map(w => `<div class="warning-banner">${escapeHtml(w)}</div>`).join('');
+      target.innerHTML = `
+        ${warningHtml}
+        <div class="buyer-quick-card">
+          <span class="quick-verdict">Can you make an offer this week?</span>
+          <h4>${escapeHtml(m.verdict === 'Offer-ready' ? 'Yes, with pre-approval discipline.' : m.verdict === 'Almost ready' ? 'Almost — clean up the cash plan first.' : m.verdict === 'Stretch' ? 'Only if you accept real pressure.' : 'Not yet.')}</h4>
+          <p>${escapeHtml(best.listing.address)} is the current best fit because ${escapeHtml(m.shortReason)}.</p>
+          <div class="buyer-quick-grid">
+            <div class="buyer-quick-stat"><div class="k">Offer-readiness</div><div class="v">${m.score}/100</div></div>
+            <div class="buyer-quick-stat"><div class="k">Cash gap to fix</div><div class="v">${money(Math.max(m.extraDownToMin, m.cashGap))}</div></div>
+            <div class="buyer-quick-stat"><div class="k">Target price to shop</div><div class="v">${money(targetPrice)}</div></div>
           </div>
         </div>
+      `;
+    }
+    function renderWeightControls(){
+      return;
+    }
 
-        <div class="screen-actions">
-          <button class="secondary-btn" data-back="5" type="button">Back</button>
-          <button class="secondary-btn" data-next="1" type="button">Back to intro</button>
+    function renderRealityCheck(){
+      const badges = document.getElementById('copilotBadges');
+      const hero = document.getElementById('realityHero');
+      const actions = document.getElementById('actionGrid');
+      const grid = document.getElementById('realityGrid');
+      if (!badges || !hero || !actions || !grid) return;
+
+      const model = buildRealityCheckModel();
+      badges.innerHTML = `
+        <span class="status-chip">FCAC guide: housing costs around 39%</span>
+        <span class="status-chip">FCAC guide: total debt around 44%</span>
+        <span class="status-chip">OSFI qualifying-rate check built in</span>
+        <span class="status-chip">CMHC minimum-down-payment logic built in</span>
+      `;
+
+      if (!model.best){
+        hero.innerHTML = `
+          <div class="hero-insight primary"><div class="insight-label">Offer-readiness</div><div class="insight-value">Waiting</div><div class="insight-copy">Enter the buyer profile and select one or two homes to unlock the actual purchase read.</div></div>
+          <div class="hero-insight"><div class="insight-label">What you will get</div><div class="insight-value">Real blocker</div><div class="insight-copy">HomeAtlas will show whether the limit is down payment, closing cash, qualifying rate, or monthly debt pressure.</div></div>
+          <div class="hero-insight"><div class="insight-label">Cash view</div><div class="insight-value">Cash to close</div><div class="insight-copy">You will see the estimated down payment requirement and Toronto closing-cost pressure together.</div></div>
+          <div class="hero-insight"><div class="insight-label">Buyer coach</div><div class="insight-value">Action plan</div><div class="insight-copy">The coach becomes a next-step planner instead of a generic chat bubble.</div></div>
+        `;
+        actions.innerHTML = `<div class="selection-empty" style="grid-column:1 / -1;">Select one or two homes to unlock the checklist, document pack, and ways to improve the file.</div>`;
+        grid.innerHTML = `<div class="selection-empty" style="grid-column:1 / -1;">Choose homes on the map to see the full Offer Readiness comparison.</div>`;
+        return;
+      }
+
+      const best = model.best;
+      const m = best.metrics;
+      const targetPrice = smartTargetPrice(model.comfortCeiling, best.listing.price);
+      hero.innerHTML = `
+        <div class="hero-insight primary"><div class="insight-label">Best current fit</div><div class="insight-value">${escapeHtml(best.listing.address)}</div><div class="insight-copy">Best selected home after budget, cash-to-close, reserve, and qualifying-rate checks.</div></div>
+        <div class="hero-insight"><div class="insight-label">Offer-readiness</div><div class="insight-value">${m.score}/100</div><div class="insight-copy">${escapeHtml(m.verdict)} — ${escapeHtml(m.mainFlag)}</div></div>
+        <div class="hero-insight"><div class="insight-label">Required cash to close</div><div class="insight-value">${money(m.requiredCashToClose)}</div><div class="insight-copy">Minimum down payment plus estimated Toronto closing costs.</div></div>
+        <div class="hero-insight"><div class="insight-label">Target price to shop</div><div class="insight-value">${money(targetPrice)}</div><div class="insight-copy">A price around here should feel more stable for the current buyer snapshot.</div></div>
+      `;
+
+      const checks = [
+        { label:'Minimum down payment covered', note: `Need at least ${money(m.minimumDown)} for this home.`, ok: m.extraDownToMin === 0, warn: m.extraDownToMin === 0 && buyerSnapshot().down - m.minimumDown < 15000 },
+        { label:'Cash to close is covered', note: `Estimated cash to close is ${money(m.requiredCashToClose)}.`, ok: m.cashGap === 0, warn: m.cashGap === 0 && m.cashAfterClose < 15000 },
+        { label:'Housing-cost guide', note: `Current housing ratio is ${pct(m.housingRatio)} against the 39% guide.`, ok: m.housingRatio <= 0.39, warn: m.housingRatio > 0.39 && m.housingRatio <= 0.44 },
+        { label:'Total-debt guide', note: `Current total debt ratio is ${pct(m.totalDebtRatio)} against the 44% guide.`, ok: m.totalDebtRatio <= 0.44, warn: m.totalDebtRatio > 0.44 && m.totalDebtRatio <= 0.48 },
+        { label:'Qualifying-rate pressure', note: `At ${m.qualifyingRate.toFixed(2)}%, the qualifying total debt ratio is ${pct(m.qualifyingTdsRatio)}.`, ok: m.qualifyingTdsRatio <= 0.44, warn: m.qualifyingTdsRatio > 0.44 && m.qualifyingTdsRatio <= 0.48 },
+        { label:'Reserve after closing', note: `Cash left after closing is ${signedMoney(m.cashAfterClose)}.`, ok: m.cashAfterClose >= Math.max(10000, m.monthlyOutflow * 3), warn: m.cashAfterClose >= 0 && m.cashAfterClose < Math.max(10000, m.monthlyOutflow * 3) }
+      ];
+
+      const checklistHtml = checks.map(item => {
+        const cls = item.ok ? 'pass' : item.warn ? 'warn' : 'fail';
+        const icon = item.ok ? '✓' : item.warn ? '!' : '×';
+        const status = item.ok ? 'Pass' : item.warn ? 'Watch' : 'Fix';
+        return `<div class="check-row ${cls}"><div class="check-icon">${icon}</div><div><strong>${escapeHtml(item.label)}</strong><div class="check-note">${escapeHtml(item.note)}</div></div><div class="check-note">${status}</div></div>`;
+      }).join('');
+
+      const improveLines = [
+        m.extraDownToMin > 0 ? `Add about ${money(m.extraDownToMin)} more just to hit the minimum down payment.` : null,
+        m.cashGap > 0 ? `Add about ${money(m.cashGap)} more total cash to cover closing and keep the file liquid.` : null,
+        best.listing.price > targetPrice ? `Shopping nearer ${money(targetPrice)} should materially improve the file.` : null,
+        m.totalDebtRatio > 0.44 ? `Reducing other monthly debt or picking the lower-carry home will help the fastest.` : null,
+        'Check whether FHSA room or the Home Buyers’ Plan can reduce cash pressure before you stretch on price.'
+      ].filter(Boolean).map(line => `<div class="action-line">${escapeHtml(line)}</div>`).join('');
+
+      actions.innerHTML = `
+        <article class="action-card">
+          <span class="decision-kicker">Offer-readiness checklist</span>
+          <h4>Why the file is or is not ready</h4>
+          <div class="checklist">${checklistHtml}</div>
+        </article>
+        <article class="action-card">
+          <span class="decision-kicker">Pre-approval pack</span>
+          <h4>Bring this before you fall in love with a listing</h4>
+          <div class="action-list">
+            <div class="action-line">Identification and current address details.</div>
+            <div class="action-line">Proof of employment and income, plus recent employment history if needed.</div>
+            <div class="action-line">Proof you can cover the down payment and closing costs.</div>
+            <div class="action-line">A list of other assets and all debts or financial obligations.</div>
+          </div>
+          <div class="mini-note">This is grounded in FCAC’s pre-approval checklist and TD’s pre-approval preparation guidance.</div>
+        </article>
+        <article class="action-card">
+          <span class="decision-kicker">How to flip the answer</span>
+          <h4>Concrete moves, not generic advice</h4>
+          <div class="action-list">${improveLines}</div>
+        </article>
+      `;
+
+      grid.innerHTML = model.ranked.map((entry, idx) => {
+        const item = entry.listing;
+        const x = entry.metrics;
+        const tone = recommendationTone(x.verdict);
+        return `
+          <article class="reality-card ${idx === 0 ? 'top-pick' : ''}">
+            <div class="reality-top">
+              <div>
+                <span class="verdict-pill">${idx === 0 ? 'Best current fit' : 'Comparison home'}</span>
+                <h3 class="reality-title">${escapeHtml(item.address)}</h3>
+                <div class="subtle">${item.beds} bed • ${item.baths} bath • ${item.sqft.toLocaleString()} sqft • ${money(item.price)}</div>
+              </div>
+              <div class="score-badge"><span class="big">${x.score}</span><span class="small">Offer-readiness</span></div>
+            </div>
+            <div class="decision-copy">${escapeHtml(x.verdict)} — ${escapeHtml(x.mainFlag)}</div>
+            <div class="reality-stats">
+              <div class="reality-stat"><div class="k">All-in monthly</div><div class="v">${money(x.analysis.carrying)}</div></div>
+              <div class="reality-stat"><div class="k">Qualifying rate</div><div class="v">${x.qualifyingRate.toFixed(2)}%</div></div>
+              <div class="reality-stat"><div class="k">Cash to close</div><div class="v">${money(x.requiredCashToClose)}</div></div>
+              <div class="reality-stat"><div class="k">Housing ratio</div><div class="v">${pct(x.housingRatio)}</div></div>
+              <div class="reality-stat"><div class="k">Total debt ratio</div><div class="v">${pct(x.totalDebtRatio)}</div></div>
+              <div class="reality-stat"><div class="k">Cash after close</div><div class="v">${signedMoney(x.cashAfterClose)}</div></div>
+            </div>
+            <div class="reality-flags">
+              <div class="flag-line"><strong>Main blocker:</strong> ${escapeHtml(x.mainFlag)}</div>
+              <div class="flag-line"><strong>Rate-shock scenario:</strong> +${buyerSnapshot().stress.toFixed(1)}% adds about ${money(x.shockDelta)} per month.</div>
+              <div class="flag-line"><strong>5% appraisal gap:</strong> about ${money(x.appraisalGapCash)} of extra cash may be needed if value comes in low.</div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+    function renderGuide(){
+      const prompts = document.getElementById('guidePrompts');
+      const thread = document.getElementById('guideThread');
+      const coachSteps = document.getElementById('coachSteps');
+      if (!prompts || !thread || !coachSteps) return;
+      const mode = state.guideMode || 'why';
+      const items = [
+        ['why', 'Why is this not ready?'],
+        ['documents', 'What do I need for pre-approval?'],
+        ['cash', 'How much cash do I really need?'],
+        ['fix', 'How do I make this work?'],
+        ['week', 'What should I do this week?']
+      ];
+      prompts.innerHTML = items.map(([key, label]) => `<button class="guide-chip ${mode === key ? 'active' : ''}" data-guide="${key}">${label}</button>`).join('');
+      const userPrompt = items.find(([key]) => key === mode)?.[1] || items[0][1];
+      const answer = buildGuideAnswer(mode);
+      thread.innerHTML = `
+        <div class="guide-row">
+          <div class="guide-avatar user">You</div>
+          <div class="guide-bubble">${escapeHtml(userPrompt)}</div>
         </div>
-      </section>
-    </main>
+        <div class="guide-row">
+          <div class="guide-avatar bot">HA</div>
+          <div class="guide-bubble bot">${escapeHtml(answer)}</div>
+        </div>
+      `;
 
-    <footer class="site-footer">
-      <p>HomeAtlas redesign — guided flow, cleaner hierarchy, and portfolio-ready presentation.</p>
-    </footer>
-  </div>
+      const model = buildRealityCheckModel();
+      if (!model.best){
+        coachSteps.innerHTML = `<div class="coach-step"><strong>Start here:</strong> fill the buyer profile, then choose one or two homes so the coach can move from generic guidance to a real action plan.</div>`;
+      } else {
+        const best = model.best;
+        const steps = [
+          `Check the buyer profile first. The current next move is: ${model.nextMove}`,
+          `Use ${best.listing.address} as the lead file, because it is currently the strongest selected fit.`,
+          `Do not book emotionally around the listing until the pre-approval packet and cash-to-close plan are both clean.`
+        ];
+        coachSteps.innerHTML = steps.map((step, idx) => `<div class="coach-step"><strong>Step ${idx + 1}:</strong> ${escapeHtml(step)}</div>`).join('');
+      }
 
-  <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-    crossorigin=""
-  ></script>
-  <script src="./app.js"></script>
+      prompts.querySelectorAll('[data-guide]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.guideMode = btn.dataset.guide;
+          saveState();
+          renderGuide();
+        });
+      });
+    }
+    function renderPathScroller(){
+      const scroller = document.getElementById('pathScroller');
+      if (!scroller) return;
+      scroller.innerHTML = buildPathCards().map(card => `
+        <article class="path-card ${card.now ? 'now' : ''}">
+          <div class="path-step">
+            <div class="path-index">${card.index}</div>
+            <div class="path-status">${escapeHtml(card.status)}</div>
+          </div>
+          <div class="path-title">${escapeHtml(card.title)}</div>
+          <div class="path-copy">${escapeHtml(card.official)}</div>
+          <div class="path-translate"><strong>HomeAtlas translation:</strong> ${escapeHtml(card.translate)}</div>
+        </article>
+      `).join('');
+    }
+
+    function renderRouteTabs(){
+      const target = document.getElementById('routeTabs');
+      target.innerHTML = Object.entries(routeProfiles).map(([key, profile]) => `
+        <button class="tab-btn ${state.profileKey === key ? 'active' : ''}" data-route="${key}">${escapeHtml(profile.label)}</button>
+      `).join('');
+      target.querySelectorAll('[data-route]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.profileKey = btn.dataset.route;
+          state.stageIndex = Math.min(state.stageIndex, currentProfile().stages.length - 1);
+          state.lastUpdated = nowLabel();
+          state.updates.unshift({
+            time:state.lastUpdated,
+            actor:'Route switch',
+            status:state.status,
+            stage:currentStage().label,
+            route:currentProfile().label,
+            note:`Borrower route changed to ${currentProfile().label}.`
+          });
+          state.updates = state.updates.slice(0,10);
+          saveState();
+          renderAll();
+        });
+      });
+    }
+
+    function renderJourney(){
+      const profile = currentProfile();
+      const stages = profile.stages;
+      const grid = document.getElementById('journeyGrid');
+      const progress = ((state.stageIndex) / Math.max(stages.length - 1, 1)) * 100;
+      const stageMarkup = stages.map((stage, idx) => `
+        <div class="stage-col ${idx < state.stageIndex ? 'done' : ''} ${idx === state.stageIndex ? 'current' : ''}">
+          ${idx === state.stageIndex ? `<div class="current-label">${escapeHtml(state.borrower)} • Stage ${idx + 1}</div>` : ``}
+          <div class="stage-index">${idx + 1}</div>
+          <div class="stage-name">${escapeHtml(stage.label)}</div>
+          <div class="stage-copy">${escapeHtml(stage.copy)}</div>
+        </div>
+      `).join('');
+      grid.innerHTML = `<div class="journey-track"><div class="journey-progress" id="journeyProgress" style="width:${progress}%;"></div></div>${stageMarkup}`;
+
+      const exceptionArea = document.getElementById('exceptionArea');
+      exceptionArea.innerHTML = stages.map((_, idx) => {
+        const cards = (profile.exceptions[idx] || []).map(card => `
+          <div class="branch-card ${card.tone}">
+            <h4>${escapeHtml(card.title)}</h4>
+            <p>${escapeHtml(card.text)}</p>
+          </div>
+        `).join('');
+        return `<div class="exception-col"><div class="branch-stack">${cards}</div></div>`;
+      }).join('');
+    }
+
+    function renderSnapshot(){
+      document.getElementById('summaryBorrower').textContent = state.borrower;
+      document.getElementById('summaryRoute').textContent = currentProfile().label;
+      document.getElementById('summaryStage').textContent = currentStage().label;
+      document.getElementById('summaryStatus').textContent = state.status;
+    }
+
+    function renderStageControls(){
+      const select = document.getElementById('stageSelect');
+      select.innerHTML = currentProfile().stages.map((stage, idx) => `<option value="${idx}">${escapeHtml(stage.label)}</option>`).join('');
+      select.value = String(state.stageIndex);
+      document.getElementById('borrowerInput').value = state.borrower;
+      document.getElementById('statusSelect').value = state.status;
+    }
+
+    function renderGuidance(){
+      const stage = currentStage();
+      document.getElementById('nextStageHeadline').textContent = stage.label;
+      document.getElementById('docsList').innerHTML = stage.docs.map(item => `<li>${escapeHtml(item)}</li>`).join('');
+      document.getElementById('actionsList').innerHTML = stage.next.map(item => `<li>${escapeHtml(item)}</li>`).join('');
+    }
+
+    function renderTimeline(){
+      const list = state.updates.length ? state.updates : [{ time:state.lastUpdated, actor:'System', status:state.status, stage:currentStage().label, route:currentProfile().label, note:'Demo initialized.' }];
+      document.getElementById('timelineList').innerHTML = list.map(item => `
+        <div class="timeline-item">
+          <div class="timeline-meta"><span>${escapeHtml(item.actor)}</span><span>${escapeHtml(item.time)}</span></div>
+          <div class="timeline-title">${escapeHtml(item.status || state.status)} • ${escapeHtml(item.stage || currentStage().label)}</div>
+          <div class="subtle">${escapeHtml(item.note)}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderAll(){
+      renderHero();
+      renderRouteTabs();
+      renderJourney();
+      renderSnapshot();
+      renderStageControls();
+      renderGuidance();
+      renderTimeline();
+      renderSelectionGrid();
+      renderCompareBand();
+      renderDecisionCoach();
+      renderRealityCheck();
+      renderGuide();
+      renderPathScroller();
+      renderMap();
+    }
+
+    function bindEvents(){
+      document.getElementById('applyFilters').addEventListener('click', () => {
+        mapView = null;
+        renderMap();
+      });
+
+      document.getElementById('resetFilters').addEventListener('click', () => {
+        document.getElementById('cityFilter').value = 'all';
+        document.getElementById('minPrice').value = '';
+        document.getElementById('maxPrice').value = '';
+        document.getElementById('minBeds').value = '';
+        document.getElementById('sortBy').value = 'none';
+        refreshFormattedNumberFields();
+        mapView = null;
+        renderMap();
+      });
+
+      ['buyerIncome','buyerDown','buyerReserve','buyerOtherDebt','buyerRate','buyerAmort','buyerStress'].forEach(id => {
+        document.getElementById(id).addEventListener('input', () => {
+          saveBuyerInputs();
+          renderSelectionGrid();
+          renderCompareBand();
+          renderDecisionCoach();
+          renderRealityCheck();
+          renderGuide();
+          renderPathScroller();
+          renderMap();
+        });
+      });
+
+      document.getElementById('publishUpdate').addEventListener('click', () => {
+        state.borrower = document.getElementById('borrowerInput').value.trim() || state.borrower;
+        state.status = document.getElementById('statusSelect').value;
+        state.stageIndex = Number(document.getElementById('stageSelect').value || 0);
+        state.lastUpdated = nowLabel();
+        const note = document.getElementById('agentNote').value.trim() || `Moved file to ${currentProfile().stages[state.stageIndex].label}.`;
+        state.updates.unshift({
+          time:state.lastUpdated,
+          actor:'Specialist update',
+          status:state.status,
+          stage:currentProfile().stages[state.stageIndex].label,
+          route:currentProfile().label,
+          note
+        });
+        state.updates = state.updates.slice(0,10);
+        document.getElementById('agentNote').value = '';
+        saveState();
+        renderAll();
+      });
+
+      document.getElementById('resetDemo').addEventListener('click', () => {
+        localStorage.removeItem(storageKey);
+        localStorage.removeItem(`${storageKey}_buyer_inputs`);
+        state = defaultState();
+        mapView = null;
+        applyBuyerInputDefaults(true);
+        renderAll();
+      });
+    }
+
+    renderCityFilter();
+    applyBuyerInputDefaults();
+    bindFormattedNumberFields();
+    initMap();
+    bindEvents();
+    ['cityFilter','minPrice','maxPrice','minBeds','sortBy'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const eventName = el.tagName === 'SELECT' ? 'change' : 'input';
+      el.addEventListener(eventName, () => {
+        mapView = null;
+        renderMap();
+      });
+    });
+    renderAll();
+    refreshFormattedNumberFields();
+  </script>
 </body>
 </html>
